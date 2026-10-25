@@ -104,7 +104,9 @@ Implementado en `app/src/pages/` (Conductor, Camara, Ayuntamiento, Arbitro, Dgt,
 - `contracts.ts`: `send(tx, signer)` (falla con mensaje en español si la simulación da error de contrato), tipos.
 - `token.ts`: el USDC es un SAC sin cliente generado; lectura/mint/trustline a mano con la SDK.
 - `plates.ts`: HMAC en el navegador (misma clave que los scripts); `hooks.ts`: lecturas react-query con refresco de 3 s.
-- Conductor firma con Freighter ("Mi wallet") o como Lucía/Pablo/Ana; cámara, ayuntamiento, árbitro y DGT firman con claves de demo.
+- Conductor firma con Freighter ("My wallet") o como Lucía/Pablo/Ana; cámara, ayuntamiento, árbitro y DGT firman con claves de demo.
+- La web está en INGLÉS (Driver, Camera, City Hall, Arbiter, DGT); el código, comentarios y docs internas en español. README en inglés.
+- Diseño: estilos propios en `app/src/zbe/zbe.css` (cargado en `main.tsx`), componentes `PageHead`, `Plate`, `Stat` en `ui.tsx`.
 
 ## Plan
 

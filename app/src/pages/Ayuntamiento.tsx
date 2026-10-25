@@ -14,7 +14,8 @@ import {
 import {
 	Countdown,
 	MissingKeys,
-	PageTitle,
+	PageHead,
+	Plate,
 	Stat,
 	StatusBadge,
 	Usdc,
@@ -61,7 +62,7 @@ const Ayuntamiento = () => {
 					admin,
 				)
 			},
-			"Zona actualizada",
+			"Zone rules updated",
 		)
 
 	// settle lo puede llamar cualquiera; aquí paga la transacción el ayuntamiento
@@ -72,7 +73,7 @@ const Ayuntamiento = () => {
 				if (!admin) return
 				await send(await peaje.settle({ charge_id }, as(admin)), admin)
 			},
-			`Cargo #${charge_id} cobrado: transferido a la tesorería`,
+			`Charge #${charge_id} collected and sent to the treasury`,
 		)
 
 	const ready =
@@ -82,29 +83,29 @@ const Ayuntamiento = () => {
 
 	return (
 		<div>
-			<PageTitle title="Ayuntamiento">
-				Reglas de la ZBE, cargos y recaudación. El ayuntamiento no puede tocar
-				un cargo en plazo de alegación ni resolver disputas.
-			</PageTitle>
+			<PageHead icon="🏛️" title="City Hall" signer={admin?.label}>
+				Zone rules, charges and revenue. The city cannot touch a charge during
+				its appeal window, and it cannot resolve appeals.
+			</PageHead>
 
-			{!admin && <MissingKeys who="ayuntamiento (me)" />}
+			{!admin && <MissingKeys who="City Hall (me)" />}
 
 			<div className="zbe-stats">
-				<Stat label="Recaudado">
+				<Stat label="Collected" accent>
 					<Usdc amount={collected} />
 				</Stat>
-				<Stat label="Tesorería (cartera)">
+				<Stat label="Treasury wallet">
 					<Usdc amount={treasury} />
 				</Stat>
-				<Stat label="Bloqueados">{count("Pending")}</Stat>
-				<Stat label="En disputa">{count("Disputed")}</Stat>
+				<Stat label="Locked charges">{count("Pending")}</Stat>
+				<Stat label="Under appeal">{count("Disputed")}</Stat>
 			</div>
 
 			<div className="card zbe-section">
-				<h2>Zona {ZONE}</h2>
+				<h2>Zone rules · {ZONE}</h2>
 				<div className="zbe-form">
 					<label>
-						Entran gratis desde
+						Free entry from label
 						<select
 							value={minCategory}
 							onChange={(e) => setMinCategory(Number(e.target.value))}
@@ -117,7 +118,7 @@ const Ayuntamiento = () => {
 						</select>
 					</label>
 					<label>
-						Tarifa diaria (USDC)
+						Daily fee (USDC)
 						<input
 							type="number"
 							min="1"
@@ -126,7 +127,7 @@ const Ayuntamiento = () => {
 						/>
 					</label>
 					<label>
-						Plazo para alegar (s)
+						Appeal window (seconds)
 						<input
 							type="number"
 							min="0"
@@ -134,16 +135,21 @@ const Ayuntamiento = () => {
 							onChange={(e) => setAppealSecs(e.target.value)}
 						/>
 					</label>
-					<button onClick={saveZone} disabled={!admin || !!pending}>
-						Guardar zona
+					<button
+						className="zbe-btn-primary"
+						onClick={saveZone}
+						disabled={!admin || !!pending}
+					>
+						Save rules
 					</button>
 				</div>
 			</div>
 
 			<div className="card zbe-section">
-				<div className="zbe-row" style={{ justifyContent: "space-between" }}>
-					<h2>Cargos</h2>
+				<div className="zbe-row zbe-spread">
+					<h2>Charges</h2>
 					<button
+						className="zbe-btn-primary"
 						onClick={() =>
 							run("settle-all", async () => {
 								for (const c of ready) await settle(c.id)
@@ -151,22 +157,22 @@ const Ayuntamiento = () => {
 						}
 						disabled={!admin || !!pending || ready.length === 0}
 					>
-						Cobrar vencidos ({ready.length})
+						Collect all due ({ready.length})
 					</button>
 				</div>
 				{!charges?.length ? (
-					<p className="zbe-empty">Todavía no hay cargos.</p>
+					<p className="zbe-empty">No charges yet.</p>
 				) : (
 					<div className="zbe-table-wrap">
 						<table className="zbe-table">
 							<thead>
 								<tr>
 									<th>#</th>
-									<th>Vehículo</th>
-									<th>Titular</th>
-									<th>Importe</th>
-									<th>Estado</th>
-									<th>Plazo</th>
+									<th>Vehicle</th>
+									<th>Owner</th>
+									<th>Amount</th>
+									<th>Status</th>
+									<th>Deadline</th>
 									<th />
 								</tr>
 							</thead>
@@ -175,9 +181,7 @@ const Ayuntamiento = () => {
 									<tr key={c.id.toString()}>
 										<td>{c.id.toString()}</td>
 										<td>
-											<span className="zbe-plate">
-												{plateOf(c.plate_hash.toString("hex"))}
-											</span>
+											<Plate plate={plateOf(c.plate_hash.toString("hex"))} />
 										</td>
 										<td>
 											<Who address={c.owner} />
@@ -194,10 +198,11 @@ const Ayuntamiento = () => {
 										<td>
 											{c.status.tag === "Pending" && !isOpen(c, now) && (
 												<button
+													className="zbe-btn-primary"
 													onClick={() => settle(c.id)}
 													disabled={!admin || !!pending}
 												>
-													Cobrar
+													Collect
 												</button>
 											)}
 										</td>

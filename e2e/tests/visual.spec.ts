@@ -13,7 +13,9 @@ test("home page visual", async ({ page }) => {
 	// ensure the app has mounted before snapshotting
 	await expect(page.getByRole("button", { name: /connect/i })).toBeVisible()
 	await expect(
-		page.getByRole("heading", { name: "Peaje ZBE en Stellar" }),
+		page.getByRole("heading", {
+			name: "A fair, opt-in toll for Low Emission Zones",
+		}),
 	).toBeVisible()
 	await expect(page).toHaveScreenshot("home.png", {
 		fullPage: true,

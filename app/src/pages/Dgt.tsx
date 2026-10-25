@@ -6,7 +6,14 @@ import { as, send } from "../zbe/contracts"
 import { useAction, useLabels, useUsdcBalance } from "../zbe/hooks"
 import { normalizePlate, plateHash, rememberPlate } from "../zbe/plates"
 import { addTrustline, mintUsdc } from "../zbe/token"
-import { CategoryBadge, MissingKeys, PageTitle, Usdc, Who } from "../zbe/ui"
+import {
+	CategoryBadge,
+	MissingKeys,
+	PageHead,
+	Plate,
+	Usdc,
+	Who,
+} from "../zbe/ui"
 
 const Dgt = () => {
 	const dgt = demoSigner("me")
@@ -20,7 +27,7 @@ const Dgt = () => {
 	const [category, setCategory] = useState(1)
 
 	const owners = [
-		...(address ? [{ address, label: "Mi wallet" }] : []),
+		...(address ? [{ address, label: "My wallet" }] : []),
 		...DEMO_DRIVERS.map(demoSigner).flatMap((s) =>
 			s ? [{ address: s.address, label: s.label }] : [],
 		),
@@ -47,7 +54,7 @@ const Dgt = () => {
 				rememberPlate(p)
 				setPlate("")
 			},
-			`Etiqueta emitida para ${normalizePlate(plate)}`,
+			`Label issued for ${normalizePlate(plate)}`,
 		)
 
 	const revoke = (p: string) =>
@@ -60,23 +67,28 @@ const Dgt = () => {
 					dgt,
 				)
 			},
-			`Etiqueta de ${p} retirada`,
+			`Label for ${p} revoked`,
 		)
 
 	return (
 		<div>
-			<PageTitle title="DGT · Etiquetas ambientales">
-				La DGT es la única emisora. La etiqueta va ligada al vehículo: el
-				titular no la puede transferir, solo la DGT la reasigna o la retira.
-			</PageTitle>
+			<PageHead
+				icon="🪪"
+				title="DGT · Environmental labels"
+				signer={dgt?.label}
+			>
+				The DGT (Spain&apos;s traffic authority) is the only issuer. The label
+				is bound to the vehicle: the owner cannot transfer it, only the DGT can
+				reassign or revoke it.
+			</PageHead>
 
 			{!dgt && <MissingKeys who="DGT (me)" />}
 
 			<div className="card zbe-section">
-				<h2>Emitir etiqueta</h2>
+				<h2>Issue a label</h2>
 				<div className="zbe-form">
 					<label>
-						Matrícula
+						Plate
 						<input
 							value={plate}
 							onChange={(e) => setPlate(e.target.value)}
@@ -84,7 +96,7 @@ const Dgt = () => {
 						/>
 					</label>
 					<label>
-						Titular
+						Owner
 						<select
 							value={ownerAddress}
 							onChange={(e) => setOwner(e.target.value)}
@@ -97,7 +109,7 @@ const Dgt = () => {
 						</select>
 					</label>
 					<label>
-						Categoría
+						Label
 						<select
 							value={category}
 							onChange={(e) => setCategory(Number(e.target.value))}
@@ -110,98 +122,104 @@ const Dgt = () => {
 						</select>
 					</label>
 					<button
+						className="zbe-btn-primary"
 						onClick={issue}
 						disabled={
 							!dgt || !!pending || !normalizePlate(plate) || !ownerAddress
 						}
 					>
-						Emitir
+						Issue label
 					</button>
 				</div>
 			</div>
 
 			<div className="card zbe-section">
-				<h2>Registro</h2>
-				<table className="zbe-table">
-					<thead>
-						<tr>
-							<th>Matrícula</th>
-							<th>Etiqueta</th>
-							<th>Titular</th>
-							<th>Hash en la cadena</th>
-							<th />
-						</tr>
-					</thead>
-					<tbody>
-						{(labels ?? []).map((l) => (
-							<tr key={l.plate}>
-								<td>
-									<span className="zbe-plate">{l.plate}</span>
-								</td>
-								<td>
-									{l.label ? (
-										<CategoryBadge value={l.label.category} />
-									) : (
-										<span className="zbe-muted">sin etiqueta</span>
-									)}
-								</td>
-								<td>{l.label && <Who address={l.label.owner} />}</td>
-								<td>
-									<code title={l.hash}>{l.hash.slice(0, 16)}…</code>
-								</td>
-								<td>
-									{l.label && (
-										<button
-											onClick={() => revoke(l.plate)}
-											disabled={!dgt || !!pending}
-										>
-											Retirar
-										</button>
-									)}
-								</td>
+				<h2>Registry</h2>
+				<div className="zbe-table-wrap">
+					<table className="zbe-table">
+						<thead>
+							<tr>
+								<th>Plate</th>
+								<th>Label</th>
+								<th>Owner</th>
+								<th>On-chain key (HMAC)</th>
+								<th />
 							</tr>
-						))}
-					</tbody>
-				</table>
+						</thead>
+						<tbody>
+							{(labels ?? []).map((l) => (
+								<tr key={l.plate}>
+									<td>
+										<Plate plate={l.plate} />
+									</td>
+									<td>
+										{l.label ? (
+											<CategoryBadge value={l.label.category} />
+										) : (
+											<span className="zbe-muted">no label</span>
+										)}
+									</td>
+									<td>{l.label && <Who address={l.label.owner} />}</td>
+									<td>
+										<code title={l.hash}>{l.hash.slice(0, 16)}…</code>
+									</td>
+									<td>
+										{l.label && (
+											<button
+												className="zbe-btn-danger"
+												onClick={() => revoke(l.plate)}
+												disabled={!dgt || !!pending}
+											>
+												Revoke
+											</button>
+										)}
+									</td>
+								</tr>
+							))}
+						</tbody>
+					</table>
+				</div>
 			</div>
 
 			{address && (
 				<div className="card zbe-section">
-					<h2>USDC de prueba para mi wallet</h2>
+					<h2>Test USDC for my wallet</h2>
 					<p className="zbe-muted">
-						Saldo: <Usdc amount={walletUsdc} />. Solo existe en la red de
-						pruebas.
+						Balance: <Usdc amount={walletUsdc} />. Test token only, no real
+						value.
 					</p>
 					{isFetched && walletUsdc === null ? (
 						<button
+							className="zbe-btn-primary"
 							onClick={() =>
 								run(
 									"trust",
 									() =>
 										addTrustline({
 											address,
-											label: "Mi wallet",
+											label: "My wallet",
 											signTransaction,
 										}),
-									"USDC activado en tu wallet",
+									"USDC enabled in your wallet",
 								)
 							}
 							disabled={!!pending}
 						>
-							1 · Activar USDC (firma tu wallet)
+							1 · Enable USDC (your wallet signs)
 						</button>
 					) : (
 						<button
+							className="zbe-btn-primary"
 							onClick={() =>
 								run(
 									"mint",
 									async () => dgt && mintUsdc(dgt, address, 50n * UNIT),
-									"50 USDC enviados a tu wallet",
+									"50 USDC sent to your wallet",
 								)
 							}
 							disabled={!dgt || !!pending}
 						>
-							Recibir 50 USDC
+							Get 50 USDC
 						</button>
 					)}
 				</div>

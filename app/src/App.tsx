@@ -28,18 +28,22 @@ function App() {
 }
 
 const NAV = [
-	{ to: "/conductor", label: "Conductor" },
-	{ to: "/camara", label: "Cámara" },
-	{ to: "/ayuntamiento", label: "Ayuntamiento" },
-	{ to: "/arbitro", label: "Árbitro" },
-	{ to: "/dgt", label: "DGT" },
+	{ to: "/conductor", label: "Driver", icon: "🚗" },
+	{ to: "/camara", label: "Camera", icon: "📷" },
+	{ to: "/ayuntamiento", label: "City Hall", icon: "🏛️" },
+	{ to: "/arbitro", label: "Arbiter", icon: "⚖️" },
+	{ to: "/dgt", label: "DGT", icon: "🪪" },
 ]
 
 const AppLayout = () => (
 	<div className={styles.AppLayout}>
 		<header className={styles.header}>
 			<NavLink to="/" className={styles.logo}>
-				Peaje ZBE
+				<span className={styles.logoMark}>🌿</span>
+				<span className={styles.logoText}>
+					<strong>ZBE Toll</strong>
+					<span>Low Emission Zones on Stellar</span>
+				</span>
 			</NavLink>
 			<nav className={styles.headerNav}>
 				{NAV.map((n) => (
@@ -48,7 +52,7 @@ const AppLayout = () => (
 						to={n.to}
 						className={({ isActive }) => (isActive ? styles.active : "")}
 					>
-						{n.label}
+						{n.icon} {n.label}
 					</NavLink>
 				))}
 			</nav>
@@ -61,11 +65,13 @@ const AppLayout = () => (
 
 		<footer className={styles.footer}>
 			<nav className={styles.footerNav}>
-				<NavLink to="/debug">Contract Explorer</NavLink>
-				<a href={labPrefix()} target="_blank" rel="noreferrer">
-					Transaction Explorer
-				</a>
-				<span>HackMeridian 2026 · Stellar</span>
+				<span>HackMeridian 2026 · Team IMPEDANCIA UNO · Built on Stellar</span>
+				<span className={styles.footerLinks}>
+					<NavLink to="/debug">Contract Explorer</NavLink>
+					<a href={labPrefix()} target="_blank" rel="noreferrer">
+						Transaction Explorer
+					</a>
+				</span>
 			</nav>
 		</footer>
 	</div>

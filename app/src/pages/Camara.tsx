@@ -4,7 +4,7 @@ import { categoryName, demoSigner, formatUsdc, ZONE } from "../zbe/config"
 import { as, send } from "../zbe/contracts"
 import { useAction, useLabels, useZone } from "../zbe/hooks"
 import { normalizePlate, plateHash } from "../zbe/plates"
-import { MissingKeys, PageTitle } from "../zbe/ui"
+import { MissingKeys, PageHead, Plate } from "../zbe/ui"
 
 type Outcome = {
 	at: Date
@@ -14,6 +14,12 @@ type Outcome = {
 	detail: string
 }
 
+const ICONS: Record<Outcome["kind"], string> = {
+	ok: "✅",
+	charge: "🔒",
+	nobono: "⚠️",
+}
+
 const Camara = () => {
 	const camera = demoSigner("camara")
 	const { data: labels } = useLabels()
@@ -21,6 +27,46 @@ const Camara = () => {
 	const { run, pending } = useAction()
 	const [plate, setPlate] = useState("2222BCD")
 	const [log, setLog] = useState<Outcome[]>([])
+
+	const describe = (
+		p: string,
+		label: Awaited<ReturnType<typeof etiqueta.get>>["result"],
+		id: bigint | undefined,
+	): Outcome => {
+		const base = { at: new Date(), plate: p }
+		if (id !== undefined) {
+			return {
+				...base,
+				kind: "charge",
+				title: `Charge #${id} locked · ${zone ? formatUsdc(zone.fee) : ""}`,
+				detail: `Label ${categoryName(label!.category)} is not allowed here. The fee is locked in the owner's ZBE pass and can still be appealed. (A second entry on the same day returns the same charge.)`,
+			}
+		}
+		if (!label) {
+			return {
+				...base,
+				kind: "nobono",
+				title: "No registered label",
+				detail:
+					"no_bono event: the case goes to the ordinary off-chain procedure. Nothing is charged.",
+			}
+		}
+		if (zone && label.category >= zone.min_category) {
+			return {
+				...base,
+				kind: "ok",
+				title: `Access granted · label ${categoryName(label.category)}`,
+				detail: "Nothing is charged and the entry is not stored.",
+			}
+		}
+		return {
+			...base,
+			kind: "nobono",
+			title: "No ZBE pass or not enough balance",
+			detail:
+				"Nothing is charged. no_bono event: the ordinary off-chain procedure applies.",
+		}
+	}
 
 	const enter = () =>
 		run("enter", async () => {
@@ -39,59 +85,19 @@ const Camara = () => {
 			setLog((l) => [describe(p, label, id ?? undefined), ...l])
 		})
 
-	const describe = (
-		p: string,
-		label: Awaited<ReturnType<typeof etiqueta.get>>["result"],
-		id: bigint | undefined,
-	): Outcome => {
-		const base = { at: new Date(), plate: p }
-		if (id !== undefined) {
-			return {
-				...base,
-				kind: "charge",
-				title: `Cargo bloqueado #${id}: ${zone ? formatUsdc(zone.fee) : ""}`,
-				detail: `Etiqueta ${categoryName(label!.category)} no admitida. El importe queda bloqueado en el bono y el titular puede alegar. (Si ya entró hoy, es el mismo cargo: uno por vehículo, zona y día.)`,
-			}
-		}
-		if (!label) {
-			return {
-				...base,
-				kind: "nobono",
-				title: "Vehículo sin etiqueta registrada",
-				detail:
-					"Evento no_bono: se tramita por el procedimiento ordinario, fuera de la cadena.",
-			}
-		}
-		if (zone && label.category >= zone.min_category) {
-			return {
-				...base,
-				kind: "ok",
-				title: `Acceso permitido · etiqueta ${categoryName(label.category)}`,
-				detail: "No se cobra nada ni se guarda la entrada.",
-			}
-		}
-		return {
-			...base,
-			kind: "nobono",
-			title: "Sin bono ZBE o saldo insuficiente",
-			detail:
-				"No se cobra nada. Evento no_bono: procedimiento ordinario fuera de la cadena.",
-		}
-	}
-
 	return (
 		<div>
-			<PageTitle title="Cámara · ZBE centro">
-				Simula la lectura de matrícula de una cámara autorizada (oráculo). Solo
-				se envía el HMAC de la matrícula, nunca la matrícula en claro.
-			</PageTitle>
+			<PageHead icon="📷" title="Camera · centro zone" signer={camera?.label}>
+				Simulates an authorized plate-reading camera (the oracle). Only the
+				plate&apos;s HMAC is sent on-chain, never the plate itself.
+			</PageHead>
 
-			{!camera && <MissingKeys who="cámara" />}
+			{!camera && <MissingKeys who="camera" />}
 
 			<div className="card zbe-section">
 				<div className="zbe-form">
 					<label>
-						Matrícula
+						Known plate
 						<select value={plate} onChange={(e) => setPlate(e.target.value)}>
 							{(labels ?? []).map((p) => (
 								<option key={p.plate} value={p.plate}>
@@ -101,7 +107,7 @@ const Camara = () => {
 						</select>
 					</label>
 					<label>
-						…u otra
+						…or type any plate
 						<input
 							value={plate}
 							onChange={(e) => setPlate(e.target.value)}
@@ -109,18 +115,18 @@ const Camara = () => {
 						/>
 					</label>
 					<button
-						className="zbe-big-button"
+						className="zbe-btn-primary zbe-big-button"
 						onClick={enter}
 						disabled={!camera || !!pending || !plate}
 					>
-						{pending ? "Leyendo…" : "🚗 Coche entra"}
+						{pending ? "Reading…" : "🚗 Car enters"}
 					</button>
 				</div>
 				{zone && (
-					<p className="zbe-muted" style={{ marginTop: "1rem" }}>
-						Zona {ZONE}: entran gratis {categoryName(zone.min_category)} y
-						superiores · tarifa {formatUsdc(zone.fee)}/día ·{" "}
-						{zone.appeal_secs.toString()} s para alegar
+					<p className="zbe-note" style={{ marginTop: "1.25rem" }}>
+						Zone <strong>{ZONE}</strong>: {categoryName(zone.min_category)} and
+						cleaner enter for free · fee {formatUsdc(zone.fee)} per day ·{" "}
+						{zone.appeal_secs.toString()}s to appeal
 					</p>
 				)}
 			</div>
@@ -130,12 +136,15 @@ const Camara = () => {
 					key={o.at.getTime()}
 					className={`card zbe-result zbe-result--${o.kind}`}
 				>
-					<h3>
-						<span className="zbe-plate">{o.plate}</span> {o.title}
-					</h3>
-					<p className="zbe-muted">
-						{o.at.toLocaleTimeString()} · {o.detail}
-					</p>
+					<span className="zbe-result-icon">{ICONS[o.kind]}</span>
+					<div>
+						<h3>
+							<Plate plate={o.plate} /> {o.title}
+						</h3>
+						<p className="zbe-muted">
+							{o.at.toLocaleTimeString("en-GB")} · {o.detail}
+						</p>
+					</div>
 				</div>
 			))}
 		</div>

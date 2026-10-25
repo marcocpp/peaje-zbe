@@ -1,94 +1,472 @@
-# Peaje ZBE en Stellar
+# ZBE Toll on Stellar
 
-**HackMeridian 2026 · track Genesis · equipo IMPEDANCIA UNO**
+**An opt-in, appealable toll for Low Emission Zones, built on Stellar.**
+HackMeridian 2026 · Genesis track · Team **IMPEDANCIA UNO**
 
-Peaje automático y **voluntario** para Zonas de Bajas Emisiones (ZBE). La
-etiqueta ambiental de cada coche es un token no transferible emitido por la
-DGT. Si un coche entra en una zona que su etiqueta no permite y su titular
-tiene un **bono ZBE**, el contrato **bloquea** la tarifa, abre un plazo para
-**alegar** y solo la cobra si nadie alega. No es una multa automática: el bono
-es consentimiento previo, siempre se puede alegar, y quien no tiene bono sigue
-el procedimiento ordinario fuera de la cadena.
+🎬 **Demo video:** [`docs/demo.mp4`](docs/demo.mp4) (2.5 min, recorded on
+testnet)
 
-🎬 Vídeo de la demo: [`docs/demo-respaldo.mp4`](docs/demo-respaldo.mp4)
+---
 
-## Cómo funciona una entrada
+## Table of contents
 
-1. Una cámara autorizada (oráculo) llama a `report_entry` con el
-   **HMAC-SHA256 de la matrícula**, nunca la matrícula en claro.
-2. ¿La etiqueta está permitida en la zona? → no pasa nada.
-3. No permitida y sin bono o sin saldo → evento `no_bono` (procedimiento
-   ordinario). No se cobra nada.
-4. No permitida y con bono → la tarifa pasa de saldo **libre** a
-   **bloqueado** y empieza el plazo de alegación.
-5. Sin alegación, al vencer el plazo cualquiera puede llamar a `settle` y el
-   importe va a la tesorería. Con alegación, el cargo queda en disputa y
-   **solo un árbitro independiente** puede confirmarlo o anularlo.
-6. Un solo cargo por vehículo, zona y día.
+1. [The idea](#the-idea)
+2. [How an entry works](#how-an-entry-works)
+3. [Architecture](#architecture)
+4. [Repository structure](#repository-structure)
+5. [Smart contracts](#smart-contracts)
+6. [Frontend](#frontend)
+7. [Try the demo](#try-the-demo)
+   - [Option A · Testnet (quickest)](#option-a--testnet-quickest)
+   - [Option B · Local network](#option-b--local-network)
+   - [Demo walkthrough](#demo-walkthrough)
+   - [Using your own Freighter wallet](#using-your-own-freighter-wallet)
+8. [Scripts](#scripts)
+9. [Testnet deployment](#testnet-deployment)
+10. [Troubleshooting](#troubleshooting)
+11. [Limitations and next steps](#limitations-and-next-steps)
 
-## Piezas
+---
 
-| Pieza | Qué es |
-|---|---|
-| `contracts/etiqueta` | Etiquetas ambientales (Cero, Eco, C, B, Sin etiqueta). Solo la DGT emite, reasigna o retira; el titular no puede transferir. |
-| `contracts/peaje` | Zonas, cámaras, bonos (libre/bloqueado), cargos, alegaciones, árbitro y cobro. Consulta a Etiqueta en cada entrada. |
-| `app/` | React + Stellar Scaffold. Vistas: Conductor, Cámara, Ayuntamiento, Árbitro y DGT. |
-| `scripts/` | Preparar la demo (`zbe-setup.sh`), recorrerla por CLI (`zbe-flow.sh`) y generar la web de testnet (`zbe-build-testnet.sh`). |
+## The idea
 
-Estados de un cargo: `Pending` → `Settled`, o `Pending` → `Disputed` →
-`Settled` / `Cancelled`. Eventos: `charge_created`, `appealed`, `settled`,
-`cancelled`, `no_bono`.
+Cities across Europe are rolling out **Low Emission Zones** (in Spain, _Zonas de
+Bajas Emisiones_ or **ZBE**). Access depends on the car's environmental label
+issued by the traffic authority (the **DGT** in Spain): _Zero_, _Eco_, _C_, _B_
+or no label. Today, a driver who enters without a valid label gets a fine weeks
+later, and the city pays for a slow, expensive procedure to collect a small
+amount.
 
-## Testnet
+**ZBE Toll** turns that into a fair, voluntary toll:
 
-Publicados con **Stellar Registry**:
+- 🪪 **Labels as tokens.** Each car's label is a **non-transferable token**
+  issued by the DGT. Only the DGT can issue, reassign (e.g. when the car is
+  sold) or revoke it.
+- 🤝 **Consent first.** Drivers who want to pay instead of being fined top up a
+  **ZBE pass** (a prepaid balance in test USDC) in the toll contract. Without a
+  pass, nothing is ever charged on-chain.
+- 🔒 **Lock, don't take.** When a camera reports a car whose label is not
+  allowed and whose owner has a pass, the contract **locks** the daily fee. It
+  is not collected yet.
+- ⚖️ **Always appealable.** The driver has an **appeal window**. If they appeal,
+  only an **independent arbiter** (not the city) can uphold or cancel the
+  charge. If nobody appeals, anyone can **settle** it to the city treasury after
+  the window closes.
+- 🕶️ **Private by design.** Only an **HMAC-SHA256 of the plate** goes on-chain,
+  never the plate itself, and only non-allowed entries of pass holders are
+  recorded.
 
-| Contrato | Nombre | ID |
-|---|---|---|
-| Etiqueta | `unverified/zbe-etiqueta-impedancia-uno` | `CB2C4XY6HLRDE7BOZ7QH5DFST34SGDY5LVI6WA7T4X3EGXK65SO3AYSD` |
-| Peaje | `unverified/zbe-peaje-impedancia-uno` | `CCM6PGBSXY33ISEAWJPH2RQV2PUOLVNWKAJ37EOGJRKTIE6JF7GP3LVI` |
-| USDC de prueba (SAC) | — | `CDB4ZZLUZQGVU6QIPVOFAUNXQFHRTMQ4NKZSIHAPT6Z3PTMM2UXB6XI2` |
+This is **not an automatic fine**: the pass is prior consent, funds stay the
+driver's until the window closes, and the person collecting is never the person
+judging.
 
-Zona de la demo: `centro`, admite Cero y Eco, 5 USDC/día, 60 s para alegar.
+### Why Stellar
 
-## Ejecutar en local
+- Labels are tokens that only the DGT can mint or move.
+- Zone rules are public and verifiable on-chain.
+- The locked fee sits in a contract the city cannot touch before the deadline.
+- Cheap, fast transactions in a stablecoin (USDC/EURC), and Soroban smart
+  contracts to encode the whole procedure.
 
-Requisitos: Rust (target `wasm32v1-none`), Stellar CLI con los plugins
-`scaffold` y `registry`, Node.js y Docker.
+---
 
-```bash
-npm install
-npm run dev                 # red local + contratos + web en http://localhost:5173
-scripts/zbe-setup.sh        # en otra terminal: datos de demo y claves del frontend
+## How an entry works
+
+```mermaid
+flowchart TD
+    A[Camera reports plate HMAC + zone] --> B{Label allowed<br/>in the zone?}
+    B -- yes --> Z1[Nothing happens]
+    B -- no --> C{Owner has a pass<br/>with enough balance?}
+    C -- no --> Z2[no_bono event<br/>ordinary off-chain procedure]
+    C -- yes --> D[Charge created: fee moves<br/>from available to locked]
+    D --> E{Appeal within<br/>the window?}
+    E -- no --> F[settle: fee goes to the treasury]
+    E -- yes --> G[Disputed: only the arbiter decides]
+    G -- uphold --> F
+    G -- cancel --> H[Fee back to the available balance]
 ```
 
-Conecta Freighter a la red local (RPC `http://localhost:8000/rpc`, passphrase
-`Standalone Network ; February 2017`) si quieres actuar con tu propia wallet.
+- **One charge per vehicle, zone and day** (like London's ULEZ daily charge). A
+  second report on the same day returns the same charge.
+- Charge states: `Pending` → `Settled`, or `Pending` → `Disputed` → `Settled` /
+  `Cancelled`.
+- Events: `charge_created`, `appealed`, `settled`, `cancelled`, `no_bono`.
 
-Tests de los contratos:
+---
+
+## Architecture
+
+There is no custom backend. Every actor is a view of the web app that signs with
+its own key, and all the logic lives in two Soroban contracts.
+
+```mermaid
+flowchart LR
+    subgraph Web app
+        D[Driver]
+        C[Camera]
+        H[City Hall]
+        R[Arbiter]
+        G[DGT]
+    end
+    subgraph Stellar
+        E[(Etiqueta<br/>label contract)]
+        P[(Peaje<br/>toll contract)]
+        U[(USDC<br/>Stellar Asset Contract)]
+    end
+    G -- issue / revoke --> E
+    C -- report_entry --> P
+    D -- deposit / withdraw / appeal --> P
+    H -- set_zone / add_camera / settle --> P
+    R -- resolve --> P
+    P -- get label --> E
+    P -- transfer --> U
+```
+
+| Actor     | Role                                          | On-chain identity in the demo                     |
+| --------- | --------------------------------------------- | ------------------------------------------------- |
+| DGT       | Issues environmental labels                   | `me` (admin of Etiqueta)                          |
+| City Hall | Sets zone rules, authorizes cameras, collects | `me` (admin of Peaje)                             |
+| Treasury  | Receives collected fees                       | `tesoreria`                                       |
+| Camera    | Oracle that reports entries                   | `camara`                                          |
+| Arbiter   | Independent party that resolves appeals       | `arbitro`                                         |
+| Drivers   | Hold a label and, optionally, a ZBE pass      | `lucia`, `pablo`, `ana`, or your Freighter wallet |
+
+---
+
+## Repository structure
+
+```
+.
+├── contracts/
+│   ├── etiqueta/            # Label contract (Rust, soroban-sdk)
+│   │   └── src/{lib,test}.rs
+│   └── peaje/               # Toll contract
+│       └── src/
+│           ├── lib.rs       # zones, cameras, passes, charges, appeals
+│           ├── dgt.rs       # interface used to call Etiqueta
+│           └── test.rs      # unit tests with a test Stellar Asset Contract
+├── app/                     # React + Vite frontend (Stellar Scaffold template)
+│   └── src/
+│       ├── pages/           # Home, Conductor (Driver), Camara (Camera),
+│       │                    # Ayuntamiento (City Hall), Arbitro (Arbiter), Dgt
+│       ├── zbe/             # app logic shared by the views (see Frontend)
+│       ├── components/      # wallet connect, network pill (template)
+│       └── providers/       # wallet and notifications (template)
+├── app-lib/                 # shared lib; app-lib/clients is GENERATED, do not edit
+├── scripts/                 # demo setup and helpers (see Scripts)
+├── docs/
+│   ├── demo.mp4             # backup video of the demo
+│   └── pitch.md             # pitch script and Q&A (Spanish)
+├── e2e/                     # Playwright smoke tests
+├── scaffold.yml             # networks, accounts and contracts for Stellar Scaffold
+└── Cargo.toml               # Rust workspace
+```
+
+> File and folder names are in Spanish (the team's language): _etiqueta_ =
+> label, _peaje_ = toll, _conductor_ = driver, _cámara_ = camera, _ayuntamiento_
+> = city hall, _árbitro_ = arbiter, _bono_ = pass.
+
+---
+
+## Smart contracts
+
+Both contracts use `require_auth()` for every signed call, persistent storage
+with `extend_ttl` for labels, passes and charges, and `#[contractevent]` events.
+
+### `contracts/etiqueta` (admin: DGT)
+
+| Function                             | Signed by | What it does                                                      |
+| ------------------------------------ | --------- | ----------------------------------------------------------------- |
+| `__constructor(admin)`               | deployer  | Sets the DGT as the only issuer                                   |
+| `issue(plate_hash, owner, category)` | admin     | Issues a label (`SinEtiqueta`=0, `B`=1, `C`=2, `Eco`=3, `Cero`=4) |
+| `reassign(plate_hash, new_owner)`    | admin     | Changes the owner (e.g. car sold)                                 |
+| `revoke(plate_hash)`                 | admin     | Removes the label                                                 |
+| `get(plate_hash) -> Option<Label>`   | read      | Category and owner                                                |
+
+There is no transfer function for owners: the label is bound to the vehicle.
+
+### `contracts/peaje` (admin: City Hall)
+
+| Function                                                                              | Signed by | What it does                                                         |
+| ------------------------------------------------------------------------------------- | --------- | -------------------------------------------------------------------- |
+| `__constructor(admin, token, treasury, arbiter)`                                      | deployer  | Stores fixed addresses                                               |
+| `set_etiqueta(etiqueta)`                                                              | admin     | Links the label contract (see note below)                            |
+| `set_zone(zone_id, min_category, fee, appeal_secs)`                                   | admin     | Zone rules: free from `min_category` up, daily fee, appeal window    |
+| `add_camera(camera)` / `remove_camera(camera)`                                        | admin     | Authorize / remove a camera                                          |
+| `deposit(owner, amount)` / `withdraw(owner, amount)`                                  | owner     | Top up the pass / withdraw the **available** balance                 |
+| `report_entry(camera, plate_hash, zone_id) -> Option<u64>`                            | camera    | Looks up the label and locks a charge if needed                      |
+| `appeal(owner, charge_id)`                                                            | owner     | Appeal within the window → `Disputed`                                |
+| `resolve(charge_id, uphold)`                                                          | arbiter   | Uphold (collect) or cancel a disputed charge                         |
+| `settle(charge_id)`                                                                   | anyone    | Window closed, no appeal → treasury. Fails if disputed or still open |
+| `balance(owner) -> Bono { free, locked }`                                             | read      | Driver's pass                                                        |
+| `get_charges(owner)`, `get_charge(id)`, `list_charges(from, limit)`, `charge_count()` | read      | Charges                                                              |
+| `collected()`, `get_zone(zone_id)`, `get_config()`, `is_camera(camera)`               | read      | City Hall panel                                                      |
+
+`Category` is an ordered numeric enum, so a car enters for free when
+`category >= min_category`. Peaje keeps its own copy of `Category` and `Label`
+in `contracts/peaje/src/dgt.rs`, which must match `contracts/etiqueta`.
+
+> **Why `set_etiqueta` instead of a constructor argument?** `scaffold.yml`
+> cannot pass one contract's address to another contract's constructor yet
+> (`${contract.…}` is reserved for a future version), so the link is made by
+> `scripts/zbe-setup.sh` after deployment.
+
+Run the tests (18 in total):
 
 ```bash
 cargo test -p etiqueta -p peaje
 ```
 
-## Ejecutar contra testnet
+---
+
+## Frontend
+
+React + Vite + TypeScript on top of the Stellar Scaffold template. Contract
+clients are generated by Scaffold into `app-lib/clients` and imported as
+`@stellar-scaffold/app-lib/clients`.
+
+| Route           | View                                                                                                | Signs as                                      |
+| --------------- | --------------------------------------------------------------------------------------------------- | --------------------------------------------- |
+| `/`             | Home: the idea, roles and entry flow                                                                | —                                             |
+| `/conductor`    | **Driver**: labels, ZBE pass (available / locked), top up, withdraw, charges with countdown, appeal | Your Freighter wallet, or Lucía / Pablo / Ana |
+| `/camara`       | **Camera**: pick or type a plate → “Car enters”                                                     | `camara`                                      |
+| `/ayuntamiento` | **City Hall**: zone rules, revenue, every charge, collect due charges                               | `me`                                          |
+| `/arbitro`      | **Arbiter**: pending appeals → uphold or cancel                                                     | `arbitro`                                     |
+| `/dgt`          | **DGT**: issue / revoke labels, test USDC and trustline for your wallet                             | `me`                                          |
+| `/debug`        | Contract Explorer from the template                                                                 | —                                             |
+
+`app/src/zbe/` holds the app logic:
+
+| File                | Purpose                                                                                                                                            |
+| ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `config.ts`         | Zone, label names, USDC formatting, demo signers loaded from `app/.env.local`                                                                      |
+| `contracts.ts`      | `send(tx, signer)`: signs and sends a generated-client transaction, and fails early with a readable message if simulation returns a contract error |
+| `token.ts`          | USDC is a Stellar Asset Contract with no generated client: balance, mint and trustline built with the SDK                                          |
+| `plates.ts`         | Browser-side HMAC of plates (same key as the scripts) and the list of known plates                                                                 |
+| `hooks.ts`          | React Query reads that refresh every 3 s, countdown clock, `useAction` for writes with notifications                                               |
+| `ui.tsx`, `zbe.css` | Shared components (EU-style plate, badges, page header) and the design system                                                                      |
+
+---
+
+## Try the demo
+
+### Prerequisites
+
+| Tool                                                                                                    | Needed for                             | Check                            |
+| ------------------------------------------------------------------------------------------------------- | -------------------------------------- | -------------------------------- |
+| [Rust](https://rustup.rs) + target `wasm32v1-none`                                                      | Building contracts                     | `rustup target list --installed` |
+| [Stellar CLI](https://developers.stellar.org/docs/tools/cli) with the `scaffold` and `registry` plugins | Building, deploying, scripts           | `stellar plugin ls`              |
+| Node.js + npm                                                                                           | Frontend                               | `node -v`                        |
+| Docker (your user in the `docker` group)                                                                | Local network only                     | `docker info`                    |
+| `jq`, `openssl`                                                                                         | Scripts                                | `jq --version`                   |
+| [Freighter](https://www.freighter.app)                                                                  | Optional: driving with your own wallet | —                                |
 
 ```bash
-STELLAR_NETWORK=testnet scripts/zbe-setup.sh   # si hace falta rehacer los datos
-scripts/zbe-build-testnet.sh                   # genera app/dist para testnet
-cd app && npx vite preview                     # http://localhost:4173
+rustup target add wasm32v1-none
+cargo install --locked stellar-scaffold-cli stellar-registry-cli
+npm install
 ```
 
-## Datos de la demo
+The scripts sign with named Stellar CLI identities. Create them once:
 
-| Matrícula | Titular | Etiqueta | Papel |
-|---|---|---|---|
-| 1111BCD | Ana | Eco | Entra gratis |
-| 2222BCD | Lucía | B | Tiene bono: cargo bloqueado |
-| 3333BCD | Pablo | B | Sin bono: solo aviso `no_bono` |
+```bash
+for k in me tesoreria arbitro camara lucia pablo ana; do
+  stellar keys generate $k
+done
+```
 
-> **Solo demo:** para que una persona pueda llevar toda la demo, la cámara, el
-> ayuntamiento, el árbitro y la DGT firman con claves de cuentas de prueba que
-> `scripts/zbe-env.sh` escribe en `app/.env.local` (fuera de git). En un
-> sistema real cada actor firma con su propia wallet o backend y ninguna clave
-> llega al navegador. El conductor puede usar su propia wallet (Freighter).
+> ⚠️ The contracts on testnet were deployed with the team's own `me` key. If you
+> use **fresh** keys, deploy your own copy (see
+> [Testnet deployment](#testnet-deployment)) or use the local network.
+
+### Option A · Testnet (quickest)
+
+Uses the contracts already deployed with Stellar Registry. Needs the team's `me`
+key.
+
+```bash
+# 1. Fund the demo accounts with Friendbot
+for k in me tesoreria arbitro camara lucia pablo ana; do
+  stellar keys fund $k --network testnet
+done
+
+# 2. Demo data: zone, camera, the three plates, test USDC, frontend keys
+STELLAR_NETWORK=testnet scripts/zbe-setup.sh
+
+# 3. Build the web app for testnet and serve it
+scripts/zbe-build-testnet.sh
+cd app && npx vite preview        # → http://localhost:4173
+```
+
+The network pill in the header must say **Testnet**.
+
+### Option B · Local network
+
+Everything runs on your machine with Stellar Quickstart in Docker.
+
+```bash
+# Terminal 1: local network + contracts + web, with hot reload
+npm run dev                       # → http://localhost:5173
+
+# Terminal 2, once the contracts are deployed:
+scripts/zbe-setup.sh              # demo data + app/.env.local
+```
+
+The network pill must say **Local**. `npm run dev` rebuilds and redeploys a
+contract whenever you save its Rust source; run `scripts/zbe-setup.sh` again
+after a redeploy.
+
+Prefer the command line? This runs the whole flow (top up, three cars, wait for
+the window, settle):
+
+```bash
+scripts/zbe-flow.sh
+```
+
+### Demo walkthrough
+
+Demo data created by `zbe-setup.sh`:
+
+| Plate     | Owner | Label | Role in the demo                |
+| --------- | ----- | ----- | ------------------------------- |
+| `1111BCD` | Ana   | Eco   | Enters for free                 |
+| `2222BCD` | Lucía | B     | Has a pass → charge locked      |
+| `3333BCD` | Pablo | B     | No pass → `no_bono` notice only |
+
+Zone `centro`: **Zero and Eco** enter for free, **5 USDC** per day, **60 s** to
+appeal.
+
+1. **Driver** → _View as_ **Lucía** → amount `20` → **Top up**. Her pass shows
+   20 USDC available.
+2. **Camera** → plate **2222BCD** → **🚗 Car enters**. Result: _Charge locked ·
+   5 USDC_.
+3. **Driver** (Lucía): the charge shows **Locked** with a countdown; her pass
+   shows 15 available / 5 locked.
+4. **Camera** → **1111BCD** → _Access granted · label Eco_. Then **3333BCD** →
+   _No ZBE pass or not enough balance_ (a `no_bono` event, nothing charged).
+5. **City Hall**: wait until the window closes → **Collect** on the charge.
+   _Collected_ and _Treasury wallet_ go up by 5 USDC.
+6. **Appeal path:** issue another label for Lucía in **DGT** (e.g. `4444BCD`,
+   label B), make it enter in **Camera**, press **Appeal** in **Driver** before
+   the countdown ends, then **Arbiter** → **Cancel charge** (money back to her
+   available balance) or **Uphold** (collected).
+
+> 🗓️ **One charge per vehicle, zone and day.** After a run, the same plate will
+> return the _same_ charge until the next day (UTC). To rehearse again, issue a
+> new plate in **DGT**, or on local reset with `stellar scaffold clean`
+>
+> - `npm run dev` + `scripts/zbe-setup.sh`.
+
+### Using your own Freighter wallet
+
+1. In Freighter, select the right network:
+   - **Testnet**: built in.
+   - **Local**: _Settings → Network → Add custom network_ with RPC
+     `http://localhost:8000/rpc`, Horizon `http://localhost:8000`, passphrase
+     `Standalone Network ; February 2017`, friendbot
+     `http://localhost:8000/friendbot`, and _Allow non-HTTPS_ on.
+2. **Connect** in the header, then **Fund Account** if it has no XLM.
+3. **DGT** → **1 · Enable USDC** (your wallet signs the trustline) → **Get 50
+   USDC**.
+4. **DGT** → issue a label (owner **My wallet**, label **B**).
+5. **Driver** → _View as_ **My wallet (Freighter)** → top up, then use the
+   **Camera** and appeal from your wallet.
+
+---
+
+## Scripts
+
+All scripts take `STELLAR_NETWORK` (default `local`). Contract IDs come from
+`.scaffold/state.json` on local and from Stellar Registry elsewhere.
+
+| Script                         | What it does                                                                                                                                                                                                                                                                     |
+| ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `scripts/zbe-setup.sh`         | Idempotent demo setup: deploys the USDC test asset, links Peaje → Etiqueta, creates zone `centro`, authorizes the camera, adds trustlines, mints USDC, issues the three labels, and writes `app/.env.local`. `DRIVER=G… scripts/zbe-setup.sh` also sends 50 USDC to that address |
+| `scripts/zbe-flow.sh`          | Full demo flow from the CLI                                                                                                                                                                                                                                                      |
+| `scripts/zbe-env.sh`           | Writes `app/.env.local` with the demo signing keys and the HMAC key                                                                                                                                                                                                              |
+| `scripts/zbe-build-testnet.sh` | Builds `app/dist` against testnet and restores the local clients afterwards                                                                                                                                                                                                      |
+| `scripts/zbe-common.sh`        | Shared helpers (sourced by the others)                                                                                                                                                                                                                                           |
+
+> 🔐 **Demo-only keys.** So a single person can run the whole demo, the camera,
+> City Hall, arbiter and DGT sign in the browser with test-account keys from
+> `app/.env.local` (git-ignored). A real deployment would have each actor sign
+> with its own wallet or backend, and no secret would reach the browser.
+> `app/dist` contains those keys: do not publish it as a real service.
+
+---
+
+## Testnet deployment
+
+Published with **Stellar Registry** (version 1.0.1):
+
+| Contract              | Registry name                            | Contract ID                                                |
+| --------------------- | ---------------------------------------- | ---------------------------------------------------------- |
+| Etiqueta              | `unverified/zbe-etiqueta-impedancia-uno` | `CB2C4XY6HLRDE7BOZ7QH5DFST34SGDY5LVI6WA7T4X3EGXK65SO3AYSD` |
+| Peaje                 | `unverified/zbe-peaje-impedancia-uno`    | `CCM6PGBSXY33ISEAWJPH2RQV2PUOLVNWKAJ37EOGJRKTIE6JF7GP3LVI` |
+| USDC test asset (SAC) | —                                        | `CDB4ZZLUZQGVU6QIPVOFAUNXQFHRTMQ4NKZSIHAPT6Z3PTMM2UXB6XI2` |
+
+Look them up by name:
+
+```bash
+stellar registry fetch-contract-id unverified/zbe-peaje-impedancia-uno \
+  --source-account me --network testnet
+```
+
+To deploy your own copy (use your own team suffix):
+
+```bash
+stellar scaffold build --compile-only          # optimized wasm in target/stellar/local/
+TEAM=my-team
+for c in etiqueta peaje; do
+  stellar registry publish --wasm target/stellar/local/$c.wasm \
+    --wasm-name unverified/zbe-$c-$TEAM --binver 1.0.0 \
+    --source-account me --network testnet
+done
+USDC=$(stellar contract asset deploy --asset USDC:$(stellar keys address me) \
+  --source me --network testnet)
+E=$(stellar contract deploy --wasm-hash <etiqueta hash from publish> \
+  --source me --network testnet -- --admin me)
+P=$(stellar contract deploy --wasm-hash <peaje hash from publish> \
+  --source me --network testnet -- --admin me --token $USDC \
+  --treasury tesoreria --arbiter arbitro)
+stellar registry register-contract --contract-name unverified/zbe-etiqueta-$TEAM \
+  --contract-address $E --source-account me --network testnet
+stellar registry register-contract --contract-name unverified/zbe-peaje-$TEAM \
+  --contract-address $P --source-account me --network testnet
+ZBE_TEAM=$TEAM STELLAR_NETWORK=testnet scripts/zbe-setup.sh
+```
+
+Then point the `testnet` entries in `scaffold.yml` to your IDs.
+
+> `stellar registry deploy` failed with `TxMalformed` with registry CLI 0.2.0,
+> so the contracts are deployed with `stellar contract deploy` and then named
+> with `register-contract`. The result in the registry is the same.
+
+---
+
+## Troubleshooting
+
+| Symptom                                                                     | Fix                                                                                  |
+| --------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| Blank page, Vite errors `504 (Outdated Request)`                            | Restart `npm run dev` (Vite got stuck re-optimizing dependencies)                    |
+| `Failed to resolve import "./clients"` right after `stellar scaffold clean` | Wait for `npm run dev` to regenerate the clients                                     |
+| `permission denied … docker.sock`                                           | Add your user to the `docker` group and log in again                                 |
+| “The demo key for … is missing”                                             | Run `scripts/zbe-setup.sh` (or `scripts/zbe-env.sh`) and reload                      |
+| “The toll is not linked to the label contract”                              | Run `scripts/zbe-setup.sh` after every redeploy                                      |
+| A plate returns an old charge                                               | One charge per vehicle, zone and day: use another plate or wait until tomorrow (UTC) |
+| `TxInsufficientBalance` on testnet                                          | Fund the account again: `stellar keys fund <name> --network testnet`                 |
+
+---
+
+## Limitations and next steps
+
+- **Demo signing keys in the browser.** Fine for a demo, not for production.
+- **Storage rent on testnet.** Each new charge creates a few persistent entries
+  (charge, daily index, owner's list); on testnet that costs around 29 XLM per
+  charge. It should be measured on mainnet and optimized (e.g. a temporary daily
+  index) before a pilot.
+- **Simulated camera and DGT.** Real plate recognition and DGT integration are
+  out of scope.
+- **Next:** pilot with a city, real cameras signing their reports, DGT
+  integration, multiple zones with different rules, and calling Etiqueta by name
+  with `stellar_registry::import_contract!`.

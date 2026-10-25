@@ -1,11 +1,168 @@
-.zbe-title {
-	margin-bottom: 1.5rem;
+/* ZBE Toll design layer on top of app-lib/styles.css */
+
+:root {
+	--color-bg: #ffffff;
+	--color-page: #f4f6f8;
+	--color-surface: #f1f4f6;
+	--color-text: #12212b;
+	--color-text-muted: #5f6f7a;
+	--color-border: #e1e6ea;
+	--color-accent: #0f766e;
+	--color-accent-strong: #0b5c56;
+	--color-accent-soft: #e3f3f1;
+	--color-success: #15803d;
+	--color-error: #c2410c;
+	--color-warning: #d97706;
+	--radius: 10px;
+	--radius-lg: 16px;
+	--shadow: 0 1px 2px rgba(16, 33, 43, 0.04), 0 4px 16px rgba(16, 33, 43, 0.06);
+	--shadow-lg: 0 10px 30px rgba(16, 33, 43, 0.1);
 }
 
-.zbe-title h1 {
-	font-weight: 500;
-	margin-bottom: 0.25rem;
+body {
+	background: var(--color-page);
+	font-family:
+		"Inter",
+		system-ui,
+		-apple-system,
+		"Segoe UI",
+		Roboto,
+		sans-serif;
+	-webkit-font-smoothing: antialiased;
 }
+
+.card {
+	background: var(--color-bg);
+	border: 1px solid var(--color-border);
+	border-radius: var(--radius-lg);
+	box-shadow: var(--shadow);
+	padding: 1.5rem;
+}
+
+.card h2 {
+	font-size: 1.05rem;
+	font-weight: 650;
+	margin: 0 0 1rem;
+	letter-spacing: -0.01em;
+}
+
+button {
+	border-radius: var(--radius);
+	font-weight: 550;
+	transition:
+		background 0.15s,
+		box-shadow 0.15s,
+		transform 0.05s;
+}
+
+button:active:not(:disabled) {
+	transform: translateY(1px);
+}
+
+input[type="text"],
+input[type="number"],
+input:not([type]),
+select {
+	border-radius: var(--radius);
+	border: 1px solid var(--color-border);
+	padding: 0.55rem 0.8rem;
+	background: var(--color-bg);
+	color: var(--color-text);
+	font: inherit;
+}
+
+input:focus,
+select:focus {
+	outline: none;
+	border-color: var(--color-accent);
+	box-shadow: 0 0 0 3px var(--color-accent-soft);
+}
+
+/* ---------- Buttons ---------- */
+
+.zbe-btn-primary {
+	background: var(--color-accent);
+	border: 1px solid var(--color-accent);
+	color: #fff;
+}
+
+.zbe-btn-primary:hover:not(:disabled) {
+	background: var(--color-accent-strong);
+	border-color: var(--color-accent-strong);
+}
+
+.zbe-btn-danger {
+	background: #fff;
+	border: 1px solid #f3c7b3;
+	color: var(--color-error);
+}
+
+.zbe-btn-danger:hover:not(:disabled) {
+	background: #fff4ee;
+}
+
+.zbe-big-button {
+	font-size: 1.05rem;
+	padding: 0.85rem 1.6rem;
+	box-shadow: 0 6px 18px rgba(15, 118, 110, 0.28);
+}
+
+/* ---------- Page header ---------- */
+
+.zbe-page-head {
+	display: flex;
+	align-items: flex-start;
+	gap: 1.1rem;
+	margin-bottom: 1.75rem;
+}
+
+.zbe-page-icon {
+	flex: none;
+	width: 3.2rem;
+	height: 3.2rem;
+	border-radius: 14px;
+	display: grid;
+	place-items: center;
+	font-size: 1.6rem;
+	background: var(--color-accent-soft);
+}
+
+.zbe-page-head h1 {
+	font-size: 1.75rem;
+	font-weight: 700;
+	letter-spacing: -0.02em;
+	margin: 0 0 0.2rem;
+}
+
+.zbe-page-head p {
+	margin: 0;
+	color: var(--color-text-muted);
+	max-width: 720px;
+}
+
+.zbe-page-head .zbe-chip {
+	margin-left: auto;
+	align-self: center;
+}
+
+.zbe-chip {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.4rem;
+	padding: 0.35rem 0.75rem;
+	border-radius: 999px;
+	background: var(--color-bg);
+	border: 1px solid var(--color-border);
+	font-size: 0.82rem;
+	color: var(--color-text-muted);
+	white-space: nowrap;
+}
+
+.zbe-chip strong {
+	color: var(--color-text);
+}
+
+/* ---------- Layout ---------- */
 
 .zbe-muted {
 	color: var(--color-text-muted);
@@ -14,32 +171,48 @@
 
 .zbe-grid {
 	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-	gap: 1.5rem;
-	margin-bottom: 1.5rem;
+	grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+	gap: 1.25rem;
+	margin-bottom: 1.25rem;
 }
 
 .zbe-stats {
 	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+	grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
 	gap: 1rem;
-	margin-bottom: 1.5rem;
+	margin-bottom: 1.25rem;
+}
+
+.zbe-stat {
+	padding: 1.1rem 1.25rem;
+}
+
+.zbe-stat-label {
+	font-size: 0.8rem;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+	color: var(--color-text-muted);
 }
 
 .zbe-stat-value {
-	font-size: 1.5rem;
-	font-weight: 600;
-	margin-top: 0.25rem;
+	font-size: 1.6rem;
+	font-weight: 700;
+	letter-spacing: -0.02em;
+	margin-top: 0.3rem;
+}
+
+.zbe-stat--accent {
+	background: linear-gradient(135deg, #0f766e, #155e75);
+	color: #fff;
+	border: none;
+}
+
+.zbe-stat--accent .zbe-stat-label {
+	color: rgba(255, 255, 255, 0.8);
 }
 
 .zbe-section {
-	margin-bottom: 1.5rem;
-}
-
-.zbe-section h2 {
-	font-size: 1.15rem;
-	font-weight: 600;
-	margin: 0 0 1rem;
+	margin-bottom: 1.25rem;
 }
 
 .zbe-row {
@@ -47,6 +220,18 @@
 	gap: 0.75rem;
 	align-items: center;
 	flex-wrap: wrap;
+}
+
+.zbe-spread {
+	justify-content: space-between;
+}
+
+.zbe-row > h2 {
+	margin: 0;
+}
+
+.zbe-section > .zbe-row:first-child {
+	margin-bottom: 1rem;
 }
 
 .zbe-form {
@@ -59,74 +244,145 @@
 .zbe-form label {
 	display: flex;
 	flex-direction: column;
-	gap: 0.25rem;
-	font-size: 0.85rem;
+	gap: 0.3rem;
+	font-size: 0.8rem;
+	font-weight: 550;
 	color: var(--color-text-muted);
 }
 
 .zbe-form input,
-.zbe-form select,
-.zbe-select {
-	min-width: 8rem;
+.zbe-form select {
+	min-width: 9rem;
 }
 
-select {
-	padding: 0.5rem 0.75rem;
-	border: 1px solid var(--color-border);
-	border-radius: var(--radius);
-	background: var(--color-bg);
-	color: var(--color-text);
-	font: inherit;
+/* ---------- Balances ---------- */
+
+.zbe-balances {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 0.75rem;
+	margin-bottom: 1rem;
 }
+
+.zbe-balance {
+	border-radius: var(--radius);
+	padding: 0.85rem 1rem;
+	background: var(--color-surface);
+}
+
+.zbe-balance--free {
+	background: var(--color-accent-soft);
+}
+
+.zbe-balance--locked {
+	background: #fff6e5;
+}
+
+.zbe-balance .zbe-stat-value {
+	font-size: 1.4rem;
+}
+
+/* ---------- Badges ---------- */
 
 .zbe-category {
-	display: inline-block;
-	min-width: 2.5rem;
-	padding: 0.15rem 0.6rem;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 2.6rem;
+	height: 1.6rem;
+	padding: 0 0.6rem;
 	border-radius: 999px;
 	color: #fff;
-	font-weight: 600;
-	font-size: 0.85rem;
-	text-align: center;
+	font-weight: 700;
+	font-size: 0.8rem;
+	letter-spacing: 0.02em;
 }
 
 .zbe-status {
-	display: inline-block;
-	padding: 0.15rem 0.6rem;
+	display: inline-flex;
+	align-items: center;
+	gap: 0.35rem;
+	padding: 0.2rem 0.65rem;
 	border-radius: 999px;
-	font-size: 0.8rem;
-	font-weight: 600;
+	font-size: 0.78rem;
+	font-weight: 650;
+}
+
+.zbe-status::before {
+	content: "";
+	width: 0.45rem;
+	height: 0.45rem;
+	border-radius: 50%;
+	background: currentColor;
 }
 
 .zbe-status--pending {
-	background: #fff3cd;
-	color: #7a5a00;
+	background: #fff3d6;
+	color: #9a5b00;
 }
 
 .zbe-status--disputed {
-	background: #e7defc;
-	color: #4b2aa8;
+	background: #ece7fd;
+	color: #5b3cc4;
 }
 
 .zbe-status--settled {
-	background: #d1e7dd;
-	color: #0f5132;
+	background: #dcf3e4;
+	color: #166534;
 }
 
 .zbe-status--cancelled {
-	background: #e9ecef;
-	color: #495057;
+	background: #eceff2;
+	color: #55636d;
 }
 
 .zbe-countdown {
 	font-variant-numeric: tabular-nums;
-	color: #7a5a00;
-	font-weight: 500;
+	color: #9a5b00;
+	font-weight: 600;
 }
 
 .zbe-amount {
 	font-variant-numeric: tabular-nums;
 	white-space: nowrap;
+}
+
+/* EU-style number plate */
+.zbe-plate {
+	display: inline-flex;
+	align-items: stretch;
+	border: 2px solid #12212b;
+	border-radius: 5px;
+	background: #fff;
+	color: #12212b;
+	overflow: hidden;
+	font-family: ui-monospace, "SF Mono", Menlo, monospace;
+	font-weight: 700;
+	letter-spacing: 0.08em;
+	line-height: 1;
+	vertical-align: middle;
+}
+
+.zbe-plate-eu {
+	background: #1f4bb4;
+	color: #ffd400;
+	font-size: 0.6em;
+	font-family: system-ui, sans-serif;
+	display: flex;
+	align-items: flex-end;
+	justify-content: center;
+	padding: 0 0.25rem 0.15rem;
+	letter-spacing: 0;
+}
+
+.zbe-plate-text {
+	padding: 0.3rem 0.5rem;
+}
+
+/* ---------- Tables ---------- */
+
+.zbe-table-wrap {
+	overflow-x: auto;
 }
 
 .zbe-table {
@@ -138,41 +394,73 @@ select {
 .zbe-table th,
 .zbe-table td {
 	text-align: left;
-	padding: 0.6rem 0.5rem;
+	padding: 0.7rem 0.6rem;
 	border-bottom: 1px solid var(--color-border);
 	vertical-align: middle;
 }
 
-.zbe-table th {
-	color: var(--color-text-muted);
-	font-weight: 500;
-	font-size: 0.8rem;
-	text-transform: uppercase;
-	letter-spacing: 0.03em;
+.zbe-table tbody tr:last-child td {
+	border-bottom: none;
 }
 
-.zbe-table-wrap {
-	overflow-x: auto;
+.zbe-table tbody tr:hover {
+	background: #fafbfc;
+}
+
+.zbe-table th {
+	color: var(--color-text-muted);
+	font-weight: 600;
+	font-size: 0.72rem;
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
 }
 
 .zbe-empty {
 	color: var(--color-text-muted);
-	padding: 1rem 0;
+	padding: 1.25rem 0;
+	text-align: center;
 }
+
+/* ---------- Notices and results ---------- */
 
 .zbe-warning {
 	border-left: 4px solid var(--color-warning);
-	margin-bottom: 1.5rem;
+	margin-bottom: 1.25rem;
+}
+
+.zbe-note {
+	background: var(--color-surface);
+	border-radius: var(--radius);
+	padding: 0.75rem 1rem;
+	font-size: 0.88rem;
+	color: var(--color-text-muted);
 }
 
 .zbe-result {
-	border-left: 6px solid var(--color-border);
-	margin-bottom: 1rem;
+	display: flex;
+	gap: 1rem;
+	align-items: flex-start;
+	margin-bottom: 0.9rem;
+	border-left: 5px solid var(--color-border);
+	animation: zbe-in 0.25s ease-out;
+}
+
+.zbe-result-icon {
+	font-size: 1.6rem;
+	line-height: 1;
 }
 
 .zbe-result h3 {
-	margin: 0 0 0.25rem;
-	font-size: 1.1rem;
+	margin: 0 0 0.35rem;
+	font-size: 1.05rem;
+	display: flex;
+	gap: 0.6rem;
+	align-items: center;
+	flex-wrap: wrap;
+}
+
+.zbe-result p {
+	margin: 0;
 }
 
 .zbe-result--ok {
@@ -187,51 +475,217 @@ select {
 	border-left-color: var(--color-error);
 }
 
-.zbe-big-button {
-	font-size: 1.1rem;
-	padding: 0.8rem 1.6rem;
-	background: var(--color-accent);
+@keyframes zbe-in {
+	from {
+		opacity: 0;
+		transform: translateY(-6px);
+	}
+}
+
+/* ---------- Home ---------- */
+
+.zbe-hero {
+	position: relative;
+	overflow: hidden;
+	border-radius: 22px;
+	padding: 3.2rem 3rem;
+	margin-bottom: 1.75rem;
 	color: #fff;
-	border: none;
+	background:
+		radial-gradient(
+			circle at 85% 20%,
+			rgba(134, 239, 172, 0.35),
+			transparent 45%
+		),
+		linear-gradient(135deg, #0f766e 0%, #155e75 55%, #1e3a8a 100%);
+	box-shadow: var(--shadow-lg);
 }
 
-.zbe-big-button:hover:not(:disabled) {
-	opacity: 0.9;
+.zbe-hero-kicker {
+	display: inline-block;
+	font-size: 0.8rem;
+	font-weight: 650;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	background: rgba(255, 255, 255, 0.16);
+	padding: 0.3rem 0.75rem;
+	border-radius: 999px;
+	margin-bottom: 1rem;
 }
 
-.zbe-danger {
-	color: var(--color-error);
+.zbe-hero h1 {
+	font-size: 2.6rem;
+	line-height: 1.1;
+	font-weight: 750;
+	letter-spacing: -0.03em;
+	margin: 0 0 1rem;
+	max-width: 720px;
 }
 
-.zbe-plate {
-	font-family: ui-monospace, monospace;
-	font-weight: 600;
-	letter-spacing: 0.05em;
-	padding: 0.1rem 0.4rem;
-	border: 2px solid var(--color-text);
-	border-radius: 4px;
+.zbe-hero p {
+	font-size: 1.1rem;
+	line-height: 1.55;
+	max-width: 680px;
+	margin: 0 0 1.75rem;
+	color: rgba(255, 255, 255, 0.9);
+}
+
+.zbe-hero-actions {
+	display: flex;
+	gap: 0.75rem;
+	flex-wrap: wrap;
+}
+
+.zbe-hero-actions a {
+	text-decoration: none;
+	font-weight: 650;
+	padding: 0.75rem 1.3rem;
+	border-radius: var(--radius);
+}
+
+.zbe-hero-primary {
 	background: #fff;
-	color: #1a1a2e;
+	color: #0f766e;
 }
 
-.zbe-steps {
-	padding-left: 1.2rem;
-	line-height: 1.7;
+.zbe-hero-secondary {
+	color: #fff;
+	border: 1px solid rgba(255, 255, 255, 0.5);
 }
 
-.zbe-nav-cards a {
+.zbe-pills {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+	gap: 1rem;
+	margin-bottom: 1.75rem;
+}
+
+.zbe-pill {
+	display: flex;
+	gap: 0.85rem;
+	align-items: flex-start;
+}
+
+.zbe-pill-icon {
+	font-size: 1.5rem;
+}
+
+.zbe-pill strong {
+	display: block;
+	margin-bottom: 0.2rem;
+}
+
+.zbe-section-title {
+	font-size: 1.25rem;
+	font-weight: 700;
+	letter-spacing: -0.01em;
+	margin: 2rem 0 1rem;
+}
+
+.zbe-roles {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+	gap: 1rem;
+}
+
+.zbe-role {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
 	text-decoration: none;
 	color: inherit;
+	transition:
+		transform 0.15s,
+		box-shadow 0.15s,
+		border-color 0.15s;
 }
 
-.zbe-nav-cards .card:hover {
+.zbe-role:hover {
+	transform: translateY(-2px);
+	box-shadow: var(--shadow-lg);
 	border-color: var(--color-accent);
 }
 
-.zbe-row > h2 {
+.zbe-role h3 {
+	margin: 0.25rem 0 0;
+	font-size: 1.05rem;
+}
+
+.zbe-role p {
+	margin: 0;
+	font-size: 0.9rem;
+	color: var(--color-text-muted);
+	flex: 1;
+}
+
+.zbe-role-open {
+	color: var(--color-accent);
+	font-weight: 650;
+	font-size: 0.9rem;
+}
+
+.zbe-steps {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 1rem;
+	counter-reset: step;
+	list-style: none;
+	padding: 0;
 	margin: 0;
 }
 
-.zbe-section > .zbe-row:first-child {
-	margin-bottom: 1rem;
+.zbe-steps li {
+	counter-increment: step;
+	position: relative;
+	padding-top: 2.6rem;
+	font-size: 0.92rem;
+	line-height: 1.5;
+}
+
+.zbe-steps li::before {
+	content: counter(step);
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 2rem;
+	height: 2rem;
+	border-radius: 50%;
+	display: grid;
+	place-items: center;
+	font-weight: 700;
+	background: var(--color-accent);
+	color: #fff;
+}
+
+.zbe-steps strong {
+	display: block;
+	margin-bottom: 0.2rem;
+}
+
+@media (max-width: 900px) {
+	.zbe-steps {
+		grid-template-columns: 1fr 1fr;
+	}
+}
+
+@media (max-width: 640px) {
+	.zbe-steps {
+		grid-template-columns: 1fr;
+	}
+
+	.zbe-hero {
+		padding: 2rem 1.5rem;
+	}
+
+	.zbe-hero h1 {
+		font-size: 1.9rem;
+	}
+
+	.zbe-page-head {
+		flex-wrap: wrap;
+	}
+
+	.zbe-page-head .zbe-chip {
+		margin-left: 0;
+	}
 }

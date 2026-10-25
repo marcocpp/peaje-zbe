@@ -4,7 +4,8 @@ import { as, send } from "../zbe/contracts"
 import { useAction, useAllCharges } from "../zbe/hooks"
 import {
 	MissingKeys,
-	PageTitle,
+	PageHead,
+	Plate,
 	StatusBadge,
 	Usdc,
 	usePlateLookup,
@@ -34,99 +35,105 @@ const Arbitro = () => {
 				)
 			},
 			uphold
-				? `Cargo #${charge_id} confirmado y cobrado`
-				: `Cargo #${charge_id} anulado: el importe vuelve al bono`,
+				? `Charge #${charge_id} upheld and collected`
+				: `Charge #${charge_id} cancelled: the amount goes back to the pass`,
 		)
 
 	return (
 		<div>
-			<PageTitle title="Árbitro independiente">
-				Solo el árbitro (por ejemplo, un defensor del ciudadano) puede cerrar un
-				cargo alegado. El ayuntamiento no es juez y parte.
-			</PageTitle>
+			<PageHead icon="⚖️" title="Independent arbiter" signer={arbiter?.label}>
+				Only the arbiter (for example, a citizen ombudsman) can close an
+				appealed charge. The city is never judge and party.
+			</PageHead>
 
-			{!arbiter && <MissingKeys who="árbitro" />}
+			{!arbiter && <MissingKeys who="arbiter" />}
 
 			<div className="card zbe-section">
-				<h2>Alegaciones pendientes</h2>
+				<h2>Pending appeals</h2>
 				{disputed.length === 0 ? (
-					<p className="zbe-empty">No hay cargos en disputa.</p>
+					<p className="zbe-empty">No charges under appeal.</p>
 				) : (
-					<table className="zbe-table">
-						<thead>
-							<tr>
-								<th>#</th>
-								<th>Vehículo</th>
-								<th>Titular</th>
-								<th>Importe</th>
-								<th>Entrada</th>
-								<th />
-							</tr>
-						</thead>
-						<tbody>
-							{disputed.map((c) => (
-								<tr key={c.id.toString()}>
-									<td>{c.id.toString()}</td>
-									<td>
-										<span className="zbe-plate">
-											{plateOf(c.plate_hash.toString("hex"))}
-										</span>
-									</td>
-									<td>
-										<Who address={c.owner} />
-									</td>
-									<td>
-										<Usdc amount={c.amount} />
-									</td>
-									<td>
-										{new Date(Number(c.created_at) * 1000).toLocaleString()}
-									</td>
-									<td className="zbe-row">
-										<button
-											onClick={() => resolve(c.id, false)}
-											disabled={!arbiter || !!pending}
-										>
-											Anular
-										</button>
-										<button
-											onClick={() => resolve(c.id, true)}
-											disabled={!arbiter || !!pending}
-										>
-											Confirmar cargo
-										</button>
-									</td>
+					<div className="zbe-table-wrap">
+						<table className="zbe-table">
+							<thead>
+								<tr>
+									<th>#</th>
+									<th>Vehicle</th>
+									<th>Owner</th>
+									<th>Amount</th>
+									<th>Entry</th>
+									<th />
 								</tr>
-							))}
-						</tbody>
-					</table>
+							</thead>
+							<tbody>
+								{disputed.map((c) => (
+									<tr key={c.id.toString()}>
+										<td>{c.id.toString()}</td>
+										<td>
+											<Plate plate={plateOf(c.plate_hash.toString("hex"))} />
+										</td>
+										<td>
+											<Who address={c.owner} />
+										</td>
+										<td>
+											<Usdc amount={c.amount} />
+										</td>
+										<td>
+											{new Date(Number(c.created_at) * 1000).toLocaleString(
+												"en-GB",
+											)}
+										</td>
+										<td>
+											<div className="zbe-row">
+												<button
+													className="zbe-btn-primary"
+													onClick={() => resolve(c.id, false)}
+													disabled={!arbiter || !!pending}
+												>
+													Cancel charge
+												</button>
+												<button
+													className="zbe-btn-danger"
+													onClick={() => resolve(c.id, true)}
+													disabled={!arbiter || !!pending}
+												>
+													Uphold
+												</button>
+											</div>
+										</td>
+									</tr>
+								))}
+							</tbody>
+						</table>
+					</div>
 				)}
 			</div>
 
 			<div className="card zbe-section">
-				<h2>Historial</h2>
+				<h2>Closed charges</h2>
 				{closed.length === 0 ? (
-					<p className="zbe-empty">Sin cargos cerrados.</p>
+					<p className="zbe-empty">No closed charges yet.</p>
 				) : (
-					<table className="zbe-table">
-						<tbody>
-							{closed.map((c) => (
-								<tr key={c.id.toString()}>
-									<td>#{c.id.toString()}</td>
-									<td>
-										<span className="zbe-plate">
-											{plateOf(c.plate_hash.toString("hex"))}
-										</span>
-									</td>
-									<td>
-										<Usdc amount={c.amount} />
-									</td>
-									<td>
-										<StatusBadge status={c.status.tag} />
-									</td>
-								</tr>
-							))}
-						</tbody>
-					</table>
+					<div className="zbe-table-wrap">
+						<table className="zbe-table">
+							<tbody>
+								{closed.map((c) => (
+									<tr key={c.id.toString()}>
+										<td>#{c.id.toString()}</td>
+										<td>
+											<Plate plate={plateOf(c.plate_hash.toString("hex"))} />
+										</td>
+										<td>
+											<Usdc amount={c.amount} />
+										</td>
+										<td>
+											<StatusBadge status={c.status.tag} />
+										</td>
+									</tr>
+								))}
+							</tbody>
+						</table>
+					</div>
 				)}
 			</div>
 		</div>

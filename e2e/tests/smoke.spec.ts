@@ -19,15 +19,11 @@ test("contract explorer link is present", async ({ page }) => {
 test("ZBE home and views are linked", async ({ page }) => {
 	await page.goto("/")
 	await expect(
-		page.getByRole("heading", { name: "Peaje ZBE en Stellar" }),
+		page.getByRole("heading", {
+			name: "A fair, opt-in toll for Low Emission Zones",
+		}),
 	).toBeVisible()
-	for (const view of [
-		"Conductor",
-		"Cámara",
-		"Ayuntamiento",
-		"Árbitro",
-		"DGT",
-	]) {
+	for (const view of ["Driver", "Camera", "City Hall", "Arbiter", "DGT"]) {
 		await expect(page.getByRole("link", { name: view }).first()).toBeVisible()
 	}
 })

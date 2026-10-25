@@ -38,7 +38,7 @@ const read = async (
 		.build()
 	const sim = await server.simulateTransaction(tx)
 	if (!rpc.Api.isSimulationSuccess(sim) || !sim.result) {
-		throw new Error(`USDC.${method} falló`)
+		throw new Error(`USDC.${method} failed`)
 	}
 	return scValToNative(sim.result.retval)
 }
@@ -75,10 +75,10 @@ const submit = async (
 	})
 	const signed = TransactionBuilder.fromXDR(signedTxXdr, networkPassphrase)
 	const sent = await server.sendTransaction(signed)
-	if (sent.status === "ERROR") throw new Error("Transacción rechazada")
+	if (sent.status === "ERROR") throw new Error("Transaction rejected")
 	const done = await server.pollTransaction(sent.hash)
 	if (done.status !== rpc.Api.GetTransactionStatus.SUCCESS) {
-		throw new Error(`Transacción fallida (${done.status})`)
+		throw new Error(`Transaction failed (${done.status})`)
 	}
 }
 

@@ -8,11 +8,11 @@ export const ZONE = "centro"
 export const UNIT = 10_000_000n
 
 export const CATEGORIES = [
-	{ value: 0, name: "Sin etiqueta", color: "#6c757d" },
-	{ value: 1, name: "B", color: "#e0a800" },
-	{ value: 2, name: "C", color: "#2e9e4f" },
-	{ value: 3, name: "Eco", color: "#1f7ae0" },
-	{ value: 4, name: "Cero", color: "#0b5cad" },
+	{ value: 0, name: "No label", color: "#8a96a0" },
+	{ value: 1, name: "B", color: "#ca8a04" },
+	{ value: 2, name: "C", color: "#16a34a" },
+	{ value: 3, name: "Eco", color: "#0d9488" },
+	{ value: 4, name: "Zero", color: "#1d4ed8" },
 ] as const
 
 export const categoryName = (value: number) =>
@@ -21,7 +21,7 @@ export const categoryName = (value: number) =>
 export const formatUsdc = (amount: bigint) => {
 	const whole = amount / UNIT
 	const cents = (amount % UNIT) / 100_000n
-	return `${whole}${cents ? `,${cents.toString().padStart(2, "0")}` : ""} USDC`
+	return `${whole}${cents ? `.${cents.toString().padStart(2, "0")}` : ""} USDC`
 }
 
 export const parseUsdc = (text: string): bigint => {
@@ -47,10 +47,10 @@ export interface Signer {
  * ayuntamiento y árbitro sin cambiar de wallet.
  */
 const DEMO_ACCOUNTS = {
-	me: "DGT / Ayuntamiento",
-	camara: "Cámara",
-	arbitro: "Árbitro",
-	tesoreria: "Tesorería",
+	me: "DGT / City Hall",
+	camara: "Camera",
+	arbitro: "Arbiter",
+	tesoreria: "Treasury",
 	lucia: "Lucía",
 	pablo: "Pablo",
 	ana: "Ana",
@@ -95,7 +95,7 @@ export const requireDemoSigner = (name: DemoName): Signer => {
 	const signer = demoSigner(name)
 	if (!signer) {
 		throw new Error(
-			`Falta la clave de "${name}": ejecuta scripts/zbe-env.sh y recarga`,
+			`Missing demo key for "${name}": run scripts/zbe-env.sh and reload`,
 		)
 	}
 	return signer

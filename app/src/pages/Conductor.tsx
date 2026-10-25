@@ -23,7 +23,8 @@ import { addTrustline } from "../zbe/token"
 import {
 	CategoryBadge,
 	Countdown,
-	PageTitle,
+	PageHead,
+	Plate,
 	StatusBadge,
 	Usdc,
 	usePlateLookup,
@@ -38,20 +39,21 @@ const Conductor = () => {
 	const signer: Signer | undefined =
 		who === WALLET
 			? address
-				? { address, label: "Mi wallet", signTransaction }
+				? { address, label: "My wallet", signTransaction }
 				: undefined
 			: demoSigner(who as DemoName)
 
 	return (
 		<div>
-			<PageTitle title="Conductor">
-				Tu etiqueta, tu bono ZBE y los cargos con su plazo para alegar.
-			</PageTitle>
+			<PageHead icon="🚗" title="Driver" signer={signer?.label}>
+				Your car&apos;s environmental label, your ZBE pass and every charge with
+				its appeal countdown.
+			</PageHead>
 
 			<div className="zbe-row zbe-section">
-				<span className="zbe-muted">Ver como:</span>
+				<span className="zbe-muted">View as</span>
 				<select value={who} onChange={(e) => setWho(e.target.value)}>
-					{address && <option value={WALLET}>Mi wallet (Freighter)</option>}
+					{address && <option value={WALLET}>My wallet (Freighter)</option>}
 					{DEMO_DRIVERS.map((d) => (
 						<option key={d} value={d}>
 							{demoSigner(d)?.label ?? d}
@@ -68,8 +70,8 @@ const Conductor = () => {
 				/>
 			) : (
 				<div className="card zbe-warning">
-					Conecta tu wallet o ejecuta <code>scripts/zbe-setup.sh</code> para
-					tener conductores de demo.
+					Connect your wallet or run <code>scripts/zbe-setup.sh</code> to get
+					demo drivers.
 				</div>
 			)}
 		</div>
@@ -104,7 +106,7 @@ const DriverPanel = ({
 					await peaje.deposit({ owner, amount: parseUsdc(amount) }, as(signer)),
 					signer,
 				),
-			`Bono recargado con ${amount} USDC`,
+			`ZBE pass topped up with ${amount} USDC`,
 		)
 
 	const withdraw = () =>
@@ -118,7 +120,7 @@ const DriverPanel = ({
 					),
 					signer,
 				),
-			`Retirados ${amount} USDC del saldo libre`,
+			`${amount} USDC withdrawn from your available balance`,
 		)
 
 	const appeal = (charge_id: bigint) =>
@@ -126,91 +128,91 @@ const DriverPanel = ({
 			`appeal-${charge_id}`,
 			async () =>
 				send(await peaje.appeal({ owner, charge_id }, as(signer)), signer),
-			"Alegación presentada: el cargo queda en disputa hasta que decida el árbitro",
+			"Appeal filed: the charge stays locked until the arbiter decides",
 		)
 
 	return (
 		<>
 			<div className="zbe-grid">
 				<div className="card">
-					<h2>Mi coche</h2>
+					<h2>My vehicles</h2>
 					{cars.length === 0 ? (
 						<p className="zbe-empty">
-							Ninguna matrícula a tu nombre.{" "}
+							No vehicle registered to this account.{" "}
 							{isWallet && (
 								<>
-									Pide a la <Link to="/dgt">DGT</Link> que emita la etiqueta de
-									tu coche a tu wallet.
+									Ask the <Link to="/dgt">DGT</Link> to issue your car&apos;s
+									label to your wallet.
 								</>
 							)}
 						</p>
 					) : (
-						cars.map((c) => (
-							<div
-								key={c.plate}
-								className="zbe-row"
-								style={{ marginBottom: 8 }}
-							>
-								<span className="zbe-plate">{c.plate}</span>
-								<CategoryBadge value={c.label!.category} />
-								{zone && (
-									<span className="zbe-muted">
-										{c.label!.category >= zone.min_category
-											? "Entra gratis en la ZBE centro"
-											: "No puede entrar gratis en la ZBE centro"}
-									</span>
-								)}
-							</div>
-						))
+						cars.map((c) => {
+							const allowed = zone && c.label!.category >= zone.min_category
+							return (
+								<div
+									key={c.plate}
+									className="zbe-row"
+									style={{ marginBottom: 10 }}
+								>
+									<Plate plate={c.plate} />
+									<CategoryBadge value={c.label!.category} />
+									{zone && (
+										<span className="zbe-muted">
+											{allowed
+												? "✅ Enters the centro zone for free"
+												: "⛔ Not allowed for free in the centro zone"}
+										</span>
+									)}
+								</div>
+							)
+						})
 					)}
 				</div>
 
 				<div className="card">
-					<h2>Bono ZBE</h2>
-					<div
-						className="zbe-row"
-						style={{ gap: "2rem", marginBottom: "1rem" }}
-					>
-						<div>
-							<div className="zbe-muted">Libre</div>
+					<h2>ZBE pass</h2>
+					<div className="zbe-balances">
+						<div className="zbe-balance zbe-balance--free">
+							<div className="zbe-stat-label">Available</div>
 							<div className="zbe-stat-value">
 								<Usdc amount={bono?.free} />
 							</div>
 						</div>
-						<div>
-							<div className="zbe-muted">Bloqueado</div>
+						<div className="zbe-balance zbe-balance--locked">
+							<div className="zbe-stat-label">Locked</div>
 							<div className="zbe-stat-value">
 								<Usdc amount={bono?.locked} />
 							</div>
 						</div>
 					</div>
-					<p className="zbe-muted">
-						En la cartera: <Usdc amount={wallet} />. Al recargar aceptas que, si
-						entras sin etiqueta válida, se bloquee la tarifa y puedas alegar.
+					<p className="zbe-muted" style={{ marginTop: 0 }}>
+						In your wallet: <Usdc amount={wallet} />. By topping up you agree
+						that, if you enter without a valid label, the fee is locked and you
+						can appeal it.
 					</p>
 					{walletFetched && wallet === null ? (
 						isWallet ? (
 							<button
+								className="zbe-btn-primary"
 								onClick={() =>
 									run(
 										"trust",
 										() => addTrustline(signer),
-										"USDC activado en tu wallet",
+										"USDC enabled in your wallet",
 									)
 								}
 								disabled={!!pending}
 							>
-								Activar USDC en mi wallet
+								Enable USDC in my wallet
 							</button>
 						) : (
-							<p className="zbe-danger">
-								Esta cuenta no tiene trustline a USDC.
-							</p>
+							<p className="zbe-danger">This account has no USDC trustline.</p>
 						)
 					) : (
 						<div className="zbe-form">
 							<label>
-								Importe (USDC)
+								Amount (USDC)
 								<input
 									type="number"
 									min="1"
@@ -218,11 +220,15 @@ const DriverPanel = ({
 									onChange={(e) => setAmount(e.target.value)}
 								/>
 							</label>
-							<button onClick={deposit} disabled={!!pending}>
-								Recargar
+							<button
+								className="zbe-btn-primary"
+								onClick={deposit}
+								disabled={!!pending}
+							>
+								Top up
 							</button>
 							<button onClick={withdraw} disabled={!!pending}>
-								Retirar libre
+								Withdraw available
 							</button>
 						</div>
 					)}
@@ -230,20 +236,20 @@ const DriverPanel = ({
 			</div>
 
 			<div className="card zbe-section">
-				<h2>Mis cargos</h2>
+				<h2>My charges</h2>
 				{!charges?.length ? (
-					<p className="zbe-empty">Sin cargos.</p>
+					<p className="zbe-empty">No charges yet. 🎉</p>
 				) : (
 					<div className="zbe-table-wrap">
 						<table className="zbe-table">
 							<thead>
 								<tr>
 									<th>#</th>
-									<th>Vehículo</th>
-									<th>Zona</th>
-									<th>Importe</th>
-									<th>Estado</th>
-									<th>Plazo</th>
+									<th>Vehicle</th>
+									<th>Zone</th>
+									<th>Amount</th>
+									<th>Status</th>
+									<th>Deadline</th>
 									<th />
 								</tr>
 							</thead>
@@ -252,9 +258,7 @@ const DriverPanel = ({
 									<tr key={c.id.toString()}>
 										<td>{c.id.toString()}</td>
 										<td>
-											<span className="zbe-plate">
-												{plateOf(c.plate_hash.toString("hex"))}
-											</span>
+											<Plate plate={plateOf(c.plate_hash.toString("hex"))} />
 										</td>
 										<td>{c.zone_id}</td>
 										<td>
@@ -269,10 +273,11 @@ const DriverPanel = ({
 										<td>
 											{c.status.tag === "Pending" && isOpen(c, now) && (
 												<button
+													className="zbe-btn-danger"
 													onClick={() => appeal(c.id)}
 													disabled={!!pending}
 												>
-													Alegar
+													Appeal
 												</button>
 											)}
 										</td>

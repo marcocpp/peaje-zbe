@@ -15,23 +15,23 @@ export type Label = NonNullable<
 >
 export type ChargeStatus = Charge["status"]["tag"]
 
-/** Errores de los contratos en lenguaje de la demo */
+/** Errores de los contratos, en el idioma de la web */
 const ERRORS: Record<string, string> = {
 	NotConfigured:
-		"El Peaje no está enlazado con Etiqueta: ejecuta scripts/zbe-setup.sh",
-	ZoneNotFound: "La zona no existe",
-	NotCamera: "Esta cuenta no es una cámara autorizada",
-	InvalidAmount: "Importe no válido",
-	InsufficientFree: "No hay saldo libre suficiente",
-	ChargeNotFound: "Cargo no encontrado",
-	NotChargeOwner: "Ese cargo no es tuyo",
-	NotPending: "El cargo ya no está pendiente",
-	AppealWindowClosed: "El plazo de alegación ha vencido",
-	AppealWindowOpen: "Aún está abierto el plazo de alegación",
-	ChargeDisputed: "Cargo en disputa: solo el árbitro puede cerrarlo",
-	NotDisputed: "El cargo no está en disputa",
-	AlreadyIssued: "Esa matrícula ya tiene etiqueta",
-	NotFound: "Esa matrícula no tiene etiqueta",
+		"The toll is not linked to the label contract: run scripts/zbe-setup.sh",
+	ZoneNotFound: "This zone does not exist",
+	NotCamera: "This account is not an authorized camera",
+	InvalidAmount: "Invalid amount",
+	InsufficientFree: "Not enough available balance",
+	ChargeNotFound: "Charge not found",
+	NotChargeOwner: "This charge is not yours",
+	NotPending: "This charge is no longer pending",
+	AppealWindowClosed: "The appeal window has closed",
+	AppealWindowOpen: "The appeal window is still open",
+	ChargeDisputed: "Charge under dispute: only the arbiter can close it",
+	NotDisputed: "This charge is not under dispute",
+	AlreadyIssued: "This plate already has a label",
+	NotFound: "This plate has no label",
 }
 
 export const friendlyError = (e: unknown): string => {
