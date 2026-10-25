@@ -15,9 +15,23 @@ DEMO_PLATES=(
   "3333BCD pablo 1" # B sin bono
 )
 
+# Nombre de equipo en Stellar Registry: unverified/zbe-<contrato>-<equipo>
+ZBE_TEAM="${ZBE_TEAM:-impedancia-uno}"
+
+# En local, el ID lo guarda scaffold; en testnet se busca por nombre en Registry
 contract_id() {
-  jq -er --arg n "$NETWORK" --arg c "$1" '.networks[$n].contracts[$c]["contract-id"]' "$STATE" \
-    || { echo "❌ '$1' no está desplegado en $NETWORK; ¿está corriendo npm run dev?" >&2; exit 1; }
+  local id
+  id=$(jq -r --arg n "$NETWORK" --arg c "$1" '.networks[$n].contracts[$c]["contract-id"] // empty' "$STATE" 2>/dev/null || true)
+  if [ -n "$id" ]; then
+    echo "$id"
+    return
+  fi
+  if [ "$NETWORK" != local ] && stellar registry fetch-contract-id "unverified/zbe-$1-$ZBE_TEAM" \
+    --source-account me --network "$NETWORK" 2>/dev/null | tail -1 | grep -E '^C[A-Z0-9]{55}$'; then
+    return
+  fi
+  echo "❌ '$1' no está desplegado en $NETWORK; ¿está corriendo npm run dev?" >&2
+  exit 1
 }
 
 addr() { stellar keys address "$1"; }

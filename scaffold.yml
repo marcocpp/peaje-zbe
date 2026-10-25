@@ -29,9 +29,9 @@ networks:
   # point contracts at those deployments below. Public networks never deploy
   # from `build` or `watch` unless you opt in with `allow-deploy: true`.
   testnet:
-    # Funded with Friendbot on first build. Keep testnet keys separate from
-    # local ones, as you would for mainnet.
-    accounts: [testnet-user]
+    # Mismas identidades que en local (cuentas de demo, sin valor real),
+    # financiadas con Friendbot. Los contratos se despliegan con Registry
+    accounts: [me, tesoreria, arbitro, camara, lucia, pablo, ana]
 
   # To redeploy freely on testnet while developing, add a separate network
   # that opts in, and build for it with STELLAR_NETWORK=testnet-dev:
@@ -60,6 +60,10 @@ contracts:
         source: etiqueta
         args:
           admin: ${account.me}
+      # Registry: unverified/zbe-etiqueta-impedancia-uno
+      testnet:
+        type: contract
+        source: CB2C4XY6HLRDE7BOZ7QH5DFST34SGDY5LVI6WA7T4X3EGXK65SO3AYSD
 
   # La dirección de Etiqueta se fija con `set_etiqueta` en scripts/zbe-setup.sh
   peaje:
@@ -72,7 +76,7 @@ contracts:
           token: CDHABPKEQZCRD4DLMR5DK4CVQYO7AGIBWGOU6LIFZFTYA2BIFAI2P4LM # USDC:me en local
           treasury: ${account.tesoreria}
           arbiter: ${account.arbitro}
-      # Paso 3: tras `stellar registry deploy`, apuntar aquí al ID de testnet
-      # testnet:
-      #   type: contract
-      #   source: C...
+      # Registry: unverified/zbe-peaje-impedancia-uno (token USDC:me en testnet)
+      testnet:
+        type: contract
+        source: CCM6PGBSXY33ISEAWJPH2RQV2PUOLVNWKAJ37EOGJRKTIE6JF7GP3LVI

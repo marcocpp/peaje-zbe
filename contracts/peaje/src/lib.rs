@@ -156,8 +156,10 @@ pub struct NoBono {
 
 const DAY_IN_SECS: u64 = 86_400;
 const DAY_IN_LEDGERS: u32 = 17_280;
-const TTL_THRESHOLD: u32 = 7 * DAY_IN_LEDGERS;
-const TTL_EXTEND_TO: u32 = 30 * DAY_IN_LEDGERS;
+// Extender a 7 días cuando quede menos de 1: en testnet, extender 30 días
+// cuesta decenas de XLM por entrada
+const TTL_THRESHOLD: u32 = DAY_IN_LEDGERS;
+const TTL_EXTEND_TO: u32 = 7 * DAY_IN_LEDGERS;
 
 #[contract]
 pub struct Peaje;

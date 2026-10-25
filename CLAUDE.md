@@ -71,9 +71,25 @@ Eventos: `charge_created`, `appealed`, `settled`, `cancelled`, `no_bono`.
 - Clientes TS generados en `app-lib/clients` (NO editar; envolverlos en módulos dentro de `app/`).
   Uso: `import { peaje } from "@stellar-scaffold/app-lib/clients"`, lecturas simuladas, escrituras con `tx.signAndSend({ signTransaction })`.
 - Testnet con Stellar Registry, nombres bajo `unverified/` y únicos por equipo
-  (`stellar registry publish ... --wasm-name unverified/zbe-etiqueta-<equipo> --binver 1.0.0`, luego `stellar registry deploy`).
+  (`stellar registry publish ... --wasm-name unverified/zbe-etiqueta-<equipo> --binver 1.0.0`; ver "Testnet" abajo).
 - Opcional: `stellar_registry::import_contract!(env, <nombre>)` para que Peaje llame a Etiqueta por nombre.
 - Skill de Scaffold: skills.stellar.org. Skill de Registry: github.com/stellar-registry/cli.
+
+### Testnet (desplegado, equipo IMPEDANCIA UNO → `impedancia-uno`)
+| Pieza | Nombre en Registry | ID (v1.0.1) |
+|---|---|---|
+| Etiqueta | `unverified/zbe-etiqueta-impedancia-uno` | `CB2C4XY6HLRDE7BOZ7QH5DFST34SGDY5LVI6WA7T4X3EGXK65SO3AYSD` |
+| Peaje | `unverified/zbe-peaje-impedancia-uno` | `CCM6PGBSXY33ISEAWJPH2RQV2PUOLVNWKAJ37EOGJRKTIE6JF7GP3LVI` |
+| USDC:me (SAC) | — | `CDB4ZZLUZQGVU6QIPVOFAUNXQFHRTMQ4NKZSIHAPT6Z3PTMM2UXB6XI2` |
+
+- `stellar registry deploy` falla con `TxMalformed` (registry CLI 0.2.0). Alternativa que funciona:
+  `stellar contract deploy --wasm-hash <hash del publish>` + `stellar registry register-contract`
+  (o `update-contract-address` para una versión nueva con el mismo nombre).
+- Coste en testnet: publicar en Registry ~1.300 XLM (Etiqueta) y ~4.600 XLM (Peaje); `report_entry` con cargo ~29 XLM.
+  Para recargar `me`: crear una cuenta con Friendbot y `stellar tx new account-merge` hacia `me`.
+- TTL: extender a 7 días con umbral de 1 día. A 30 días, una sola extensión cuesta decenas de XLM en testnet.
+- Scripts con `STELLAR_NETWORK=testnet` (buscan los IDs por nombre en Registry). Web: `scripts/zbe-build-testnet.sh` → `app/dist`
+  (incluye las claves de demo: no publicarlo como sistema real).
 
 ## Frontend
 
