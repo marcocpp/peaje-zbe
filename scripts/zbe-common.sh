@@ -30,7 +30,7 @@ contract_id() {
     --source-account me --network "$NETWORK" 2>/dev/null | tail -1 | grep -E '^C[A-Z0-9]{55}$'; then
     return
   fi
-  echo "❌ '$1' no está desplegado en $NETWORK; ¿está corriendo npm run dev?" >&2
+  echo "❌ '$1' is not deployed on $NETWORK. Is npm run dev running?" >&2
   exit 1
 }
 

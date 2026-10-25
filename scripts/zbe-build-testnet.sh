@@ -18,8 +18,8 @@ restore() {
 }
 trap restore EXIT
 
-echo "→ Clientes para testnet"
+echo "→ Contract clients for testnet"
 (cd "$ROOT" && STELLAR_NETWORK=testnet stellar scaffold build --quiet)
-echo "→ Build de la web"
+echo "→ Building the web app"
 (cd "$ROOT/app" && npm run build --silent)
-echo "✅ app/dist listo para testnet (sirve con: cd app && npx vite preview)"
+echo "✅ app/dist ready for testnet (serve it with: cd app && npx vite preview)"

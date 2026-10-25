@@ -17,8 +17,8 @@ testnet)
 5. [Smart contracts](#smart-contracts)
 6. [Frontend](#frontend)
 7. [Try the demo](#try-the-demo)
-   - [Option A · Testnet (quickest)](#option-a--testnet-quickest)
-   - [Option B · Local network](#option-b--local-network)
+   - [Option A · Local network (recommended)](#option-a--local-network-recommended)
+   - [Option B · Testnet (team only)](#option-b--testnet-team-only)
    - [Demo walkthrough](#demo-walkthrough)
    - [Using your own Freighter wallet](#using-your-own-freighter-wallet)
 8. [Scripts](#scripts)
@@ -267,22 +267,51 @@ cargo install --locked stellar-scaffold-cli stellar-registry-cli
 npm install
 ```
 
-The scripts sign with named Stellar CLI identities. Create them once:
+> **Judges and anyone cloning the repo: use the local network (Option A).** It
+> runs entirely on your machine with your own keys. The testnet deployment
+> (Option B) is signed with the team's keys, so outside the team it is
+> view-only; the [demo video](docs/demo.mp4) shows it in action.
+
+### Option A · Local network (recommended)
+
+Everything runs on your machine with Stellar Quickstart in Docker.
 
 ```bash
-for k in me tesoreria arbitro camara lucia pablo ana; do
-  stellar keys generate $k
-done
+git clone <this repo> && cd <repo>
+npm install
+
+# Terminal 1: local network + contracts + web, with hot reload
+npm run dev                       # → http://localhost:5173
+
+# Terminal 2, once Terminal 1 shows the contracts deployed
+# (“Successfully generated client for: peaje”):
+scripts/zbe-setup.sh              # demo data + app/.env.local
 ```
 
-> ⚠️ The contracts on testnet were deployed with the team's own `me` key. If you
-> use **fresh** keys, deploy your own copy (see
-> [Testnet deployment](#testnet-deployment)) or use the local network.
+Then open **http://localhost:5173** (reload it if it showed an error while the
+clients were still being generated). The network pill in the header must say
+**Local**.
 
-### Option A · Testnet (quickest)
+What happens behind the scenes:
 
-Uses the contracts already deployed with Stellar Registry. Needs the team's `me`
-key.
+1. `npm run dev` first runs `scripts/zbe-init.sh`, which creates the demo
+   identities (`me`, `tesoreria`, `arbitro`, `camara`, `lucia`, `pablo`, `ana`)
+   if they don't exist and writes to `.env` the address of the test USDC token
+   for **your** `me` account.
+2. Stellar Scaffold starts the local network in Docker, funds those accounts,
+   deploys Etiqueta and Peaje and generates the TypeScript clients.
+3. `scripts/zbe-setup.sh` deploys the USDC test token, links Peaje to Etiqueta,
+   creates the zone, authorizes the camera, issues the three labels, gives the
+   drivers test USDC and writes the demo signing keys to `app/.env.local`.
+
+`npm run dev` rebuilds and redeploys a contract whenever you save its Rust
+source; run `scripts/zbe-setup.sh` again after a redeploy.
+
+### Option B · Testnet (team only)
+
+Uses the contracts already deployed with Stellar Registry. Writing to them needs
+the team's `me` key (DGT, City Hall and token issuer). To use testnet with your
+own keys, deploy your own copy (see [Testnet deployment](#testnet-deployment)).
 
 ```bash
 # 1. Fund the demo accounts with Friendbot
@@ -299,22 +328,6 @@ cd app && npx vite preview        # → http://localhost:4173
 ```
 
 The network pill in the header must say **Testnet**.
-
-### Option B · Local network
-
-Everything runs on your machine with Stellar Quickstart in Docker.
-
-```bash
-# Terminal 1: local network + contracts + web, with hot reload
-npm run dev                       # → http://localhost:5173
-
-# Terminal 2, once the contracts are deployed:
-scripts/zbe-setup.sh              # demo data + app/.env.local
-```
-
-The network pill must say **Local**. `npm run dev` rebuilds and redeploys a
-contract whenever you save its Rust source; run `scripts/zbe-setup.sh` again
-after a redeploy.
 
 Prefer the command line? This runs the whole flow (top up, three cars, wait for
 the window, settle):
@@ -381,6 +394,7 @@ All scripts take `STELLAR_NETWORK` (default `local`). Contract IDs come from
 
 | Script                         | What it does                                                                                                                                                                                                                                                                     |
 | ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `scripts/zbe-init.sh`          | Runs automatically before `npm run dev`: creates missing demo identities and writes the local USDC token address to `.env` (read by `scaffold.yml` as `${env.ZBE_USDC_LOCAL}`)                                                                                                   |
 | `scripts/zbe-setup.sh`         | Idempotent demo setup: deploys the USDC test asset, links Peaje → Etiqueta, creates zone `centro`, authorizes the camera, adds trustlines, mints USDC, issues the three labels, and writes `app/.env.local`. `DRIVER=G… scripts/zbe-setup.sh` also sends 50 USDC to that address |
 | `scripts/zbe-flow.sh`          | Full demo flow from the CLI                                                                                                                                                                                                                                                      |
 | `scripts/zbe-env.sh`           | Writes `app/.env.local` with the demo signing keys and the HMAC key                                                                                                                                                                                                              |
@@ -446,15 +460,17 @@ Then point the `testnet` entries in `scaffold.yml` to your IDs.
 
 ## Troubleshooting
 
-| Symptom                                                                     | Fix                                                                                  |
-| --------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
-| Blank page, Vite errors `504 (Outdated Request)`                            | Restart `npm run dev` (Vite got stuck re-optimizing dependencies)                    |
-| `Failed to resolve import "./clients"` right after `stellar scaffold clean` | Wait for `npm run dev` to regenerate the clients                                     |
-| `permission denied … docker.sock`                                           | Add your user to the `docker` group and log in again                                 |
-| “The demo key for … is missing”                                             | Run `scripts/zbe-setup.sh` (or `scripts/zbe-env.sh`) and reload                      |
-| “The toll is not linked to the label contract”                              | Run `scripts/zbe-setup.sh` after every redeploy                                      |
-| A plate returns an old charge                                               | One charge per vehicle, zone and day: use another plate or wait until tomorrow (UTC) |
-| `TxInsufficientBalance` on testnet                                          | Fund the account again: `stellar keys fund <name> --network testnet`                 |
+| Symptom                                                                     | Fix                                                                                                      |
+| --------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| First `npm run dev`: error overlay `Failed to resolve import "./clients"`   | Normal while Scaffold deploys the contracts and generates the clients; reload the page when it finishes  |
+| `zbe-setup.sh`: “Peaje was deployed with token … but your USDC is …”        | Stop `npm run dev`, run `stellar scaffold clean`, start `npm run dev` again, then `scripts/zbe-setup.sh` |
+| Blank page, Vite errors `504 (Outdated Request)`                            | Restart `npm run dev` (Vite got stuck re-optimizing dependencies)                                        |
+| `Failed to resolve import "./clients"` right after `stellar scaffold clean` | Wait for `npm run dev` to regenerate the clients                                                         |
+| `permission denied … docker.sock`                                           | Add your user to the `docker` group and log in again                                                     |
+| “The demo key for … is missing”                                             | Run `scripts/zbe-setup.sh` (or `scripts/zbe-env.sh`) and reload                                          |
+| “The toll is not linked to the label contract”                              | Run `scripts/zbe-setup.sh` after every redeploy                                                          |
+| A plate returns an old charge                                               | One charge per vehicle, zone and day: use another plate or wait until tomorrow (UTC)                     |
+| `TxInsufficientBalance` on testnet                                          | Fund the account again: `stellar keys fund <name> --network testnet`                                     |
 
 ---
 

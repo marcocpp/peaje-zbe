@@ -13,46 +13,46 @@ USDC=$(stellar contract id asset --asset "$(usdc_asset)" --network "$NETWORK")
 LUCIA=$(addr lucia)
 
 show() {
-  echo "  bono Lucía:  $(invoke "$PEAJE" me balance --owner "$LUCIA")"
-  echo "  tesorería:   $(invoke "$USDC" me balance --id "$(addr tesoreria)")"
-  echo "  recaudado:   $(invoke "$PEAJE" me collected)"
+  echo "  Lucía pass:  $(invoke "$PEAJE" me balance --owner "$LUCIA")"
+  echo "  treasury:    $(invoke "$USDC" me balance --id "$(addr tesoreria)")"
+  echo "  collected:   $(invoke "$PEAJE" me collected)"
 }
 
 entry() {
-  echo "→ Entra $1" >&2
+  echo "→ Car $1 enters" >&2
   invoke "$PEAJE" camara report_entry --camera "$(addr camara)" \
     --plate_hash "$(plate_hash "$1")" --zone_id centro
 }
 
-echo "→ Lucía recarga 20 USDC"
+echo "→ Lucía tops up 20 USDC"
 invoke "$PEAJE" lucia deposit --owner "$LUCIA" --amount $((20 * USDC_UNIT)) >/dev/null
 show
 
-echo "  resultado: $(entry 1111BCD)"   # Eco: null
+echo "  result: $(entry 1111BCD)"   # Eco: null
 ID=$(entry 2222BCD)                    # B con bono: id del cargo
-echo "  resultado: cargo $ID"
-echo "  resultado: $(entry 3333BCD)"   # B sin bono: null + evento no_bono
+echo "  result: charge $ID"
+echo "  result: $(entry 3333BCD)"   # B sin bono: null + evento no_bono
 show
 
 CHARGE=$(invoke "$PEAJE" me get_charge --charge_id "$ID")
 STATUS=$(jq -r .status <<<"$CHARGE")
 if [ "$STATUS" != "Pending" ]; then
-  echo "ℹ️  El cargo $ID de hoy ya está $STATUS; reinicia la red local para repetir la demo."
+  echo "ℹ️  Today's charge $ID is already $STATUS (one per vehicle, zone and day). Reset the local network to run the demo again."
   exit 0
 fi
 
 WAIT=$(( $(jq -r .deadline <<<"$CHARGE") - $(date +%s) + 2 ))
 if [ "$WAIT" -gt 0 ]; then
-  echo "→ settle antes de plazo (debe fallar con Error(Contract, #10) AppealWindowOpen)"
+  echo "→ settle before the deadline (must fail with Error(Contract, #10) AppealWindowOpen)"
   if invoke "$PEAJE" me settle --charge_id "$ID" >/dev/null; then
-    echo "❌ se cobró antes de tiempo" >&2; exit 1
+    echo "❌ charge was collected too early" >&2; exit 1
   fi
-  echo "  rechazado ✅"
-  echo "→ Esperando ${WAIT} s de ventana de alegación..."
+  echo "  rejected ✅"
+  echo "→ Waiting ${WAIT}s for the appeal window..."
   sleep "$WAIT"
 fi
 invoke "$PEAJE" me settle --charge_id "$ID" >/dev/null
 echo "  $(invoke "$PEAJE" me get_charge --charge_id "$ID" | jq -c '{id,status,amount}')"
 show
 
-echo "✅ Flujo completo"
+echo "✅ Full flow completed"

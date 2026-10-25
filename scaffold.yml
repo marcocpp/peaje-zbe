@@ -73,7 +73,8 @@ contracts:
         source: peaje
         args:
           admin: ${account.me}
-          token: CDHABPKEQZCRD4DLMR5DK4CVQYO7AGIBWGOU6LIFZFTYA2BIFAI2P4LM # USDC:me en local
+          # USDC:me de cada máquina; lo escribe scripts/zbe-init.sh en .env
+          token: ${env.ZBE_USDC_LOCAL:-CDHABPKEQZCRD4DLMR5DK4CVQYO7AGIBWGOU6LIFZFTYA2BIFAI2P4LM}
           treasury: ${account.tesoreria}
           arbiter: ${account.arbitro}
       # Registry: unverified/zbe-peaje-impedancia-uno (token USDC:me en testnet)
