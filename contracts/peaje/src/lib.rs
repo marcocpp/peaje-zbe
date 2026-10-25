@@ -288,14 +288,20 @@ impl Peaje {
         zone_id: Symbol,
     ) -> Result<Option<u64>, Error> {
         camera.require_auth();
-        if !env.storage().persistent().has(&DataKey::Camera(camera)) {
+        let camera_key = DataKey::Camera(camera);
+        if !env.storage().persistent().has(&camera_key) {
             return Err(Error::NotCamera);
         }
+        let zone_key = DataKey::Zone(zone_id.clone());
         let zone: Zone = env
             .storage()
             .persistent()
-            .get(&DataKey::Zone(zone_id.clone()))
+            .get(&zone_key)
             .ok_or(Error::ZoneNotFound)?;
+        // Una zona con tráfico permitido no se escribe nunca: sin esto caduca a
+        // los 7 días y cada entrada pagaría su restauración
+        Self::touch(env, &camera_key);
+        Self::touch(env, &zone_key);
         let etiqueta: Address = env
             .storage()
             .instance()
@@ -345,7 +351,7 @@ impl Peaje {
             zone_id: zone_id.clone(),
             amount: zone.fee,
             created_at: now,
-            deadline: now + zone.appeal_secs,
+            deadline: now.saturating_add(zone.appeal_secs),
             status: ChargeStatus::Pending,
         };
         Self::save(env, &DataKey::Charge(id), &charge);
@@ -536,6 +542,11 @@ impl Peaje {
     /// instancia.
     fn save<V: soroban_sdk::IntoVal<Env, soroban_sdk::Val>>(env: &Env, key: &DataKey, value: &V) {
         env.storage().persistent().set(key, value);
+        Self::touch(env, key);
+    }
+
+    /// Alarga el TTL de una entrada que existe y el de la instancia.
+    fn touch(env: &Env, key: &DataKey) {
         env.storage()
             .persistent()
             .extend_ttl(key, TTL_THRESHOLD, TTL_EXTEND_TO);

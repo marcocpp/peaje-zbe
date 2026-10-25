@@ -151,6 +151,11 @@ impl Etiqueta {
                 .persistent()
                 .extend_ttl(&key, TTL_THRESHOLD, TTL_EXTEND_TO);
         }
+        // El Peaje llama aquí en cada entrada: así la instancia no caduca
+        // aunque la DGT pase semanas sin emitir etiquetas
+        env.storage()
+            .instance()
+            .extend_ttl(TTL_THRESHOLD, TTL_EXTEND_TO);
         label
     }
 

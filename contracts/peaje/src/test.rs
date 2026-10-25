@@ -5,7 +5,7 @@ use super::*;
 use ::etiqueta::{Category as DgtCategory, Etiqueta, EtiquetaClient as DgtClient};
 use soroban_sdk::{
     BytesN, Env, Event, symbol_short,
-    testutils::{Address as _, Events, Ledger},
+    testutils::{Address as _, Events, Ledger, storage::Persistent as _},
     token::{StellarAssetClient, TokenClient},
 };
 
@@ -418,4 +418,32 @@ fn not_configured_without_etiqueta() {
         peaje.try_report_entry(&camera, &plate(&env, 1), &centro()),
         Err(Ok(Error::NotConfigured))
     );
+}
+
+#[test]
+fn daily_entries_keep_zone_and_camera_alive() {
+    let (s, _) = setup();
+    let env = &s.env;
+    let eco_owner = Address::generate(env);
+    s.dgt.issue(&plate(env, 2), &eco_owner, &DgtCategory::Eco);
+
+    // Solo entran coches permitidos (no se escribe nada): la zona y la cámara
+    // tienen que seguir vivas más allá del TTL inicial de 7 días sin tener que
+    // restaurarlas (la restauración automática sube el coste de la entrada)
+    for _ in 0..10 {
+        env.ledger().with_mut(|l| l.sequence_number += DAY_IN_LEDGERS);
+        advance(env, DAY_IN_SECS);
+        assert_eq!(
+            s.peaje.report_entry(&s.camera, &plate(env, 2), &centro()),
+            None
+        );
+    }
+    env.as_contract(&s.peaje.address, || {
+        let p = env.storage().persistent();
+        // Sin renovar, la entrada habría caducado y se habría restaurado con
+        // el TTL mínimo (menos de un día)
+        let min = TTL_THRESHOLD;
+        assert!(p.get_ttl(&DataKey::Zone(centro())) >= min);
+        assert!(p.get_ttl(&DataKey::Camera(s.camera.clone())) >= min);
+    });
 }
