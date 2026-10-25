@@ -49,3 +49,4 @@ app-lib/clients/*
 # Impeccable: capturas, bocetos y estado local (el brief y PRODUCT.md sí van al repo)
 app/.impeccable/*
 !app/.impeccable/surfaces/
+!app/.impeccable/design.json

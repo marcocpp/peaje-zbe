@@ -487,12 +487,12 @@ select:focus {
 }
 
 .zbe-sticker--2 {
-	background: #1f8a45;
+	background: #1a7d3e;
 	color: #fff;
 }
 
 .zbe-sticker--3 {
-	background: linear-gradient(90deg, #1f8a45 50%, #1d5fae 50%);
+	background: linear-gradient(90deg, #1a7d3e 50%, #1d5fae 50%);
 	color: #fff;
 	font-size: 0.62rem;
 }

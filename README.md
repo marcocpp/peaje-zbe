@@ -302,7 +302,8 @@ scripts/zbe-setup.sh              # demo data + app/.env.local
 
 Then open **http://localhost:5173** (reload it if it showed an error while the
 clients were still being generated). The network pill in the header must say
-**Local**.
+**Local**. The local network needs port **8000**: if another program uses it,
+the container never becomes healthy (`Health check timed out`).
 
 What happens behind the scenes:
 
@@ -363,18 +364,18 @@ appeal.
 
 1. **Driver** → _View as_ **Lucía** → amount `20` → **Top up**. Her pass shows
    20 USDC available.
-2. **Camera** → plate **2222BCD** → **🚗 Car enters**. Result: _Charge locked ·
+2. **Camera** → plate **2222BCD** → **Car enters**. Result: _Charge #0 locked –
    5 USDC_.
 3. **Driver** (Lucía): the charge shows **Locked** with a countdown; her pass
    shows 15 available / 5 locked.
-4. **Camera** → **1111BCD** → _Access granted · label Eco_. Then **3333BCD** →
+4. **Camera** → **1111BCD** → _Access granted – label Eco_. Then **3333BCD** →
    _No ZBE pass or not enough balance_ (a `no_bono` event, nothing charged).
 5. **City Hall**: wait until the window closes → **Collect** on the charge.
    _Collected_ and _Treasury wallet_ go up by 5 USDC.
 6. **Appeal path:** issue another label for Lucía in **DGT** (e.g. `4444BCD`,
    label B), make it enter in **Camera**, press **Appeal** in **Driver** before
-   the countdown ends, then **Arbiter** → **Cancel charge** (money back to her
-   available balance) or **Uphold** (collected).
+   the countdown ends, then **Arbiter** → **Cancel and refund** (money back to
+   her available balance) or **Uphold and collect**.
 
 > 🗓️ **One charge per vehicle, zone and day.** After a run, the same plate will
 > return the _same_ charge until the next day (UTC). To rehearse again, issue a

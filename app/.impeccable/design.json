@@ -1,0 +1,556 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-25T23:00:00Z",
+  "title": "Design System: ZBE Toll",
+  "extensions": {
+    "colorMeta": {
+      "ground": {
+        "role": "neutral",
+        "displayName": "Cool Ground",
+        "canonical": "oklch(96.6% 0.005 258)",
+        "tonalRamp": [
+          "oklch(15% 0.005 258)",
+          "oklch(25% 0.005 258)",
+          "oklch(35% 0.005 258)",
+          "oklch(45% 0.005 258)",
+          "oklch(55% 0.005 258)",
+          "oklch(70% 0.005 258)",
+          "oklch(85% 0.005 258)",
+          "oklch(95% 0.005 258)"
+        ]
+      },
+      "panel": {
+        "role": "neutral",
+        "displayName": "Panel White",
+        "canonical": "oklch(100.0% 0.000 90)",
+        "tonalRamp": [
+          "oklch(15% 0.000 90)",
+          "oklch(25% 0.000 90)",
+          "oklch(35% 0.000 90)",
+          "oklch(45% 0.000 90)",
+          "oklch(55% 0.000 90)",
+          "oklch(70% 0.000 90)",
+          "oklch(85% 0.000 90)",
+          "oklch(95% 0.000 90)"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Asphalt Ink",
+        "canonical": "oklch(19.4% 0.016 257)",
+        "tonalRamp": [
+          "oklch(15% 0.016 257)",
+          "oklch(25% 0.016 257)",
+          "oklch(35% 0.016 257)",
+          "oklch(45% 0.016 257)",
+          "oklch(55% 0.016 257)",
+          "oklch(70% 0.016 257)",
+          "oklch(85% 0.016 257)",
+          "oklch(95% 0.016 257)"
+        ]
+      },
+      "ink-2": {
+        "role": "neutral",
+        "displayName": "Kerb Grey",
+        "canonical": "oklch(44.5% 0.027 255)",
+        "tonalRamp": [
+          "oklch(15% 0.027 255)",
+          "oklch(25% 0.027 255)",
+          "oklch(35% 0.027 255)",
+          "oklch(45% 0.027 255)",
+          "oklch(55% 0.027 255)",
+          "oklch(70% 0.027 255)",
+          "oklch(85% 0.027 255)",
+          "oklch(95% 0.027 255)"
+        ]
+      },
+      "rule": {
+        "role": "neutral",
+        "displayName": "Rule",
+        "canonical": "oklch(88.9% 0.013 256)",
+        "tonalRamp": [
+          "oklch(15% 0.013 256)",
+          "oklch(25% 0.013 256)",
+          "oklch(35% 0.013 256)",
+          "oklch(45% 0.013 256)",
+          "oklch(55% 0.013 256)",
+          "oklch(70% 0.013 256)",
+          "oklch(85% 0.013 256)",
+          "oklch(95% 0.013 256)"
+        ]
+      },
+      "rule-soft": {
+        "role": "neutral",
+        "displayName": "Soft Rule",
+        "canonical": "oklch(93.8% 0.008 254)",
+        "tonalRamp": [
+          "oklch(15% 0.008 254)",
+          "oklch(25% 0.008 254)",
+          "oklch(35% 0.008 254)",
+          "oklch(45% 0.008 254)",
+          "oklch(55% 0.008 254)",
+          "oklch(70% 0.008 254)",
+          "oklch(85% 0.008 254)",
+          "oklch(95% 0.008 254)"
+        ]
+      },
+      "sign": {
+        "role": "primary",
+        "displayName": "Road Sign Blue",
+        "canonical": "oklch(43.8% 0.150 258)",
+        "tonalRamp": [
+          "oklch(15% 0.150 258)",
+          "oklch(25% 0.150 258)",
+          "oklch(35% 0.150 258)",
+          "oklch(45% 0.150 258)",
+          "oklch(55% 0.150 258)",
+          "oklch(70% 0.150 258)",
+          "oklch(85% 0.150 258)",
+          "oklch(95% 0.150 258)"
+        ]
+      },
+      "sign-dark": {
+        "role": "primary",
+        "displayName": "Night Sign Blue",
+        "canonical": "oklch(35.9% 0.120 257)",
+        "tonalRamp": [
+          "oklch(15% 0.120 257)",
+          "oklch(25% 0.120 257)",
+          "oklch(35% 0.120 257)",
+          "oklch(45% 0.120 257)",
+          "oklch(55% 0.120 257)",
+          "oklch(70% 0.120 257)",
+          "oklch(85% 0.120 257)",
+          "oklch(95% 0.120 257)"
+        ]
+      },
+      "sign-soft": {
+        "role": "primary",
+        "displayName": "Blue Wash",
+        "canonical": "oklch(94.6% 0.016 254)",
+        "tonalRamp": [
+          "oklch(15% 0.016 254)",
+          "oklch(25% 0.016 254)",
+          "oklch(35% 0.016 254)",
+          "oklch(45% 0.016 254)",
+          "oklch(55% 0.016 254)",
+          "oklch(70% 0.016 254)",
+          "oklch(85% 0.016 254)",
+          "oklch(95% 0.016 254)"
+        ]
+      },
+      "ring": {
+        "role": "secondary",
+        "displayName": "ZBE Ring Red",
+        "canonical": "oklch(53.0% 0.207 22)",
+        "tonalRamp": [
+          "oklch(15% 0.160 22)",
+          "oklch(25% 0.160 22)",
+          "oklch(35% 0.160 22)",
+          "oklch(45% 0.160 22)",
+          "oklch(55% 0.160 22)",
+          "oklch(70% 0.160 22)",
+          "oklch(85% 0.160 22)",
+          "oklch(95% 0.160 22)"
+        ]
+      },
+      "ok": {
+        "role": "state",
+        "displayName": "Collected Green",
+        "canonical": "oklch(46.7% 0.114 149)",
+        "tonalRamp": [
+          "oklch(15% 0.114 149)",
+          "oklch(25% 0.114 149)",
+          "oklch(35% 0.114 149)",
+          "oklch(45% 0.114 149)",
+          "oklch(55% 0.114 149)",
+          "oklch(70% 0.114 149)",
+          "oklch(85% 0.114 149)",
+          "oklch(95% 0.114 149)"
+        ]
+      },
+      "ok-soft": {
+        "role": "state",
+        "displayName": "Collected Wash",
+        "canonical": "oklch(94.7% 0.022 154)",
+        "tonalRamp": [
+          "oklch(15% 0.022 154)",
+          "oklch(25% 0.022 154)",
+          "oklch(35% 0.022 154)",
+          "oklch(45% 0.022 154)",
+          "oklch(55% 0.022 154)",
+          "oklch(70% 0.022 154)",
+          "oklch(85% 0.022 154)",
+          "oklch(95% 0.022 154)"
+        ]
+      },
+      "lock": {
+        "role": "state",
+        "displayName": "Locked Amber",
+        "canonical": "oklch(46.4% 0.099 73)",
+        "tonalRamp": [
+          "oklch(15% 0.099 73)",
+          "oklch(25% 0.099 73)",
+          "oklch(35% 0.099 73)",
+          "oklch(45% 0.099 73)",
+          "oklch(55% 0.099 73)",
+          "oklch(70% 0.099 73)",
+          "oklch(85% 0.099 73)",
+          "oklch(95% 0.099 73)"
+        ]
+      },
+      "lock-soft": {
+        "role": "state",
+        "displayName": "Locked Wash",
+        "canonical": "oklch(95.7% 0.055 90)",
+        "tonalRamp": [
+          "oklch(15% 0.055 90)",
+          "oklch(25% 0.055 90)",
+          "oklch(35% 0.055 90)",
+          "oklch(45% 0.055 90)",
+          "oklch(55% 0.055 90)",
+          "oklch(70% 0.055 90)",
+          "oklch(85% 0.055 90)",
+          "oklch(95% 0.055 90)"
+        ]
+      },
+      "danger": {
+        "role": "state",
+        "displayName": "Danger Red",
+        "canonical": "oklch(50.1% 0.178 29)",
+        "tonalRamp": [
+          "oklch(15% 0.160 29)",
+          "oklch(25% 0.160 29)",
+          "oklch(35% 0.160 29)",
+          "oklch(45% 0.160 29)",
+          "oklch(55% 0.160 29)",
+          "oklch(70% 0.160 29)",
+          "oklch(85% 0.160 29)",
+          "oklch(95% 0.160 29)"
+        ]
+      },
+      "danger-soft": {
+        "role": "state",
+        "displayName": "Danger Wash",
+        "canonical": "oklch(95.6% 0.019 26)",
+        "tonalRamp": [
+          "oklch(15% 0.019 26)",
+          "oklch(25% 0.019 26)",
+          "oklch(35% 0.019 26)",
+          "oklch(45% 0.019 26)",
+          "oklch(55% 0.019 26)",
+          "oklch(70% 0.019 26)",
+          "oklch(85% 0.019 26)",
+          "oklch(95% 0.019 26)"
+        ]
+      },
+      "label-b": {
+        "role": "artefact",
+        "displayName": "DGT Sticker Yellow (B)",
+        "canonical": "oklch(84.0% 0.172 90)",
+        "tonalRamp": [
+          "oklch(15% 0.160 90)",
+          "oklch(25% 0.160 90)",
+          "oklch(35% 0.160 90)",
+          "oklch(45% 0.160 90)",
+          "oklch(55% 0.160 90)",
+          "oklch(70% 0.160 90)",
+          "oklch(85% 0.160 90)",
+          "oklch(95% 0.160 90)"
+        ]
+      },
+      "label-c": {
+        "role": "artefact",
+        "displayName": "DGT Sticker Green (C)",
+        "canonical": "oklch(55.9% 0.140 150)",
+        "tonalRamp": [
+          "oklch(15% 0.140 150)",
+          "oklch(25% 0.140 150)",
+          "oklch(35% 0.140 150)",
+          "oklch(45% 0.140 150)",
+          "oklch(55% 0.140 150)",
+          "oklch(70% 0.140 150)",
+          "oklch(85% 0.140 150)",
+          "oklch(95% 0.140 150)"
+        ]
+      },
+      "label-zero": {
+        "role": "artefact",
+        "displayName": "DGT Sticker Blue (Zero)",
+        "canonical": "oklch(48.9% 0.142 256)",
+        "tonalRamp": [
+          "oklch(15% 0.142 256)",
+          "oklch(25% 0.142 256)",
+          "oklch(35% 0.142 256)",
+          "oklch(45% 0.142 256)",
+          "oklch(55% 0.142 256)",
+          "oklch(70% 0.142 256)",
+          "oklch(85% 0.142 256)",
+          "oklch(95% 0.142 256)"
+        ]
+      },
+      "plate-eu": {
+        "role": "artefact",
+        "displayName": "EU Plate Blue",
+        "canonical": "oklch(45.1% 0.174 264)",
+        "tonalRamp": [
+          "oklch(15% 0.160 264)",
+          "oklch(25% 0.160 264)",
+          "oklch(35% 0.160 264)",
+          "oklch(45% 0.160 264)",
+          "oklch(55% 0.160 264)",
+          "oklch(70% 0.160 264)",
+          "oklch(85% 0.160 264)",
+          "oklch(95% 0.160 264)"
+        ]
+      },
+      "plate-star": {
+        "role": "artefact",
+        "displayName": "EU Plate Yellow",
+        "canonical": "oklch(88.1% 0.181 94)",
+        "tonalRamp": [
+          "oklch(15% 0.160 94)",
+          "oklch(25% 0.160 94)",
+          "oklch(35% 0.160 94)",
+          "oklch(45% 0.160 94)",
+          "oklch(55% 0.160 94)",
+          "oklch(70% 0.160 94)",
+          "oklch(85% 0.160 94)",
+          "oklch(95% 0.160 94)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Home hero headline only."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Page title in each role's page head."
+      },
+      "section": {
+        "displayName": "Section",
+        "purpose": "Home section titles."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Panel titles; step and principle terms."
+      },
+      "figure": {
+        "displayName": "Figure",
+        "purpose": "Stat and balance values, tabular."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Running text; leads capped at 54-62ch."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Field, stat and chip labels."
+      },
+      "mono": {
+        "displayName": "Mono",
+        "purpose": "Hashes and code only."
+      }
+    },
+    "shadows": [
+      {
+        "name": "toast-lift",
+        "value": "0 6px 20px rgba(16, 21, 28, 0.14)",
+        "purpose": "Notifications only; the one floating layer."
+      },
+      {
+        "name": "sticker-edge",
+        "value": "0 0 0 1px var(--rule)",
+        "purpose": "Hairline around white-bordered stickers on light ground."
+      },
+      {
+        "name": "appeal-ring",
+        "value": "inset 0 0 0 1.5px var(--sign)",
+        "purpose": "Under-appeal status outline."
+      }
+    ],
+    "motion": [
+      {
+        "name": "state-transition",
+        "value": "0.15s ease-out",
+        "purpose": "Colour and border changes on buttons, links and nav."
+      },
+      {
+        "name": "result-in",
+        "value": "0.35s cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "New camera result row fades in and drops 8px; suppressed under prefers-reduced-motion."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "phone",
+        "value": "640px"
+      },
+      {
+        "name": "stack",
+        "value": "900px"
+      },
+      {
+        "name": "nav-row",
+        "value": "1020px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The one main action on a screen, in Road Sign Blue.",
+      "html": "<button class=\"ds-btn ds-btn-primary\">Top up</button>",
+      "css": ".ds-btn { display:inline-flex; align-items:center; justify-content:center; gap:0.5rem; min-height:2.75rem; padding:0.5rem 1.1rem; border-radius:var(--radius); border:1px solid var(--rule); background:var(--panel); color:var(--ink); font-family: var(--font); font-size:0.95rem; font-weight:650; line-height:1.2; cursor:pointer; transition:background-color .15s ease-out, border-color .15s ease-out, color .15s ease-out; } .ds-btn:focus-visible { outline:3px solid var(--sign); outline-offset:2px; } .ds-btn-primary { background:var(--sign); border-color:var(--sign); color:#fff; } .ds-btn-primary:hover { background:var(--sign-dark); border-color:var(--sign-dark); }"
+    },
+    {
+      "name": "Default Button",
+      "kind": "button",
+      "refersTo": "button",
+      "description": "Neutral outline button for secondary actions.",
+      "html": "<button class=\"ds-btn-default\">Withdraw</button>",
+      "css": ".ds-btn-default { display:inline-flex; align-items:center; gap:0.5rem; min-height:2.75rem; padding:0.5rem 1.1rem; border-radius:var(--radius); border:1px solid var(--rule); background:var(--panel); color:var(--ink); font-family: var(--font); font-size:0.95rem; font-weight:650; cursor:pointer; transition:background-color .15s ease-out, border-color .15s ease-out; } .ds-btn-default:hover { background:var(--ground); border-color:var(--ink-2); } .ds-btn-default:focus-visible { outline:3px solid var(--sign); outline-offset:2px; }"
+    },
+    {
+      "name": "Appeal Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Blue outline: appealing is a right, not a destructive act.",
+      "html": "<button class=\"ds-btn-appeal\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 256 256\" aria-hidden=\"true\"><path fill=\"none\" stroke=\"currentColor\" stroke-width=\"20\" stroke-linecap=\"round\" d=\"M128 40v176M48 72h160M48 72l-32 72a32 32 0 0 0 64 0zM208 72l-32 72a32 32 0 0 0 64 0z\"/></svg>Appeal</button>",
+      "css": ".ds-btn-appeal { display:inline-flex; align-items:center; gap:0.5rem; min-height:2.25rem; padding:0.35rem 0.8rem; border-radius:var(--radius); border:1px solid var(--sign); background:var(--panel); color:var(--sign); font-family: var(--font); font-size:0.875rem; font-weight:650; cursor:pointer; transition:background-color .15s ease-out, border-color .15s ease-out, color .15s ease-out; } .ds-btn-appeal:hover { background:var(--sign-soft); border-color:var(--sign-dark); color:var(--sign-dark); } .ds-btn-appeal:focus-visible { outline:3px solid var(--sign); outline-offset:2px; }"
+    },
+    {
+      "name": "Danger Button",
+      "kind": "button",
+      "refersTo": "button-danger",
+      "description": "Destructive acts only (revoke a label), in Danger Red, never Ring Red.",
+      "html": "<button class=\"ds-btn-danger\">Revoke</button>",
+      "css": ".ds-btn-danger { display:inline-flex; align-items:center; min-height:2.25rem; padding:0.35rem 0.8rem; border-radius:var(--radius); border:1px solid #e6b4b0; background:var(--panel); color:var(--danger); font-family: var(--font); font-size:0.875rem; font-weight:650; cursor:pointer; transition:background-color .15s ease-out, border-color .15s ease-out; } .ds-btn-danger:hover { background:var(--danger-soft); border-color:var(--danger); } .ds-btn-danger:focus-visible { outline:3px solid var(--sign); outline-offset:2px; }"
+    },
+    {
+      "name": "Text Field",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Labelled field with a Kerb Grey border and a blue focus outline.",
+      "html": "<label class=\"ds-field\">Amount (USDC)<input class=\"ds-input\" type=\"number\" value=\"20\"></label>",
+      "css": ".ds-field { display:flex; flex-direction:column; gap:0.35rem; max-width:18rem; font-family: var(--font); font-size:0.875rem; font-weight:650; color:var(--ink); } .ds-input { min-height:2.75rem; padding:0.5rem 0.8rem; border-radius:var(--radius); border:1px solid var(--ink-2); background:var(--panel); color:var(--ink); font:inherit; font-size:1rem; font-weight:400; } .ds-input:focus, .ds-input:focus-visible { outline:3px solid var(--sign); outline-offset:-1px; border-color:var(--sign); }"
+    },
+    {
+      "name": "Role Navigation",
+      "kind": "nav",
+      "refersTo": "",
+      "description": "Sticky white header; the active role carries a blue 3px underline.",
+      "html": "<nav class=\"ds-nav\"><a href=\"#\">Driver</a><a href=\"#\" class=\"ds-active\">Camera</a><a href=\"#\">City Hall</a><a href=\"#\">Arbiter</a><a href=\"#\">DGT</a></nav>",
+      "css": ".ds-nav { display:flex; gap:0.25rem; min-height:4.25rem; background:var(--panel); border-bottom:1px solid var(--rule); font-family: var(--font); } .ds-nav a { display:flex; align-items:center; padding:0 0.85rem; color:var(--ink-2); text-decoration:none; font-weight:650; border-bottom:3px solid transparent; margin-bottom:-1px; transition:color .15s ease-out, border-color .15s ease-out; } .ds-nav a:hover { color:var(--ink); } .ds-nav a:focus-visible { outline:3px solid var(--sign); outline-offset:2px; } .ds-nav a.ds-active { color:var(--sign); border-bottom-color:var(--sign); }"
+    },
+    {
+      "name": "Status Signs",
+      "kind": "chip",
+      "refersTo": "status-locked",
+      "description": "Charge state as icon plus word in a fixed colour pair.",
+      "html": "<span class=\"ds-status ds-locked\">Locked</span> <span class=\"ds-status ds-appeal\">Under appeal</span> <span class=\"ds-status ds-collected\">Collected</span> <span class=\"ds-status ds-cancelled\">Cancelled</span>",
+      "css": ".ds-status { display:inline-flex; align-items:center; gap:0.35rem; padding:0.25rem 0.65rem; border-radius:6px; font-family: var(--font); font-size:0.85rem; font-weight:750; white-space:nowrap; } .ds-locked { background:var(--lock-soft); color:var(--lock); } .ds-appeal { background:var(--panel); color:var(--sign); box-shadow:inset 0 0 0 1.5px var(--sign); } .ds-collected { background:var(--ok-soft); color:var(--ok); } .ds-cancelled { background:var(--ground); color:var(--ink-2); }"
+    },
+    {
+      "name": "Panel",
+      "kind": "card",
+      "refersTo": "panel",
+      "description": "Flat white panel with a 1px rule; no shadow.",
+      "html": "<section class=\"ds-panel\"><h2>ZBE pass</h2><p>Available and locked balances.</p></section>",
+      "css": ".ds-panel { background:var(--panel); border:1px solid var(--rule); border-radius:var(--radius-panel); padding:1.5rem; font-family: var(--font); color:var(--ink); } .ds-panel h2 { margin:0 0 1rem; font-size:1.15rem; font-weight:750; letter-spacing:-0.01em; } .ds-panel p { margin:0; color:var(--ink-2); }"
+    },
+    {
+      "name": "DGT Stickers",
+      "kind": "custom",
+      "refersTo": "sticker",
+      "description": "Environmental labels drawn as the real round DGT stickers.",
+      "html": "<span class=\"ds-stk ds-s0\">–</span> <span class=\"ds-stk ds-s1\">B</span> <span class=\"ds-stk ds-s2\">C</span> <span class=\"ds-stk ds-s3\">ECO</span> <span class=\"ds-stk ds-s4\">0</span>",
+      "css": ".ds-stk { display:inline-grid; place-items:center; width:2.1rem; height:2.1rem; border-radius:50%; border:2px solid #fff; box-shadow:0 0 0 1px var(--rule); font-family: var(--font); font-weight:800; font-size:0.85rem; line-height:1; } .ds-s0 { background:var(--panel); border:2px dashed #8994a3; box-shadow:none; color:var(--ink-2); } .ds-s1 { background:#f5c400; color:#10151c; } .ds-s2 { background:#1a7d3e; color:#fff; } .ds-s3 { background:linear-gradient(90deg, #1a7d3e 50%, #1d5fae 50%); color:#fff; font-size:0.62rem; } .ds-s4 { background:#1d5fae; color:#fff; font-size:1rem; }"
+    },
+    {
+      "name": "EU Number Plate",
+      "kind": "custom",
+      "refersTo": "plate",
+      "description": "Vehicles shown as Spanish EU plates with tabular characters.",
+      "html": "<span class=\"ds-plate\"><span class=\"ds-plate-eu\">E</span><span class=\"ds-plate-text\">2222BCD</span></span>",
+      "css": ".ds-plate { display:inline-flex; align-items:stretch; border:2px solid var(--ink); border-radius:5px; background:#fff; color:var(--ink); overflow:hidden; font-family: var(--font); font-weight:800; letter-spacing:0.08em; line-height:1; } .ds-plate-eu { display:flex; align-items:flex-end; justify-content:center; background:#1f4bb4; color:#ffd400; font-size:0.6em; padding:0 0.3rem 0.2rem; letter-spacing:0; } .ds-plate-text { padding:0.4rem 0.55rem 0.3rem; font-variant-numeric:tabular-nums; }"
+    },
+    {
+      "name": "Road Sign Panel",
+      "kind": "custom",
+      "refersTo": "road-sign",
+      "description": "Blue information panel with a white inner border carrying zone rules.",
+      "html": "<div class=\"ds-road\"><div class=\"ds-road-in\"><strong>Low Emission Zone</strong><dl><div><dt>Fee with a ZBE pass</dt><dd>5 USDC per day</dd></div><div><dt>Without a pass</dt><dd>Nothing is charged</dd></div></dl></div></div>",
+      "css": ".ds-road { background:var(--sign); color:#fff; border-radius:18px; padding:6px; font-family: var(--font); } .ds-road-in { border:3px solid #fff; border-radius:13px; padding:1.5rem 1.75rem 1.25rem; } .ds-road strong { display:block; font-size:1.6rem; font-weight:800; line-height:1.15; margin-bottom:1rem; } .ds-road dl { margin:0; } .ds-road dl > div { display:flex; justify-content:space-between; gap:1rem; padding:0.85rem 0; border-top:2px solid rgba(255,255,255,0.35); } .ds-road dt { color:#d6e3f5; } .ds-road dd { margin:0; font-weight:800; font-size:1.1rem; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Zone Boundary Sign",
+    "overview": "The interface speaks the visual language a Spanish driver already reads at the edge of a Low Emission Zone: the blue information panel, the red-ringed ZBE disc, the round DGT environmental stickers and the EU number plate. Those artefacts appear only where they carry meaning (a rule, a label, a vehicle, an outcome); everything else is a quiet operating surface of flat white panels on a cool grey ground, separated by 1px rules.\n\nDensity is calm and projector-friendly: generous 1.5rem gutters, large type for figures, one accent colour doing most of the work. The system is restrained by design, chosen after a louder signage treatment proved \"too much, not intuitive\". It rejects the gradient hero over a row of shadowed emoji cards, and it rejects neon dark mode.\n\nState is carried by colour families with fixed meaning: signage blue for action and the right to appeal, amber for money that is locked, green for money collected, grey for nothing happening, red only for the ZBE ring and for genuinely destructive acts.",
+    "keyCharacteristics": [
+      "Flat white panels with 1px rules on a cool grey ground; no resting shadows.",
+      "Signage blue as the single action colour.",
+      "Real-world artefacts (road sign, ZBE disc, DGT stickers, EU plates) drawn in their true colours.",
+      "Overpass for everything, tabular figures for every amount and countdown.",
+      "Light scheme only."
+    ],
+    "rules": [
+      {
+        "name": "The One Blue Rule",
+        "body": "Every actionable thing is Road Sign Blue or a neutral outline. No second accent is introduced for actions.",
+        "section": "colors"
+      },
+      {
+        "name": "The Appeal Is Not Danger Rule",
+        "body": "Appealing is a right, so the Appeal button and the Under-appeal status use blue (outline), never red.",
+        "section": "colors"
+      },
+      {
+        "name": "The Ring Is Reserved Rule",
+        "body": "ZBE Ring Red marks the zone sign and a locked-charge outcome only. Destructive actions use the separate Danger Red.",
+        "section": "colors"
+      },
+      {
+        "name": "The True Colours Rule",
+        "body": "DGT stickers, the ZBE disc and EU plates are drawn in their real-world colours and shapes, including the Eco sticker's hard green/blue split. They are depictions, not decoration.",
+        "section": "colors"
+      },
+      {
+        "name": "The Tabular Figures Rule",
+        "body": "Every amount, countdown, charge number, plate and stat uses tabular numerals.",
+        "section": "typography"
+      },
+      {
+        "name": "The Weight Ladder Rule",
+        "body": "Hierarchy comes from weight steps (650 labels and buttons, 750 titles and statuses, 800 headings and figures), not from colour or case. No uppercase labels.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat Panel Rule",
+        "body": "Panels, cards, tables and buttons carry no shadow. If something needs separation, use a 1px rule or a ground-to-panel step.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do keep panels flat: white, 1px Rule border, 12px radius, 1.5rem padding.",
+      "Do use Road Sign Blue for the one primary action on a screen, and for appeal actions as an outline.",
+      "Do show money state with the fixed pairs: amber for locked, green for collected, grey for cancelled or nothing charged.",
+      "Do draw labels as DGT stickers and vehicles as EU plates wherever a label or vehicle appears.",
+      "Do set every amount, plate, countdown and stat in tabular figures.",
+      "Do pair every status colour with an icon and a word.",
+      "Do keep a 44px minimum target for buttons and inputs."
+    ],
+    "donts": [
+      "Don't add drop shadows to panels, cards or buttons; only toasts float.",
+      "Don't use ZBE Ring Red for buttons, text or fills; destructive actions use Danger Red.",
+      "Don't colour the Appeal action or Under-appeal status red.",
+      "Don't use decorative gradients; the Eco sticker's hard split is a depiction of the real sticker, not a gradient style.",
+      "Don't introduce a dark theme or neon accents; the scheme is light only.",
+      "Don't show a plate in clear text where this browser does not know it; show the hash."
+    ]
+  }
+}
