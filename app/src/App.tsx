@@ -1,3 +1,10 @@
+import {
+	Bank,
+	Camera,
+	Car,
+	IdentificationCard,
+	Scales,
+} from "@phosphor-icons/react"
 import { labPrefix } from "@stellar-scaffold/app-lib"
 import { NavLink, Outlet, Route, Routes } from "react-router-dom"
 import styles from "./App.module.css"
@@ -9,6 +16,7 @@ import Conductor from "./pages/Conductor"
 import Debug from "./pages/Debug"
 import Dgt from "./pages/Dgt"
 import Home from "./pages/Home"
+import { ZbeSign } from "./zbe/ui"
 
 function App() {
 	return (
@@ -28,51 +36,57 @@ function App() {
 }
 
 const NAV = [
-	{ to: "/conductor", label: "Driver", icon: "🚗" },
-	{ to: "/camara", label: "Camera", icon: "📷" },
-	{ to: "/ayuntamiento", label: "City Hall", icon: "🏛️" },
-	{ to: "/arbitro", label: "Arbiter", icon: "⚖️" },
-	{ to: "/dgt", label: "DGT", icon: "🪪" },
+	{ to: "/camara", label: "Camera", Icon: Camera },
+	{ to: "/conductor", label: "Driver", Icon: Car },
+	{ to: "/ayuntamiento", label: "City Hall", Icon: Bank },
+	{ to: "/arbitro", label: "Arbiter", Icon: Scales },
+	{ to: "/dgt", label: "DGT", Icon: IdentificationCard },
 ]
 
 const AppLayout = () => (
 	<div className={styles.AppLayout}>
+		<a href="#main" className={styles.skip}>
+			Skip to content
+		</a>
 		<header className={styles.header}>
-			<NavLink to="/" className={styles.logo}>
-				<span className={styles.logoMark}>🌿</span>
-				<span className={styles.logoText}>
-					<strong>ZBE Toll</strong>
-					<span>Low Emission Zones on Stellar</span>
-				</span>
-			</NavLink>
-			<nav className={styles.headerNav}>
-				{NAV.map((n) => (
-					<NavLink
-						key={n.to}
-						to={n.to}
-						className={({ isActive }) => (isActive ? styles.active : "")}
-					>
-						{n.icon} {n.label}
-					</NavLink>
-				))}
-			</nav>
-			<ConnectAccount />
+			<div className={styles.headerInner}>
+				<NavLink to="/" className={styles.logo}>
+					<ZbeSign size={34} />
+					ZBE Toll
+				</NavLink>
+				<nav className={styles.headerNav} aria-label="Roles">
+					{NAV.map(({ to, label, Icon }) => (
+						<NavLink
+							key={to}
+							to={to}
+							className={({ isActive }) => (isActive ? styles.active : "")}
+						>
+							<Icon aria-hidden />
+							{label}
+						</NavLink>
+					))}
+				</nav>
+				<ConnectAccount />
+			</div>
 		</header>
 
-		<main className={styles.main}>
+		<main id="main" className={styles.main}>
 			<Outlet />
 		</main>
 
 		<footer className={styles.footer}>
-			<nav className={styles.footerNav}>
-				<span>HackMeridian 2026 · Team IMPEDANCIA UNO · Built on Stellar</span>
+			<div className={styles.footerNav}>
+				<span>
+					HackMeridian 2026 – Team IMPEDANCIA UNO – Built on Stellar – Test USDC
+					only, no real value
+				</span>
 				<span className={styles.footerLinks}>
 					<NavLink to="/debug">Contract Explorer</NavLink>
 					<a href={labPrefix()} target="_blank" rel="noreferrer">
 						Transaction Explorer
 					</a>
 				</span>
-			</nav>
+			</div>
 		</footer>
 	</div>
 )

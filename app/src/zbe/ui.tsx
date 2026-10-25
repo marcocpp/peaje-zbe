@@ -1,31 +1,65 @@
+import {
+	ArrowCounterClockwise,
+	CheckCircle,
+	LockSimple,
+	Scales,
+	Signature,
+	Timer,
+	WarningCircle,
+} from "@phosphor-icons/react"
 import { shortAddress } from "@stellar-scaffold/app-lib"
 import { type ReactNode } from "react"
-import { accountName, categoryName, CATEGORIES, formatUsdc } from "./config"
+import { accountName, categoryName, formatUsdc } from "./config"
 import { type Charge, type ChargeStatus, secondsLeft } from "./contracts"
 import { useLabels } from "./hooks"
 
-export const CategoryBadge = ({ value }: { value: number }) => (
-	<span
-		className="zbe-category"
-		style={{ background: CATEGORIES[value]?.color ?? "#999" }}
-		title={`Environmental label: ${categoryName(value)}`}
-	>
-		{categoryName(value)}
+/** Texto de cada distintivo tal y como aparece en la pegatina de la DGT */
+const STICKER = ["–", "B", "C", "ECO", "0"]
+
+/** Distintivo ambiental dibujado como la pegatina redonda de la DGT */
+export const CategoryBadge = ({
+	value,
+	withName,
+}: {
+	value: number
+	withName?: boolean
+}) => (
+	<span className="zbe-category">
+		<span
+			className={`zbe-sticker zbe-sticker--${value}`}
+			role="img"
+			aria-label={`Environmental label: ${categoryName(value)}`}
+			title={`Environmental label: ${categoryName(value)}`}
+		>
+			{STICKER[value] ?? "?"}
+		</span>
+		{withName && <span>{categoryName(value)}</span>}
 	</span>
 )
 
-const STATUS: Record<ChargeStatus, { text: string; cls: string }> = {
-	Pending: { text: "Locked", cls: "pending" },
-	Disputed: { text: "Under appeal", cls: "disputed" },
-	Settled: { text: "Collected", cls: "settled" },
-	Cancelled: { text: "Cancelled", cls: "cancelled" },
+const STATUS: Record<
+	ChargeStatus,
+	{ text: string; cls: string; Icon: typeof LockSimple }
+> = {
+	Pending: { text: "Locked", cls: "pending", Icon: LockSimple },
+	Disputed: { text: "Under appeal", cls: "disputed", Icon: Scales },
+	Settled: { text: "Collected", cls: "settled", Icon: CheckCircle },
+	Cancelled: {
+		text: "Cancelled",
+		cls: "cancelled",
+		Icon: ArrowCounterClockwise,
+	},
 }
 
-export const StatusBadge = ({ status }: { status: ChargeStatus }) => (
-	<span className={`zbe-status zbe-status--${STATUS[status].cls}`}>
-		{STATUS[status].text}
-	</span>
-)
+export const StatusBadge = ({ status }: { status: ChargeStatus }) => {
+	const { text, cls, Icon } = STATUS[status]
+	return (
+		<span className={`zbe-status zbe-status--${cls}`}>
+			<Icon weight="bold" aria-hidden />
+			{text}
+		</span>
+	)
+}
 
 /** Cuenta atrás de la ventana de alegación de un cargo pendiente */
 export const Countdown = ({ charge, now }: { charge: Charge; now: number }) => {
@@ -36,7 +70,8 @@ export const Countdown = ({ charge, now }: { charge: Charge; now: number }) => {
 	const s = left % 60
 	return (
 		<span className="zbe-countdown">
-			⏱ {m > 0 ? `${m}m ` : ""}
+			<Timer weight="bold" aria-hidden />
+			{m > 0 ? `${m}m ` : ""}
 			{s}s left to appeal
 		</span>
 	)
@@ -45,7 +80,9 @@ export const Countdown = ({ charge, now }: { charge: Charge; now: number }) => {
 /** Matrícula con formato europeo */
 export const Plate = ({ plate }: { plate: string }) => (
 	<span className="zbe-plate">
-		<span className="zbe-plate-eu">E</span>
+		<span className="zbe-plate-eu" aria-hidden>
+			E
+		</span>
 		<span className="zbe-plate-text">{plate}</span>
 	</span>
 )
@@ -55,7 +92,7 @@ export const Who = ({ address }: { address: string }) => {
 	return (
 		<span title={address}>
 			{name ?? shortAddress(address)}
-			{name && <span className="zbe-muted"> · {shortAddress(address)}</span>}
+			{name && <span className="zbe-muted"> – {shortAddress(address)}</span>}
 		</span>
 	)
 }
@@ -73,54 +110,84 @@ export const usePlateLookup = () => {
 		data?.find((p) => p.hash === hash)?.plate ?? `${hash.slice(0, 7)}…`
 }
 
+/** Una cifra de un panel: etiqueta arriba, valor grande debajo */
 export const Stat = ({
 	label,
 	children,
-	accent,
 }: {
 	label: string
 	children: ReactNode
-	accent?: boolean
 }) => (
-	<div className={`card zbe-stat${accent ? " zbe-stat--accent" : ""}`}>
-		<div className="zbe-stat-label">{label}</div>
-		<div className="zbe-stat-value">{children}</div>
+	<div className="zbe-stat">
+		<dt>{label}</dt>
+		<dd>{children}</dd>
 	</div>
 )
 
-/** Cabecera de cada vista: icono, título, descripción y quién firma */
+/** Cabecera de cada vista: título, qué se hace aquí y quién firma */
 export const PageHead = ({
-	icon,
 	title,
 	children,
 	signer,
 }: {
-	icon: string
 	title: string
 	children?: ReactNode
 	signer?: string
 }) => (
-	<div className="zbe-page-head">
-		<div className="zbe-page-icon" aria-hidden>
-			{icon}
-		</div>
+	<header className="zbe-page-head">
 		<div>
 			<h1>{title}</h1>
 			{children && <p>{children}</p>}
 		</div>
 		{signer && (
 			<span className="zbe-chip">
-				✍️ Signing as <strong>{signer}</strong>
+				<Signature weight="bold" aria-hidden />
+				Signing as <strong>{signer}</strong>
 			</span>
 		)}
-	</div>
+	</header>
 )
 
 /** Aviso cuando faltan las claves de demo en app/.env.local */
 export const MissingKeys = ({ who }: { who: string }) => (
-	<div className="card zbe-warning" role="alert">
-		The demo key for <strong>{who}</strong> is missing. Run{" "}
-		<code>scripts/zbe-setup.sh</code> (or <code>scripts/zbe-env.sh</code>) and
-		reload the page.
+	<div className="zbe-notice" role="alert">
+		<WarningCircle weight="bold" aria-hidden />
+		<p>
+			The demo key for <strong>{who}</strong> is missing. Run{" "}
+			<code>scripts/zbe-setup.sh</code> (or <code>scripts/zbe-env.sh</code>) and
+			reload the page.
+		</p>
 	</div>
+)
+
+/** Señal de zona de bajas emisiones: anillo rojo con "ZBE" */
+export const ZbeSign = ({ size = 40 }: { size?: number }) => (
+	<svg
+		className="zbe-sign"
+		width={size}
+		height={size}
+		viewBox="0 0 40 40"
+		role="img"
+		aria-label="Low Emission Zone sign"
+	>
+		<circle
+			cx="20"
+			cy="20"
+			r="17"
+			fill="#fff"
+			stroke="#C8102E"
+			strokeWidth="5"
+		/>
+		<text
+			x="20"
+			y="24.2"
+			textAnchor="middle"
+			fontSize="11.5"
+			fontWeight="800"
+			fill="#10151C"
+			fontFamily="inherit"
+		>
+			ZBE
+		</text>
+	</svg>
 )

@@ -4,9 +4,9 @@ const HMAC_KEY = import.meta.env.PUBLIC_ZBE_HMAC_KEY ?? "zbe-demo-key"
 
 /** Matrículas fijas de la demo (las mismas que scripts/zbe-common.sh) */
 export const DEMO_PLATES = [
-	{ plate: "1111BCD", note: "Ana · Eco" },
-	{ plate: "2222BCD", note: "Lucía · B, has a pass" },
-	{ plate: "3333BCD", note: "Pablo · B, no pass" },
+	{ plate: "1111BCD", note: "Ana – Eco" },
+	{ plate: "2222BCD", note: "Lucía – B, has a pass" },
+	{ plate: "3333BCD", note: "Pablo – B, no pass" },
 ]
 
 const STORAGE_KEY = "zbe-plates"

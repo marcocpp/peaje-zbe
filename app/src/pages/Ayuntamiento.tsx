@@ -90,15 +90,15 @@ const Ayuntamiento = () => {
 
 	return (
 		<div>
-			<PageHead icon="🏛️" title="City Hall" signer={admin?.label}>
+			<PageHead title="City Hall" signer={admin?.label}>
 				Zone rules, charges and revenue. The city cannot touch a charge during
 				its appeal window, and it cannot resolve appeals.
 			</PageHead>
 
 			{!admin && <MissingKeys who="City Hall (me)" />}
 
-			<div className="zbe-stats">
-				<Stat label="Collected" accent>
+			<dl className="zbe-stats">
+				<Stat label="Collected">
 					<Usdc amount={collected} />
 				</Stat>
 				<Stat label="Treasury wallet">
@@ -106,10 +106,10 @@ const Ayuntamiento = () => {
 				</Stat>
 				<Stat label="Locked charges">{count("Pending")}</Stat>
 				<Stat label="Under appeal">{count("Disputed")}</Stat>
-			</div>
+			</dl>
 
 			<div className="card zbe-section">
-				<h2>Zone rules · {ZONE}</h2>
+				<h2>Zone rules – {ZONE}</h2>
 				<div className="zbe-form">
 					<label>
 						Free entry from label
@@ -127,8 +127,7 @@ const Ayuntamiento = () => {
 					<label>
 						Daily fee (USDC)
 						<input
-							type="number"
-							min="1"
+							inputMode="decimal"
 							value={fee}
 							onChange={(e) => setFee(e.target.value)}
 						/>
@@ -136,8 +135,7 @@ const Ayuntamiento = () => {
 					<label>
 						Appeal window (seconds)
 						<input
-							type="number"
-							min="0"
+							inputMode="numeric"
 							value={appealSecs}
 							onChange={(e) => setAppealSecs(e.target.value)}
 						/>
@@ -191,32 +189,34 @@ const Ayuntamiento = () => {
 									<th>Amount</th>
 									<th>Status</th>
 									<th>Deadline</th>
-									<th />
+									<th>
+										<span className="zbe-sr">Actions</span>
+									</th>
 								</tr>
 							</thead>
 							<tbody>
 								{charges.map((c) => (
 									<tr key={c.id.toString()}>
-										<td>{c.id.toString()}</td>
-										<td>
+										<td className="zbe-num">{c.id.toString()}</td>
+										<td data-label="Vehicle">
 											<Plate plate={plateOf(c.plate_hash.toString("hex"))} />
 										</td>
-										<td>
+										<td data-label="Owner">
 											<Who address={c.owner} />
 										</td>
-										<td>
+										<td data-label="Amount">
 											<Usdc amount={c.amount} />
 										</td>
-										<td>
+										<td data-label="Status">
 											<StatusBadge status={c.status.tag} />
 										</td>
-										<td>
+										<td data-label="Deadline">
 											<Countdown charge={c} now={now} />
 										</td>
-										<td>
+										<td data-label="Actions" className="zbe-actions">
 											{c.status.tag === "Pending" && !isOpen(c, now) && (
 												<button
-													className="zbe-btn-primary"
+													className="zbe-btn-primary zbe-btn-small"
 													onClick={() => settle(c.id)}
 													disabled={!admin || !!pending}
 												>

@@ -1,218 +1,230 @@
-/* ZBE Toll design layer on top of app-lib/styles.css */
+/* ZBE Toll: señalización vial sobria sobre app-lib/styles.css */
+
+@import "@fontsource-variable/overpass";
 
 :root {
-	--color-bg: #ffffff;
-	--color-page: #f4f6f8;
-	--color-surface: #f1f4f6;
-	--color-text: #12212b;
-	--color-text-muted: #5f6f7a;
-	--color-border: #e1e6ea;
-	--color-accent: #0f766e;
-	--color-accent-strong: #0b5c56;
-	--color-accent-soft: #e3f3f1;
-	--color-success: #15803d;
-	--color-error: #c2410c;
-	--color-warning: #d97706;
-	--radius: 10px;
-	--radius-lg: 16px;
-	--shadow: 0 1px 2px rgba(16, 33, 43, 0.04), 0 4px 16px rgba(16, 33, 43, 0.06);
-	--shadow-lg: 0 10px 30px rgba(16, 33, 43, 0.1);
+	--ground: #f2f4f7;
+	--panel: #ffffff;
+	--ink: #10151c;
+	--ink-2: #4a5563;
+	--rule: #d5dbe3;
+	--rule-soft: #e7ebf0;
+
+	/* Azul de los paneles informativos de carretera y rojo de la señal ZBE */
+	--sign: #0b4ea2;
+	--sign-dark: #083a7a;
+	--sign-soft: #e6eef8;
+	--ring: #c8102e;
+
+	--ok: #1e6b34;
+	--ok-soft: #e3f2e7;
+	--lock: #7a4f00;
+	--lock-soft: #fff0c7;
+	--appeal: #5034b0;
+	--appeal-soft: #ece7fb;
+	--danger: #b3261e;
+	--danger-soft: #fdecea;
+
+	--radius: 8px;
+	--radius-panel: 12px;
+	--font:
+		"Overpass Variable", system-ui, -apple-system, "Segoe UI", Roboto,
+		sans-serif;
+
+	/* Variables que usan app-lib y el explorador de contratos */
+	--color-bg: var(--panel);
+	--color-surface: var(--ground);
+	--color-text: var(--ink);
+	--color-text-muted: var(--ink-2);
+	--color-border: var(--rule);
+	--color-accent: var(--sign);
+	--color-success: var(--ok);
+	--color-error: var(--danger);
+	--color-warning: var(--lock);
+	--shadow: none;
+
+	color-scheme: light;
+	accent-color: var(--sign);
 }
 
 body {
-	background: var(--color-page);
-	font-family:
-		"Inter",
-		system-ui,
-		-apple-system,
-		"Segoe UI",
-		Roboto,
-		sans-serif;
+	background: var(--ground);
+	color: var(--ink);
+	font-family: var(--font);
+	font-size: 1rem;
+	line-height: 1.55;
 	-webkit-font-smoothing: antialiased;
+	text-rendering: optimizeLegibility;
 }
 
-.card {
-	background: var(--color-bg);
-	border: 1px solid var(--color-border);
-	border-radius: var(--radius-lg);
-	box-shadow: var(--shadow);
-	padding: 1.5rem;
+::selection {
+	background: var(--sign);
+	color: #fff;
 }
 
-.card h2 {
-	font-size: 1.05rem;
-	font-weight: 650;
-	margin: 0 0 1rem;
+h1,
+h2,
+h3 {
+	text-wrap: balance;
 	letter-spacing: -0.01em;
 }
 
-button {
-	border-radius: var(--radius);
-	font-weight: 550;
-	transition:
-		background 0.15s,
-		box-shadow 0.15s,
-		transform 0.05s;
+p {
+	text-wrap: pretty;
 }
 
-button:active:not(:disabled) {
-	transform: translateY(1px);
+a {
+	color: var(--sign);
+	text-underline-offset: 0.2em;
+	text-decoration-thickness: 1px;
+}
+
+a:hover {
+	color: var(--sign-dark);
+}
+
+:focus-visible {
+	outline: 3px solid var(--sign);
+	outline-offset: 2px;
+}
+
+code {
+	font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+	font-size: 0.85em;
+	background: var(--ground);
+	border: 1px solid var(--rule-soft);
+	border-radius: 4px;
+	padding: 0.1em 0.35em;
+}
+
+svg {
+	flex: none;
+}
+
+/* ---------- Controles ---------- */
+
+button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.5rem;
+	min-height: 2.75rem;
+	padding: 0.5rem 1.1rem;
+	border-radius: var(--radius);
+	border: 1px solid var(--rule);
+	background: var(--panel);
+	color: var(--ink);
+	font: inherit;
+	font-size: 0.95rem;
+	font-weight: 650;
+	line-height: 1.2;
+	cursor: pointer;
+	transition:
+		background-color 0.15s ease-out,
+		border-color 0.15s ease-out,
+		color 0.15s ease-out;
+}
+
+button:hover:not(:disabled) {
+	background: var(--ground);
+	border-color: var(--ink-2);
+}
+
+button:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+
+button svg {
+	font-size: 1.15em;
+}
+
+.zbe-btn-primary {
+	background: var(--sign);
+	border-color: var(--sign);
+	color: #fff;
+}
+
+.zbe-btn-primary:hover:not(:disabled) {
+	background: var(--sign-dark);
+	border-color: var(--sign-dark);
+	color: #fff;
+}
+
+.zbe-btn-danger {
+	color: var(--danger);
+	border-color: #e6b4b0;
+}
+
+.zbe-btn-danger:hover:not(:disabled) {
+	background: var(--danger-soft);
+	border-color: var(--danger);
+}
+
+.zbe-btn-small {
+	min-height: 2.25rem;
+	padding: 0.35rem 0.8rem;
+	font-size: 0.875rem;
+}
+
+.zbe-big-button {
+	min-height: 3.5rem;
+	padding: 0.75rem 1.75rem;
+	font-size: 1.1rem;
 }
 
 input[type="text"],
 input[type="number"],
 input:not([type]),
 select {
+	min-height: 2.75rem;
+	width: 100%;
+	padding: 0.5rem 0.8rem;
 	border-radius: var(--radius);
-	border: 1px solid var(--color-border);
-	padding: 0.55rem 0.8rem;
-	background: var(--color-bg);
-	color: var(--color-text);
+	border: 1px solid var(--ink-2);
+	background: var(--panel);
+	color: var(--ink);
 	font: inherit;
+	font-size: 1rem;
+}
+
+input::placeholder {
+	color: #6b7684;
 }
 
 input:focus,
 select:focus {
-	outline: none;
-	border-color: var(--color-accent);
-	box-shadow: 0 0 0 3px var(--color-accent-soft);
+	outline: 3px solid var(--sign);
+	outline-offset: -1px;
+	border-color: var(--sign);
 }
 
-/* ---------- Buttons ---------- */
+/* ---------- Paneles ---------- */
 
-.zbe-btn-primary {
-	background: var(--color-accent);
-	border: 1px solid var(--color-accent);
-	color: #fff;
+.card {
+	background: var(--panel);
+	border: 1px solid var(--rule);
+	border-radius: var(--radius-panel);
+	box-shadow: none;
+	padding: 1.5rem;
 }
 
-.zbe-btn-primary:hover:not(:disabled) {
-	background: var(--color-accent-strong);
-	border-color: var(--color-accent-strong);
+.card h2,
+.zbe-panel-title {
+	font-size: 1.15rem;
+	font-weight: 750;
+	margin: 0 0 1rem;
 }
 
-.zbe-btn-danger {
-	background: #fff;
-	border: 1px solid #f3c7b3;
-	color: var(--color-error);
-}
-
-.zbe-btn-danger:hover:not(:disabled) {
-	background: #fff4ee;
-}
-
-.zbe-big-button {
-	font-size: 1.05rem;
-	padding: 0.85rem 1.6rem;
-	box-shadow: 0 6px 18px rgba(15, 118, 110, 0.28);
-}
-
-/* ---------- Page header ---------- */
-
-.zbe-page-head {
-	display: flex;
-	align-items: flex-start;
-	gap: 1.1rem;
-	margin-bottom: 1.75rem;
-}
-
-.zbe-page-icon {
-	flex: none;
-	width: 3.2rem;
-	height: 3.2rem;
-	border-radius: 14px;
-	display: grid;
-	place-items: center;
-	font-size: 1.6rem;
-	background: var(--color-accent-soft);
-}
-
-.zbe-page-head h1 {
-	font-size: 1.75rem;
-	font-weight: 700;
-	letter-spacing: -0.02em;
-	margin: 0 0 0.2rem;
-}
-
-.zbe-page-head p {
-	margin: 0;
-	color: var(--color-text-muted);
-	max-width: 720px;
-}
-
-.zbe-page-head .zbe-chip {
-	margin-left: auto;
-	align-self: center;
-}
-
-.zbe-chip {
-	display: inline-flex;
-	align-items: center;
-	gap: 0.4rem;
-	padding: 0.35rem 0.75rem;
-	border-radius: 999px;
-	background: var(--color-bg);
-	border: 1px solid var(--color-border);
-	font-size: 0.82rem;
-	color: var(--color-text-muted);
-	white-space: nowrap;
-}
-
-.zbe-chip strong {
-	color: var(--color-text);
-}
-
-/* ---------- Layout ---------- */
-
-.zbe-muted {
-	color: var(--color-text-muted);
-	font-size: 0.9em;
+.zbe-section {
+	margin-bottom: 1.5rem;
 }
 
 .zbe-grid {
 	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-	gap: 1.25rem;
-	margin-bottom: 1.25rem;
-}
-
-.zbe-stats {
-	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-	gap: 1rem;
-	margin-bottom: 1.25rem;
-}
-
-.zbe-stat {
-	padding: 1.1rem 1.25rem;
-}
-
-.zbe-stat-label {
-	font-size: 0.8rem;
-	text-transform: uppercase;
-	letter-spacing: 0.05em;
-	color: var(--color-text-muted);
-}
-
-.zbe-stat-value {
-	font-size: 1.6rem;
-	font-weight: 700;
-	letter-spacing: -0.02em;
-	margin-top: 0.3rem;
-}
-
-.zbe-stat--accent {
-	background: linear-gradient(135deg, #0f766e, #155e75);
-	color: #fff;
-	border: none;
-}
-
-.zbe-stat--accent .zbe-stat-label {
-	color: rgba(255, 255, 255, 0.8);
-}
-
-.zbe-section {
-	margin-bottom: 1.25rem;
+	grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+	gap: 1.5rem;
+	margin-bottom: 1.5rem;
 }
 
 .zbe-row {
@@ -234,300 +246,558 @@ select:focus {
 	margin-bottom: 1rem;
 }
 
+.zbe-muted {
+	color: var(--ink-2);
+}
+
+/* Solo para lectores de pantalla */
+.zbe-sr {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip-path: inset(50%);
+	white-space: nowrap;
+}
+
+.zbe-vehicle {
+	display: flex;
+	flex-direction: column;
+	gap: 0.6rem;
+	padding: 0.25rem 0 1rem;
+}
+
+.zbe-vehicle + .zbe-vehicle {
+	border-top: 1px solid var(--rule-soft);
+	padding-top: 1rem;
+}
+
+.zbe-pass-note {
+	margin: 0 0 1.25rem;
+	font-size: 0.95rem;
+}
+
+/* ---------- Cabecera de página ---------- */
+
+.zbe-page-head {
+	display: flex;
+	align-items: flex-end;
+	justify-content: space-between;
+	gap: 1rem 2rem;
+	flex-wrap: wrap;
+	margin-bottom: 2rem;
+	padding-bottom: 1.5rem;
+	border-bottom: 1px solid var(--rule);
+}
+
+.zbe-page-head h1 {
+	font-size: clamp(1.75rem, 1.4rem + 1.2vw, 2.25rem);
+	line-height: 1.1;
+	font-weight: 800;
+	margin: 0 0 0.4rem;
+}
+
+.zbe-page-head p {
+	margin: 0;
+	color: var(--ink-2);
+	font-size: 1.05rem;
+	max-width: 62ch;
+}
+
+.zbe-chip {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.45rem;
+	padding: 0.4rem 0.85rem;
+	border-radius: 999px;
+	background: var(--panel);
+	border: 1px solid var(--rule);
+	font-size: 0.875rem;
+	color: var(--ink-2);
+	white-space: nowrap;
+}
+
+.zbe-chip strong {
+	color: var(--ink);
+}
+
+/* ---------- Formularios ---------- */
+
 .zbe-form {
 	display: flex;
-	gap: 0.75rem;
+	gap: 1rem;
 	align-items: end;
 	flex-wrap: wrap;
 }
 
-.zbe-form label {
+.zbe-form label,
+.zbe-field {
 	display: flex;
 	flex-direction: column;
-	gap: 0.3rem;
-	font-size: 0.8rem;
-	font-weight: 550;
-	color: var(--color-text-muted);
+	gap: 0.35rem;
+	font-size: 0.875rem;
+	font-weight: 650;
+	color: var(--ink);
+	flex: 1 1 10rem;
+	max-width: 18rem;
 }
 
-.zbe-form input,
-.zbe-form select {
-	min-width: 9rem;
+.zbe-form > button {
+	flex: none;
 }
 
-/* ---------- Balances ---------- */
+.zbe-inline-select {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+	margin-bottom: 1.5rem;
+	font-weight: 650;
+}
+
+.zbe-inline-select select {
+	width: auto;
+	min-width: 12rem;
+}
+
+/* ---------- Cifras ---------- */
+
+.zbe-stats {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
+	margin: 0 0 1.5rem;
+	background: var(--panel);
+	border: 1px solid var(--rule);
+	border-radius: var(--radius-panel);
+	overflow: hidden;
+}
+
+.zbe-stat {
+	padding: 1.1rem 1.4rem;
+	border-right: 1px solid var(--rule);
+	margin-right: -1px;
+}
+
+.zbe-stat dt {
+	font-size: 0.875rem;
+	font-weight: 650;
+	color: var(--ink-2);
+}
+
+.zbe-stat dd {
+	margin: 0.2rem 0 0;
+	font-size: 1.75rem;
+	font-weight: 800;
+	letter-spacing: -0.02em;
+	font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Bono ---------- */
 
 .zbe-balances {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
 	gap: 0.75rem;
-	margin-bottom: 1rem;
+	margin: 0 0 1rem;
 }
 
 .zbe-balance {
 	border-radius: var(--radius);
-	padding: 0.85rem 1rem;
-	background: var(--color-surface);
+	padding: 0.9rem 1rem;
+	border: 1px solid var(--rule);
+}
+
+.zbe-balance dt {
+	display: flex;
+	align-items: center;
+	gap: 0.4rem;
+	font-size: 0.875rem;
+	font-weight: 700;
+}
+
+.zbe-balance dd {
+	margin: 0.25rem 0 0;
+	font-size: 1.6rem;
+	font-weight: 800;
+	letter-spacing: -0.02em;
+	font-variant-numeric: tabular-nums;
 }
 
 .zbe-balance--free {
-	background: var(--color-accent-soft);
+	background: var(--sign-soft);
+	border-color: #c4d6ee;
+}
+
+.zbe-balance--free dt {
+	color: var(--sign-dark);
 }
 
 .zbe-balance--locked {
-	background: #fff6e5;
+	background: var(--lock-soft);
+	border-color: #f1d98c;
 }
 
-.zbe-balance .zbe-stat-value {
-	font-size: 1.4rem;
+.zbe-balance--locked dt {
+	color: var(--lock);
 }
 
-/* ---------- Badges ---------- */
+/* ---------- Distintivos, estados y matrículas ---------- */
 
 .zbe-category {
 	display: inline-flex;
 	align-items: center;
-	justify-content: center;
-	min-width: 2.6rem;
-	height: 1.6rem;
-	padding: 0 0.6rem;
-	border-radius: 999px;
+	gap: 0.5rem;
+	font-weight: 650;
+}
+
+/* Pegatinas de la DGT: círculo con borde blanco */
+.zbe-sticker {
+	display: inline-grid;
+	place-items: center;
+	width: 2.1rem;
+	height: 2.1rem;
+	border-radius: 50%;
+	border: 2px solid #fff;
+	box-shadow: 0 0 0 1px var(--rule);
+	font-weight: 800;
+	font-size: 0.85rem;
+	line-height: 1;
+	letter-spacing: 0;
+}
+
+.zbe-sticker--0 {
+	background: var(--panel);
+	border: 2px dashed #8994a3;
+	box-shadow: none;
+	color: var(--ink-2);
+}
+
+.zbe-sticker--1 {
+	background: #f5c400;
+	color: #10151c;
+}
+
+.zbe-sticker--2 {
+	background: #1f8a45;
 	color: #fff;
-	font-weight: 700;
-	font-size: 0.8rem;
-	letter-spacing: 0.02em;
+}
+
+.zbe-sticker--3 {
+	background: linear-gradient(90deg, #1f8a45 50%, #1d5fae 50%);
+	color: #fff;
+	font-size: 0.62rem;
+}
+
+.zbe-sticker--4 {
+	background: #1d5fae;
+	color: #fff;
+	font-size: 1rem;
 }
 
 .zbe-status {
 	display: inline-flex;
 	align-items: center;
 	gap: 0.35rem;
-	padding: 0.2rem 0.65rem;
-	border-radius: 999px;
-	font-size: 0.78rem;
-	font-weight: 650;
-}
-
-.zbe-status::before {
-	content: "";
-	width: 0.45rem;
-	height: 0.45rem;
-	border-radius: 50%;
-	background: currentColor;
+	padding: 0.25rem 0.65rem;
+	border-radius: 6px;
+	font-size: 0.85rem;
+	font-weight: 750;
+	white-space: nowrap;
 }
 
 .zbe-status--pending {
-	background: #fff3d6;
-	color: #9a5b00;
+	background: var(--lock-soft);
+	color: var(--lock);
 }
 
 .zbe-status--disputed {
-	background: #ece7fd;
-	color: #5b3cc4;
+	background: var(--appeal-soft);
+	color: var(--appeal);
 }
 
 .zbe-status--settled {
-	background: #dcf3e4;
-	color: #166534;
+	background: var(--ok-soft);
+	color: var(--ok);
 }
 
 .zbe-status--cancelled {
-	background: #eceff2;
-	color: #55636d;
+	background: var(--ground);
+	color: var(--ink-2);
 }
 
 .zbe-countdown {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.3rem;
 	font-variant-numeric: tabular-nums;
-	color: #9a5b00;
-	font-weight: 600;
+	color: var(--lock);
+	font-weight: 700;
+	white-space: nowrap;
 }
 
 .zbe-amount {
 	font-variant-numeric: tabular-nums;
 	white-space: nowrap;
+	font-weight: 650;
 }
 
-/* EU-style number plate */
+.zbe-allowed {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.35rem;
+	font-weight: 650;
+}
+
+.zbe-allowed--yes {
+	color: var(--ok);
+}
+
+.zbe-allowed--no {
+	color: var(--danger);
+}
+
+/* Matrícula europea */
 .zbe-plate {
 	display: inline-flex;
 	align-items: stretch;
-	border: 2px solid #12212b;
+	border: 2px solid var(--ink);
 	border-radius: 5px;
 	background: #fff;
-	color: #12212b;
+	color: var(--ink);
 	overflow: hidden;
-	font-family: ui-monospace, "SF Mono", Menlo, monospace;
-	font-weight: 700;
+	font-weight: 800;
 	letter-spacing: 0.08em;
 	line-height: 1;
 	vertical-align: middle;
+	white-space: nowrap;
 }
 
 .zbe-plate-eu {
 	background: #1f4bb4;
 	color: #ffd400;
 	font-size: 0.6em;
-	font-family: system-ui, sans-serif;
 	display: flex;
 	align-items: flex-end;
 	justify-content: center;
-	padding: 0 0.25rem 0.15rem;
+	padding: 0 0.3rem 0.2rem;
 	letter-spacing: 0;
 }
 
 .zbe-plate-text {
-	padding: 0.3rem 0.5rem;
+	padding: 0.4rem 0.55rem 0.3rem;
+	font-variant-numeric: tabular-nums;
 }
 
-/* ---------- Tables ---------- */
+/* ---------- Tablas ---------- */
 
 .zbe-table-wrap {
+	/* Contiene los textos .zbe-sr de la cabecera, que van en absoluto */
+	position: relative;
 	overflow-x: auto;
+	margin: 0 -1.5rem -1.5rem;
 }
 
 .zbe-table {
 	width: 100%;
 	border-collapse: collapse;
-	font-size: 0.92rem;
+	font-size: 0.95rem;
 }
 
 .zbe-table th,
 .zbe-table td {
 	text-align: left;
-	padding: 0.7rem 0.6rem;
-	border-bottom: 1px solid var(--color-border);
+	padding: 0.75rem 1rem;
+	border-top: 1px solid var(--rule-soft);
 	vertical-align: middle;
 }
 
-.zbe-table tbody tr:last-child td {
-	border-bottom: none;
+.zbe-table th:first-child,
+.zbe-table td:first-child {
+	padding-left: 1.5rem;
 }
 
-.zbe-table tbody tr:hover {
-	background: #fafbfc;
+.zbe-table th:last-child,
+.zbe-table td:last-child {
+	padding-right: 1.5rem;
 }
 
 .zbe-table th {
-	color: var(--color-text-muted);
-	font-weight: 600;
-	font-size: 0.72rem;
-	text-transform: uppercase;
-	letter-spacing: 0.06em;
+	font-size: 0.8rem;
+	font-weight: 750;
+	color: var(--ink-2);
+	background: var(--ground);
+	border-top: 1px solid var(--rule);
+	border-bottom: 1px solid var(--rule);
+	white-space: nowrap;
+}
+
+.zbe-table tbody tr:hover {
+	background: #f8fafc;
+}
+
+.zbe-num {
+	font-variant-numeric: tabular-nums;
+	color: var(--ink-2);
+}
+
+.zbe-actions {
+	text-align: right;
+}
+
+.zbe-actions > * {
+	justify-content: flex-end;
 }
 
 .zbe-empty {
-	color: var(--color-text-muted);
-	padding: 1.25rem 0;
+	color: var(--ink-2);
+	padding: 1.5rem 0 0.5rem;
+	margin: 0;
 	text-align: center;
 }
 
-/* ---------- Notices and results ---------- */
+/* ---------- Avisos ---------- */
 
-.zbe-warning {
-	border-left: 4px solid var(--color-warning);
-	margin-bottom: 1.25rem;
+.zbe-notice {
+	display: flex;
+	gap: 0.75rem;
+	align-items: flex-start;
+	padding: 1rem 1.25rem;
+	margin-bottom: 1.5rem;
+	border-radius: var(--radius-panel);
+	background: var(--lock-soft);
+	border: 1px solid #f1d98c;
+	color: var(--ink);
+}
+
+.zbe-notice > svg {
+	font-size: 1.4rem;
+	color: var(--lock);
+	margin-top: 0.05rem;
+}
+
+.zbe-notice p {
+	margin: 0;
 }
 
 .zbe-note {
-	background: var(--color-surface);
-	border-radius: var(--radius);
-	padding: 0.75rem 1rem;
-	font-size: 0.88rem;
-	color: var(--color-text-muted);
+	display: flex;
+	gap: 0.6rem;
+	align-items: flex-start;
+	margin: 1.25rem 0 0;
+	padding-top: 1rem;
+	border-top: 1px solid var(--rule-soft);
+	font-size: 0.95rem;
+	color: var(--ink-2);
+}
+
+.zbe-note svg {
+	font-size: 1.2rem;
+	margin-top: 0.1rem;
+	color: var(--sign);
+}
+
+.zbe-danger {
+	color: var(--danger);
+	font-weight: 650;
+}
+
+/* ---------- Resultados de la cámara ---------- */
+
+.zbe-log {
+	display: grid;
+	gap: 0.75rem;
 }
 
 .zbe-result {
-	display: flex;
+	display: grid;
+	grid-template-columns: auto 1fr;
 	gap: 1rem;
-	align-items: flex-start;
-	margin-bottom: 0.9rem;
-	border-left: 5px solid var(--color-border);
-	animation: zbe-in 0.25s ease-out;
+	align-items: start;
+	padding: 1.1rem 1.25rem;
+	animation: zbe-in 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .zbe-result-icon {
-	font-size: 1.6rem;
-	line-height: 1;
+	display: grid;
+	place-items: center;
+	width: 2.75rem;
+	height: 2.75rem;
+	border-radius: var(--radius);
+	font-size: 1.5rem;
+}
+
+.zbe-result--ok .zbe-result-icon {
+	background: var(--ok-soft);
+	color: var(--ok);
+}
+
+.zbe-result--charge .zbe-result-icon {
+	background: var(--lock-soft);
+	color: var(--lock);
+}
+
+.zbe-result--nobono .zbe-result-icon {
+	background: var(--ground);
+	color: var(--ink-2);
 }
 
 .zbe-result h3 {
 	margin: 0 0 0.35rem;
-	font-size: 1.05rem;
+	font-size: 1.1rem;
 	display: flex;
-	gap: 0.6rem;
+	gap: 0.65rem;
 	align-items: center;
 	flex-wrap: wrap;
 }
 
 .zbe-result p {
 	margin: 0;
-}
-
-.zbe-result--ok {
-	border-left-color: var(--color-success);
-}
-
-.zbe-result--charge {
-	border-left-color: var(--color-warning);
-}
-
-.zbe-result--nobono {
-	border-left-color: var(--color-error);
+	max-width: 70ch;
 }
 
 @keyframes zbe-in {
 	from {
 		opacity: 0;
-		transform: translateY(-6px);
+		transform: translateY(-8px);
 	}
 }
 
-/* ---------- Home ---------- */
-
-.zbe-hero {
-	position: relative;
-	overflow: hidden;
-	border-radius: 22px;
-	padding: 3.2rem 3rem;
-	margin-bottom: 1.75rem;
-	color: #fff;
-	background:
-		radial-gradient(
-			circle at 85% 20%,
-			rgba(134, 239, 172, 0.35),
-			transparent 45%
-		),
-		linear-gradient(135deg, #0f766e 0%, #155e75 55%, #1e3a8a 100%);
-	box-shadow: var(--shadow-lg);
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		transition-duration: 0.01ms !important;
+	}
 }
 
-.zbe-hero-kicker {
-	display: inline-block;
-	font-size: 0.8rem;
-	font-weight: 650;
-	letter-spacing: 0.08em;
-	text-transform: uppercase;
-	background: rgba(255, 255, 255, 0.16);
-	padding: 0.3rem 0.75rem;
-	border-radius: 999px;
-	margin-bottom: 1rem;
+/* ---------- Portada ---------- */
+
+.zbe-hero {
+	display: grid;
+	grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+	gap: 3rem;
+	align-items: center;
+	padding: 1.5rem 0 3.5rem;
 }
 
 .zbe-hero h1 {
-	font-size: 2.6rem;
-	line-height: 1.1;
-	font-weight: 750;
-	letter-spacing: -0.03em;
-	margin: 0 0 1rem;
-	max-width: 720px;
+	font-size: clamp(2.25rem, 1.6rem + 2.6vw, 3.6rem);
+	line-height: 1.04;
+	font-weight: 800;
+	letter-spacing: -0.025em;
+	margin: 0 0 1.25rem;
 }
 
 .zbe-hero p {
-	font-size: 1.1rem;
-	line-height: 1.55;
-	max-width: 680px;
-	margin: 0 0 1.75rem;
-	color: rgba(255, 255, 255, 0.9);
+	font-size: 1.15rem;
+	line-height: 1.6;
+	color: var(--ink-2);
+	max-width: 54ch;
+	margin: 0 0 2rem;
+}
+
+.zbe-hero p strong {
+	color: var(--ink);
 }
 
 .zbe-hero-actions {
@@ -536,156 +806,458 @@ select:focus {
 	flex-wrap: wrap;
 }
 
-.zbe-hero-actions a {
-	text-decoration: none;
-	font-weight: 650;
-	padding: 0.75rem 1.3rem;
-	border-radius: var(--radius);
-}
-
-.zbe-hero-primary {
-	background: #fff;
-	color: #0f766e;
-}
-
-.zbe-hero-secondary {
-	color: #fff;
-	border: 1px solid rgba(255, 255, 255, 0.5);
-}
-
-.zbe-pills {
-	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-	gap: 1rem;
-	margin-bottom: 1.75rem;
-}
-
-.zbe-pill {
-	display: flex;
-	gap: 0.85rem;
-	align-items: flex-start;
-}
-
-.zbe-pill-icon {
-	font-size: 1.5rem;
-}
-
-.zbe-pill strong {
-	display: block;
-	margin-bottom: 0.2rem;
-}
-
-.zbe-section-title {
-	font-size: 1.25rem;
-	font-weight: 700;
-	letter-spacing: -0.01em;
-	margin: 2rem 0 1rem;
-}
-
-.zbe-roles {
-	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-	gap: 1rem;
-}
-
-.zbe-role {
-	display: flex;
-	flex-direction: column;
+.zbe-link-button {
+	display: inline-flex;
+	align-items: center;
 	gap: 0.5rem;
+	min-height: 3.25rem;
+	padding: 0.75rem 1.4rem;
+	border-radius: var(--radius);
+	font-weight: 700;
 	text-decoration: none;
-	color: inherit;
+	border: 1px solid var(--rule);
+	background: var(--panel);
+	color: var(--ink);
 	transition:
-		transform 0.15s,
-		box-shadow 0.15s,
-		border-color 0.15s;
+		background-color 0.15s ease-out,
+		border-color 0.15s ease-out;
 }
 
-.zbe-role:hover {
-	transform: translateY(-2px);
-	box-shadow: var(--shadow-lg);
-	border-color: var(--color-accent);
+.zbe-link-button:hover {
+	color: var(--ink);
+	border-color: var(--ink-2);
 }
 
-.zbe-role h3 {
-	margin: 0.25rem 0 0;
+.zbe-link-button--primary {
+	background: var(--sign);
+	border-color: var(--sign);
+	color: #fff;
+}
+
+.zbe-link-button--primary:hover {
+	background: var(--sign-dark);
+	border-color: var(--sign-dark);
+	color: #fff;
+}
+
+/* Panel informativo de carretera: fondo azul, filete blanco interior */
+.zbe-road-sign {
+	background: var(--sign);
+	color: #fff;
+	border-radius: 18px;
+	padding: 6px;
+}
+
+.zbe-road-sign-inner {
+	border: 3px solid #fff;
+	border-radius: 13px;
+	padding: 1.5rem 1.75rem 1.25rem;
+}
+
+.zbe-road-sign-head {
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+	margin-bottom: 1.25rem;
+}
+
+.zbe-road-sign-head strong {
+	display: block;
+	font-size: 1.35rem;
+	line-height: 1.15;
+	font-weight: 800;
+}
+
+.zbe-road-sign-head span {
+	font-size: 0.95rem;
+	color: #d6e3f5;
+}
+
+.zbe-road-sign dl {
+	margin: 0;
+}
+
+.zbe-road-sign dl > div {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 1rem;
+	padding: 0.85rem 0;
+	border-top: 2px solid rgba(255, 255, 255, 0.35);
+}
+
+.zbe-road-sign dt {
+	font-size: 1rem;
+	color: #d6e3f5;
+}
+
+.zbe-road-sign dd {
+	margin: 0;
+	display: flex;
+	align-items: center;
+	gap: 0.4rem;
+	font-size: 1.1rem;
+	font-weight: 800;
+	text-align: right;
+}
+
+.zbe-road-sign .zbe-sticker {
+	box-shadow: none;
+}
+
+.zbe-home-section {
+	padding: 3rem 0;
+	border-top: 1px solid var(--rule);
+}
+
+.zbe-home-section > h2 {
+	font-size: clamp(1.4rem, 1.2rem + 0.8vw, 1.8rem);
+	font-weight: 800;
+	margin: 0 0 0.5rem;
+}
+
+.zbe-home-section > p {
+	color: var(--ink-2);
+	margin: 0 0 2rem;
+	max-width: 62ch;
 	font-size: 1.05rem;
 }
 
-.zbe-role p {
-	margin: 0;
-	font-size: 0.9rem;
-	color: var(--color-text-muted);
-	flex: 1;
-}
-
-.zbe-role-open {
-	color: var(--color-accent);
-	font-weight: 650;
-	font-size: 0.9rem;
-}
-
+/* Recorrido de la demo: tres pasos en fila, unidos por una línea */
 .zbe-steps {
 	display: grid;
 	grid-template-columns: repeat(3, 1fr);
-	gap: 1rem;
-	counter-reset: step;
+	gap: 2rem;
 	list-style: none;
 	padding: 0;
 	margin: 0;
+	counter-reset: step;
 }
 
 .zbe-steps li {
 	counter-increment: step;
 	position: relative;
-	padding-top: 2.6rem;
-	font-size: 0.92rem;
-	line-height: 1.5;
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
 }
 
 .zbe-steps li::before {
 	content: counter(step);
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 2rem;
-	height: 2rem;
-	border-radius: 50%;
 	display: grid;
 	place-items: center;
-	font-weight: 700;
-	background: var(--color-accent);
+	width: 2.5rem;
+	height: 2.5rem;
+	border-radius: 50%;
+	background: var(--sign);
 	color: #fff;
+	font-weight: 800;
+	font-size: 1.1rem;
+	margin-bottom: 0.5rem;
+	position: relative;
+	z-index: 1;
 }
 
-.zbe-steps strong {
-	display: block;
-	margin-bottom: 0.2rem;
+.zbe-steps li:not(:last-child)::after {
+	content: "";
+	position: absolute;
+	top: 1.25rem;
+	left: 3rem;
+	right: -1.5rem;
+	height: 2px;
+	background: var(--rule);
+}
+
+.zbe-steps h3 {
+	margin: 0;
+	font-size: 1.15rem;
+	font-weight: 800;
+}
+
+.zbe-steps p {
+	margin: 0;
+	color: var(--ink-2);
+}
+
+.zbe-steps a {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.35rem;
+	margin-top: 0.25rem;
+	font-weight: 700;
+	text-decoration: none;
+}
+
+.zbe-steps a:hover {
+	text-decoration: underline;
+}
+
+/* Principios: lista de definiciones a dos columnas */
+.zbe-principles {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 2rem 3rem;
+	margin: 0;
+}
+
+.zbe-principles > div {
+	display: grid;
+	grid-template-columns: auto 1fr;
+	gap: 0.25rem 1rem;
+}
+
+.zbe-principles svg {
+	grid-row: span 2;
+	font-size: 1.75rem;
+	color: var(--sign);
+}
+
+.zbe-principles dt {
+	font-weight: 800;
+	font-size: 1.1rem;
+}
+
+.zbe-principles dd {
+	margin: 0;
+	color: var(--ink-2);
+}
+
+/* Roles: filas con enlace */
+.zbe-roles {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	background: var(--panel);
+	border: 1px solid var(--rule);
+	border-radius: var(--radius-panel);
+}
+
+.zbe-roles li + li {
+	border-top: 1px solid var(--rule-soft);
+}
+
+.zbe-roles a {
+	display: grid;
+	grid-template-columns: 2.5rem 10rem 1fr auto;
+	gap: 1rem;
+	align-items: center;
+	padding: 1rem 1.5rem;
+	color: var(--ink);
+	text-decoration: none;
+}
+
+.zbe-roles a:hover {
+	background: #f8fafc;
+}
+
+.zbe-roles a > svg:first-child {
+	font-size: 1.6rem;
+	color: var(--sign);
+}
+
+.zbe-roles strong {
+	font-size: 1.05rem;
+}
+
+.zbe-roles span {
+	color: var(--ink-2);
+}
+
+.zbe-roles a > svg:last-child {
+	color: var(--ink-2);
 }
 
 @media (max-width: 900px) {
+	.zbe-hero {
+		grid-template-columns: 1fr;
+		gap: 2rem;
+		padding-top: 0.5rem;
+	}
+
 	.zbe-steps {
-		grid-template-columns: 1fr 1fr;
+		grid-template-columns: 1fr;
+		gap: 1.5rem;
+	}
+
+	.zbe-steps li {
+		padding-left: 3.5rem;
+	}
+
+	.zbe-steps li::before {
+		position: absolute;
+		left: 0;
+		top: 0;
+	}
+
+	.zbe-steps li:not(:last-child)::after {
+		top: 2.75rem;
+		bottom: -1.25rem;
+		left: 1.2rem;
+		right: auto;
+		width: 2px;
+		height: auto;
+	}
+
+	.zbe-principles {
+		grid-template-columns: 1fr;
+	}
+
+	.zbe-roles a {
+		grid-template-columns: 2rem 1fr auto;
+	}
+
+	.zbe-roles a > span {
+		grid-column: 2;
+	}
+
+	.zbe-roles a > svg:last-child {
+		grid-row: 1 / span 2;
+		grid-column: 3;
 	}
 }
 
 @media (max-width: 640px) {
-	.zbe-steps {
-		grid-template-columns: 1fr;
+	.card {
+		padding: 1.25rem;
 	}
 
-	.zbe-hero {
-		padding: 2rem 1.5rem;
+	.zbe-table-wrap {
+		margin: 0 -1.25rem -1.25rem;
 	}
 
-	.zbe-hero h1 {
-		font-size: 1.9rem;
+	.zbe-table th:first-child,
+	.zbe-table td:first-child {
+		padding-left: 1.25rem;
 	}
 
-	.zbe-page-head {
-		flex-wrap: wrap;
+	.zbe-form label,
+	.zbe-field {
+		max-width: none;
 	}
 
-	.zbe-page-head .zbe-chip {
-		margin-left: 0;
+	.zbe-form > button {
+		flex: 1 1 auto;
 	}
+
+	/* Tablas: cada fila pasa a ser una ficha con la etiqueta de cada dato */
+	.zbe-table thead {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		overflow: hidden;
+		clip-path: inset(50%);
+	}
+
+	.zbe-table,
+	.zbe-table tbody,
+	.zbe-table tr,
+	.zbe-table td {
+		display: block;
+	}
+
+	.zbe-table tr {
+		padding: 0.75rem 1.25rem;
+		border-top: 1px solid var(--rule);
+	}
+
+	.zbe-table tbody tr:hover {
+		background: none;
+	}
+
+	.zbe-table td,
+	.zbe-table td:first-child,
+	.zbe-table td:last-child {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		gap: 1rem;
+		padding: 0.3rem 0;
+		border: 0;
+		text-align: right;
+	}
+
+	.zbe-table td:empty {
+		display: none;
+	}
+
+	.zbe-table td[data-label]::before {
+		content: attr(data-label);
+		font-size: 0.85rem;
+		font-weight: 700;
+		color: var(--ink-2);
+		text-align: left;
+	}
+
+	.zbe-table td.zbe-num {
+		justify-content: flex-start;
+		gap: 0;
+		font-weight: 800;
+		color: var(--ink);
+	}
+
+	.zbe-table td.zbe-num::before {
+		content: "Charge #";
+	}
+
+	.zbe-table td.zbe-actions {
+		padding-top: 0.6rem;
+	}
+
+	.zbe-table td.zbe-actions::before {
+		display: none;
+	}
+
+	.zbe-table td.zbe-actions > *,
+	.zbe-table td.zbe-actions button {
+		flex: 1;
+		justify-content: center;
+	}
+
+	.zbe-road-sign-inner {
+		padding: 1.25rem;
+	}
+
+	.zbe-road-sign dl > div {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 0.3rem;
+	}
+
+	.zbe-road-sign dd {
+		text-align: left;
+	}
+}
+
+/* ---------- Notificaciones (NotificationProvider) ---------- */
+
+.notification {
+	border-radius: var(--radius);
+	font-weight: 600;
+	box-shadow: 0 6px 20px rgba(16, 21, 28, 0.14);
+}
+
+.notification-success {
+	background: var(--ok-soft);
+}
+
+.notification-error {
+	background: var(--danger-soft);
+}
+
+.notification-warning {
+	background: var(--lock-soft);
+}
+
+/* ---------- Píldora de red y cartera (app-lib) ---------- */
+
+.network-pill {
+	background: var(--ground);
+	color: var(--ink-2);
+	border: 1px solid var(--rule);
+	font-size: 0.8rem;
+	padding: 0.3rem 0.7rem;
+}
+
+.wallet-balance {
+	color: var(--ink-2);
 }

@@ -1,3 +1,10 @@
+import {
+	Car,
+	CheckCircle,
+	Info,
+	LockSimple,
+	MinusCircle,
+} from "@phosphor-icons/react"
 import { etiqueta, peaje } from "@stellar-scaffold/app-lib/clients"
 import { useState } from "react"
 import { categoryName, demoSigner, formatUsdc, ZONE } from "../zbe/config"
@@ -17,10 +24,10 @@ type Outcome = {
 
 let nextId = 0
 
-const ICONS: Record<Outcome["kind"], string> = {
-	ok: "✅",
-	charge: "🔒",
-	nobono: "⚠️",
+const ICONS: Record<Outcome["kind"], typeof Car> = {
+	ok: CheckCircle,
+	charge: LockSimple,
+	nobono: MinusCircle,
 }
 
 const Camara = () => {
@@ -41,7 +48,7 @@ const Camara = () => {
 			return {
 				...base,
 				kind: "charge",
-				title: `Charge #${id} locked · ${zone ? formatUsdc(zone.fee) : ""}`,
+				title: `Charge #${id} locked – ${zone ? formatUsdc(zone.fee) : ""}`,
 				detail: `Label ${categoryName(label!.category)} is not allowed here. The fee is locked in the owner's ZBE pass and can still be appealed. (A second entry on the same day returns the same charge.)`,
 			}
 		}
@@ -58,7 +65,7 @@ const Camara = () => {
 			return {
 				...base,
 				kind: "ok",
-				title: `Access granted · label ${categoryName(label.category)}`,
+				title: `Access granted – label ${categoryName(label.category)}`,
 				detail: "Nothing is charged and the entry is not stored.",
 			}
 		}
@@ -90,7 +97,7 @@ const Camara = () => {
 
 	return (
 		<div>
-			<PageHead icon="📷" title="Camera · centro zone" signer={camera?.label}>
+			<PageHead title={`Camera – zone ${ZONE}`} signer={camera?.label}>
 				Simulates an authorized plate-reading camera (the oracle). Only the
 				plate&apos;s HMAC is sent on-chain, never the plate itself.
 			</PageHead>
@@ -104,13 +111,13 @@ const Camara = () => {
 						<select value={plate} onChange={(e) => setPlate(e.target.value)}>
 							{(labels ?? []).map((p) => (
 								<option key={p.plate} value={p.plate}>
-									{p.plate} · {p.note}
+									{p.plate} – {p.note}
 								</option>
 							))}
 						</select>
 					</label>
 					<label>
-						…or type any plate
+						Or type any plate
 						<input
 							value={plate}
 							onChange={(e) => setPlate(e.target.value)}
@@ -122,34 +129,48 @@ const Camara = () => {
 						onClick={enter}
 						disabled={!camera || !!pending || !plate}
 					>
-						{pending ? "Reading…" : "🚗 Car enters"}
+						<Car weight="bold" aria-hidden />
+						{pending ? "Reading plate…" : "Car enters"}
 					</button>
 				</div>
 				{zone && (
-					<p className="zbe-note" style={{ marginTop: "1.25rem" }}>
-						Zone <strong>{ZONE}</strong>: {categoryName(zone.min_category)} and
-						cleaner enter for free · fee {formatUsdc(zone.fee)} per day ·{" "}
-						{zone.appeal_secs.toString()}s to appeal
+					<p className="zbe-note">
+						<Info weight="bold" aria-hidden />
+						<span>
+							Zone <strong>{ZONE}</strong>: {categoryName(zone.min_category)}{" "}
+							and cleaner enter for free. Other labels with a pass have{" "}
+							{formatUsdc(zone.fee)} per day locked, with{" "}
+							{zone.appeal_secs.toString()} s to appeal.
+						</span>
 					</p>
 				)}
 			</div>
 
-			{log.map((o) => (
-				<div
-					key={o.id}
-					className={`card zbe-result zbe-result--${o.kind}`}
-				>
-					<span className="zbe-result-icon">{ICONS[o.kind]}</span>
-					<div>
-						<h3>
-							<Plate plate={o.plate} /> {o.title}
-						</h3>
-						<p className="zbe-muted">
-							{o.at.toLocaleTimeString("en-GB")} · {o.detail}
-						</p>
-					</div>
-				</div>
-			))}
+			{log.length > 0 && (
+				<section className="zbe-log" aria-live="polite" aria-label="Readings">
+					{log.map((o) => {
+						const Icon = ICONS[o.kind]
+						return (
+							<article
+								key={o.id}
+								className={`card zbe-result zbe-result--${o.kind}`}
+							>
+								<span className="zbe-result-icon">
+									<Icon weight="bold" aria-hidden />
+								</span>
+								<div>
+									<h3>
+										<Plate plate={o.plate} /> {o.title}
+									</h3>
+									<p className="zbe-muted">
+										{o.at.toLocaleTimeString("en-GB")} – {o.detail}
+									</p>
+								</div>
+							</article>
+						)
+					})}
+				</section>
+			)}
 		</div>
 	)
 }

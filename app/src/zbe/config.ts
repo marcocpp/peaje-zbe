@@ -7,12 +7,13 @@ export const ZONE = "centro"
 /** El token tiene 7 decimales */
 export const UNIT = 10_000_000n
 
+/** Distintivos de la DGT; los colores de las pegatinas están en zbe.css */
 export const CATEGORIES = [
-	{ value: 0, name: "No label", color: "#8a96a0" },
-	{ value: 1, name: "B", color: "#ca8a04" },
-	{ value: 2, name: "C", color: "#16a34a" },
-	{ value: 3, name: "Eco", color: "#0d9488" },
-	{ value: 4, name: "Zero", color: "#1d4ed8" },
+	{ value: 0, name: "No label" },
+	{ value: 1, name: "B" },
+	{ value: 2, name: "C" },
+	{ value: 3, name: "Eco" },
+	{ value: 4, name: "Zero" },
 ] as const
 
 export const categoryName = (value: number) =>

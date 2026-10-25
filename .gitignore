@@ -45,3 +45,7 @@ app-lib/clients/*
 
 # TypeScript incremental build info
 *.tsbuildinfo
+
+# Impeccable: capturas, bocetos y estado local (el brief y PRODUCT.md sí van al repo)
+app/.impeccable/*
+!app/.impeccable/surfaces/

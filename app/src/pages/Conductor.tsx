@@ -1,3 +1,9 @@
+import {
+	CheckCircle,
+	LockSimple,
+	Prohibit,
+	Wallet,
+} from "@phosphor-icons/react"
 import { peaje } from "@stellar-scaffold/app-lib/clients"
 import { useState } from "react"
 import { Link } from "react-router-dom"
@@ -6,8 +12,10 @@ import {
 	DEMO_DRIVERS,
 	type DemoName,
 	demoSigner,
+	formatUsdc,
 	parseUsdc,
 	type Signer,
+	ZONE,
 } from "../zbe/config"
 import { as, isOpen, send } from "../zbe/contracts"
 import {
@@ -45,13 +53,13 @@ const Conductor = () => {
 
 	return (
 		<div>
-			<PageHead icon="🚗" title="Driver" signer={signer?.label}>
+			<PageHead title="Driver" signer={signer?.label}>
 				Your car&apos;s environmental label, your ZBE pass and every charge with
 				its appeal countdown.
 			</PageHead>
 
-			<div className="zbe-row zbe-section">
-				<span className="zbe-muted">View as</span>
+			<label className="zbe-inline-select">
+				View as
 				<select value={who} onChange={(e) => setWho(e.target.value)}>
 					{address && <option value={WALLET}>My wallet (Freighter)</option>}
 					{DEMO_DRIVERS.map((d) => (
@@ -60,7 +68,7 @@ const Conductor = () => {
 						</option>
 					))}
 				</select>
-			</div>
+			</label>
 
 			{signer ? (
 				<DriverPanel
@@ -69,9 +77,12 @@ const Conductor = () => {
 					isWallet={who === WALLET}
 				/>
 			) : (
-				<div className="card zbe-warning">
-					Connect your wallet or run <code>scripts/zbe-setup.sh</code> to get
-					demo drivers.
+				<div className="zbe-notice" role="alert">
+					<Wallet weight="bold" aria-hidden />
+					<p>
+						Connect your wallet or run <code>scripts/zbe-setup.sh</code> to get
+						demo drivers.
+					</p>
 				</div>
 			)}
 		</div>
@@ -150,20 +161,24 @@ const DriverPanel = ({
 						cars.map((c) => {
 							const allowed = zone && c.label!.category >= zone.min_category
 							return (
-								<div
-									key={c.plate}
-									className="zbe-row"
-									style={{ marginBottom: 10 }}
-								>
-									<Plate plate={c.plate} />
-									<CategoryBadge value={c.label!.category} />
-									{zone && (
-										<span className="zbe-muted">
-											{allowed
-												? "✅ Enters the centro zone for free"
-												: "⛔ Not allowed for free in the centro zone"}
-										</span>
-									)}
+								<div key={c.plate} className="zbe-vehicle">
+									<div className="zbe-row">
+										<Plate plate={c.plate} />
+										<CategoryBadge value={c.label!.category} withName />
+									</div>
+									{zone &&
+										(allowed ? (
+											<span className="zbe-allowed zbe-allowed--yes">
+												<CheckCircle weight="bold" aria-hidden />
+												Enters zone {ZONE} for free
+											</span>
+										) : (
+											<span className="zbe-allowed zbe-allowed--no">
+												<Prohibit weight="bold" aria-hidden />
+												Pays {formatUsdc(zone.fee)} a day in zone {ZONE} if it
+												has a pass
+											</span>
+										))}
 								</div>
 							)
 						})
@@ -172,21 +187,27 @@ const DriverPanel = ({
 
 				<div className="card">
 					<h2>ZBE pass</h2>
-					<div className="zbe-balances">
+					<dl className="zbe-balances">
 						<div className="zbe-balance zbe-balance--free">
-							<div className="zbe-stat-label">Available</div>
-							<div className="zbe-stat-value">
+							<dt>
+								<Wallet weight="bold" aria-hidden />
+								Available
+							</dt>
+							<dd>
 								<Usdc amount={bono?.free} />
-							</div>
+							</dd>
 						</div>
 						<div className="zbe-balance zbe-balance--locked">
-							<div className="zbe-stat-label">Locked</div>
-							<div className="zbe-stat-value">
+							<dt>
+								<LockSimple weight="bold" aria-hidden />
+								Locked
+							</dt>
+							<dd>
 								<Usdc amount={bono?.locked} />
-							</div>
+							</dd>
 						</div>
-					</div>
-					<p className="zbe-muted" style={{ marginTop: 0 }}>
+					</dl>
+					<p className="zbe-muted zbe-pass-note">
 						In your wallet: <Usdc amount={wallet} />. By topping up you agree
 						that, if you enter without a valid label, the fee is locked and you
 						can appeal it.
@@ -214,8 +235,7 @@ const DriverPanel = ({
 							<label>
 								Amount (USDC)
 								<input
-									type="number"
-									min="1"
+									inputMode="decimal"
 									value={amount}
 									onChange={(e) => setAmount(e.target.value)}
 								/>
@@ -228,7 +248,7 @@ const DriverPanel = ({
 								Top up
 							</button>
 							<button onClick={withdraw} disabled={!!pending}>
-								Withdraw available
+								Withdraw
 							</button>
 						</div>
 					)}
@@ -238,7 +258,9 @@ const DriverPanel = ({
 			<div className="card zbe-section">
 				<h2>My charges</h2>
 				{!charges?.length ? (
-					<p className="zbe-empty">No charges yet. 🎉</p>
+					<p className="zbe-empty">
+						No charges yet. Entries with an allowed label are never charged.
+					</p>
 				) : (
 					<div className="zbe-table-wrap">
 						<table className="zbe-table">
@@ -250,30 +272,32 @@ const DriverPanel = ({
 									<th>Amount</th>
 									<th>Status</th>
 									<th>Deadline</th>
-									<th />
+									<th>
+										<span className="zbe-sr">Actions</span>
+									</th>
 								</tr>
 							</thead>
 							<tbody>
 								{charges.map((c) => (
 									<tr key={c.id.toString()}>
-										<td>{c.id.toString()}</td>
-										<td>
+										<td className="zbe-num">{c.id.toString()}</td>
+										<td data-label="Vehicle">
 											<Plate plate={plateOf(c.plate_hash.toString("hex"))} />
 										</td>
-										<td>{c.zone_id}</td>
-										<td>
+										<td data-label="Zone">{c.zone_id}</td>
+										<td data-label="Amount">
 											<Usdc amount={c.amount} />
 										</td>
-										<td>
+										<td data-label="Status">
 											<StatusBadge status={c.status.tag} />
 										</td>
-										<td>
+										<td data-label="Deadline">
 											<Countdown charge={c} now={now} />
 										</td>
-										<td>
+										<td data-label="Actions" className="zbe-actions">
 											{c.status.tag === "Pending" && isOpen(c, now) && (
 												<button
-													className="zbe-btn-danger"
+													className="zbe-btn-danger zbe-btn-small"
 													onClick={() => appeal(c.id)}
 													disabled={!!pending}
 												>

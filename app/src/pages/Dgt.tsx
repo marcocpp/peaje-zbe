@@ -73,11 +73,7 @@ const Dgt = () => {
 
 	return (
 		<div>
-			<PageHead
-				icon="🪪"
-				title="DGT · Environmental labels"
-				signer={dgt?.label}
-			>
+			<PageHead title="DGT – Environmental labels" signer={dgt?.label}>
 				The DGT (Spain&apos;s traffic authority) is the only issuer. The label
 				is bound to the vehicle: the owner cannot transfer it, only the DGT can
 				reassign or revoke it.
@@ -144,30 +140,34 @@ const Dgt = () => {
 								<th>Label</th>
 								<th>Owner</th>
 								<th>On-chain key (HMAC)</th>
-								<th />
+								<th>
+									<span className="zbe-sr">Actions</span>
+								</th>
 							</tr>
 						</thead>
 						<tbody>
 							{(labels ?? []).map((l) => (
 								<tr key={l.plate}>
-									<td>
+									<td data-label="Plate">
 										<Plate plate={l.plate} />
 									</td>
-									<td>
+									<td data-label="Label">
 										{l.label ? (
-											<CategoryBadge value={l.label.category} />
+											<CategoryBadge value={l.label.category} withName />
 										) : (
 											<span className="zbe-muted">no label</span>
 										)}
 									</td>
-									<td>{l.label && <Who address={l.label.owner} />}</td>
-									<td>
+									<td data-label="Owner">
+										{l.label && <Who address={l.label.owner} />}
+									</td>
+									<td data-label="On-chain key (HMAC)">
 										<code title={l.hash}>{l.hash.slice(0, 16)}…</code>
 									</td>
-									<td>
+									<td data-label="Actions" className="zbe-actions">
 										{l.label && (
 											<button
-												className="zbe-btn-danger"
+												className="zbe-btn-danger zbe-btn-small"
 												onClick={() => revoke(l.plate)}
 												disabled={!dgt || !!pending}
 											>
@@ -206,7 +206,7 @@ const Dgt = () => {
 							}
 							disabled={!!pending}
 						>
-							1 · Enable USDC (your wallet signs)
+							1 – Enable USDC (your wallet signs)
 						</button>
 					) : (
 						<button

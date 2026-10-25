@@ -41,7 +41,7 @@ const Arbitro = () => {
 
 	return (
 		<div>
-			<PageHead icon="⚖️" title="Independent arbiter" signer={arbiter?.label}>
+			<PageHead title="Independent arbiter" signer={arbiter?.label}>
 				Only the arbiter (for example, a citizen ombudsman) can close an
 				appealed charge. The city is never judge and party.
 			</PageHead>
@@ -62,42 +62,44 @@ const Arbitro = () => {
 									<th>Owner</th>
 									<th>Amount</th>
 									<th>Entry</th>
-									<th />
+									<th>
+										<span className="zbe-sr">Decision</span>
+									</th>
 								</tr>
 							</thead>
 							<tbody>
 								{disputed.map((c) => (
 									<tr key={c.id.toString()}>
-										<td>{c.id.toString()}</td>
-										<td>
+										<td className="zbe-num">{c.id.toString()}</td>
+										<td data-label="Vehicle">
 											<Plate plate={plateOf(c.plate_hash.toString("hex"))} />
 										</td>
-										<td>
+										<td data-label="Owner">
 											<Who address={c.owner} />
 										</td>
-										<td>
+										<td data-label="Amount">
 											<Usdc amount={c.amount} />
 										</td>
-										<td>
+										<td data-label="Entry">
 											{new Date(Number(c.created_at) * 1000).toLocaleString(
 												"en-GB",
 											)}
 										</td>
-										<td>
+										<td data-label="Decision" className="zbe-actions">
 											<div className="zbe-row">
 												<button
-													className="zbe-btn-primary"
+													className="zbe-btn-small"
 													onClick={() => resolve(c.id, false)}
 													disabled={!arbiter || !!pending}
 												>
-													Cancel charge
+													Cancel and refund
 												</button>
 												<button
-													className="zbe-btn-danger"
+													className="zbe-btn-primary zbe-btn-small"
 													onClick={() => resolve(c.id, true)}
 													disabled={!arbiter || !!pending}
 												>
-													Uphold
+													Uphold and collect
 												</button>
 											</div>
 										</td>
@@ -116,17 +118,25 @@ const Arbitro = () => {
 				) : (
 					<div className="zbe-table-wrap">
 						<table className="zbe-table">
+							<thead>
+								<tr>
+									<th>#</th>
+									<th>Vehicle</th>
+									<th>Amount</th>
+									<th>Outcome</th>
+								</tr>
+							</thead>
 							<tbody>
 								{closed.map((c) => (
 									<tr key={c.id.toString()}>
-										<td>#{c.id.toString()}</td>
-										<td>
+										<td className="zbe-num">{c.id.toString()}</td>
+										<td data-label="Vehicle">
 											<Plate plate={plateOf(c.plate_hash.toString("hex"))} />
 										</td>
-										<td>
+										<td data-label="Amount">
 											<Usdc amount={c.amount} />
 										</td>
-										<td>
+										<td data-label="Outcome">
 											<StatusBadge status={c.status.tag} />
 										</td>
 									</tr>
