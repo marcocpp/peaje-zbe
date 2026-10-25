@@ -8,23 +8,57 @@ testnet)
 
 ---
 
+## Quick start
+
+Runs the whole demo on a local Stellar network on your machine (Linux or macOS).
+No wallet extension needed.
+
+```bash
+# 1. Clone and install the prerequisites (Docker, Node, Rust, Stellar CLI…)
+git clone https://github.com/marcocpp/peaje-zbe.git && cd peaje-zbe
+scripts/install-prereqs.sh
+# → open a new terminal afterwards (and log in again if it added you to
+#   the docker group)
+
+# 2. Terminal 1: local network + contracts + web
+npm run dev
+
+# 3. Terminal 2, once Terminal 1 shows
+#    "Successfully generated client for: peaje":
+scripts/zbe-setup.sh   # demo data: USDC, zone, camera, labels, demo keys
+```
+
+4. Open **http://localhost:5173** and reload it. The header pill must say
+   **Local**.
+5. Follow the [demo walkthrough](#demo-walkthrough): **Driver** (view as Lucía)
+   → top up 20 USDC → **Camera** → plate `2222BCD` → _Car enters_ → **City
+   Hall** → _Collect_ once the 60 s appeal window closes.
+
+> `npm run dev` deploys the contracts **empty**: `zbe-setup.sh` is what
+> configures them, so run it again after every redeploy. After a `git pull`, run
+> `npm install` if Vite reports `Failed to resolve import`. More details in
+> [Try the demo](#try-the-demo) and [Troubleshooting](#troubleshooting).
+
+---
+
 ## Table of contents
 
-1. [The idea](#the-idea)
-2. [How an entry works](#how-an-entry-works)
-3. [Architecture](#architecture)
-4. [Repository structure](#repository-structure)
-5. [Smart contracts](#smart-contracts)
-6. [Frontend](#frontend)
-7. [Try the demo](#try-the-demo)
+1. [Quick start](#quick-start)
+2. [The idea](#the-idea)
+3. [How an entry works](#how-an-entry-works)
+4. [Architecture](#architecture)
+5. [Repository structure](#repository-structure)
+6. [Smart contracts](#smart-contracts)
+7. [Frontend](#frontend)
+8. [Try the demo](#try-the-demo)
    - [Option A · Local network (recommended)](#option-a--local-network-recommended)
    - [Option B · Testnet (team only)](#option-b--testnet-team-only)
    - [Demo walkthrough](#demo-walkthrough)
    - [Using your own Freighter wallet](#using-your-own-freighter-wallet)
-8. [Scripts](#scripts)
-9. [Testnet deployment](#testnet-deployment)
-10. [Troubleshooting](#troubleshooting)
-11. [Limitations and next steps](#limitations-and-next-steps)
+9. [Scripts](#scripts)
+10. [Testnet deployment](#testnet-deployment)
+11. [Troubleshooting](#troubleshooting)
+12. [Limitations and next steps](#limitations-and-next-steps)
 
 ---
 
