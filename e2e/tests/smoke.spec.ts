@@ -20,7 +20,7 @@ test("ZBE home and views are linked", async ({ page }) => {
 	await page.goto("/")
 	await expect(
 		page.getByRole("heading", {
-			name: "A fair, opt-in toll for Low Emission Zones",
+			name: "A Low Emission Zone toll you opt into, and can always appeal.",
 		}),
 	).toBeVisible()
 	for (const view of ["Driver", "Camera", "City Hall", "Arbiter", "DGT"]) {

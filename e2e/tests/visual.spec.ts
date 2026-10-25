@@ -14,7 +14,7 @@ test("home page visual", async ({ page }) => {
 	await expect(page.getByRole("button", { name: /connect/i })).toBeVisible()
 	await expect(
 		page.getByRole("heading", {
-			name: "A fair, opt-in toll for Low Emission Zones",
+			name: "A Low Emission Zone toll you opt into, and can always appeal.",
 		}),
 	).toBeVisible()
 	await expect(page).toHaveScreenshot("home.png", {
