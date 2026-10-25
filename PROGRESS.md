@@ -45,3 +45,19 @@
 ### Pendiente
 
 - Testnet sigue en v1.0.1 (ver PLAN.md).
+
+## 2026-10-26 — Vídeo de demo (Remotion)
+
+- Proyecto Remotion en `video/` (guion en `video/GUION.md`, textos en
+  `video/src/contenido.ts`). Render en `video/out/demo.mp4` (ignorado en git).
+- Capturas reales en testnet con `video/scripts/capturar.mjs`. Los contratos de
+  testnet v1.0.1 los administra otra cuenta `me` del equipo (admin `GBT7…`), así
+  que para grabar se desplegó una copia propia con las claves de esta máquina,
+  sin Registry: Etiqueta
+  `CD5JL5TEAH2D2UV6RGT4MQL4R43B3ESQ7KX4VKZEKY2JCIRGIWVBI5QQ`, Peaje
+  `CBVQ4A2P662QNLTL6SZMZUIXK6WALFHL5S7AJXYAG7HY4WIBRJWW5BX7`, USDC
+  `CBW6MJUKV5QIR36FQRIDENIWJASM7FZKSQBZDAYHBYCEIPOUOPMPFC6C`.
+- Transacciones del vídeo en stellar.expert: `settle`
+  `0ae839f2b8e0fc7d0367af5bc4592a39d179cc97989c49eec948e0ef21d18369`,
+  `report_entry`
+  `23acc223bd3d287ef62287ff48a931edf1290cd5601b444871ff852e16bd1ae7`.
