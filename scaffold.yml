@@ -22,7 +22,8 @@ networks:
   # Using the Stellar-Quickstart Docker container
   local:
     # Created and funded on first build, the first account will sign deploys
-    accounts: [me]
+    # me = DGT y ayuntamiento; el resto son los actores de la demo ZBE
+    accounts: [me, tesoreria, arbitro, camara, lucia, pablo, ana]
 
   # Testnet is staging: a dry run for mainnet. Deploy there deliberately, then
   # point contracts at those deployments below. Public networks never deploy
@@ -50,6 +51,28 @@ networks:
 # override them. A contract only exists on the networks it lists, so building
 # another network skips it and leaves it out of the generated clients.
 contracts:
+  # El token del bono (USDC:me) no va aquí: `type: asset` aún no lo soporta
+  # `build`. Lo despliega scripts/zbe-setup.sh y se lee con peaje.get_config()
+  etiqueta:
+    networks:
+      local:
+        type: workspace
+        source: etiqueta
+        args:
+          admin: ${account.me}
+
+  # La dirección de Etiqueta se fija con `set_etiqueta` en scripts/zbe-setup.sh
+  peaje:
+    networks:
+      local:
+        type: workspace
+        source: peaje
+        args:
+          admin: ${account.me}
+          token: CDHABPKEQZCRD4DLMR5DK4CVQYO7AGIBWGOU6LIFZFTYA2BIFAI2P4LM # USDC:me en local
+          treasury: ${account.tesoreria}
+          arbiter: ${account.arbitro}
+
   guess-the-number:
     networks:
       local:

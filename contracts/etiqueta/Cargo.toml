@@ -1,0 +1,24 @@
+[package]
+name = "etiqueta"
+description = "Etiqueta ambiental de la DGT como token no transferible por vehículo"
+edition.workspace = true
+license.workspace = true
+publish = false
+version.workspace = true
+authors.workspace = true
+homepage.workspace = true
+repository.workspace = true
+
+[package.metadata.stellar]
+cargo_inherit = true
+
+[lib]
+# rlib para que los tests de Peaje puedan registrar este contrato
+crate-type = ["cdylib", "rlib"]
+doctest = false
+
+[dependencies]
+soroban-sdk = { workspace = true }
+
+[dev-dependencies]
+soroban-sdk = { workspace = true, features = ["testutils"] }

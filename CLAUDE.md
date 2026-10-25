@@ -36,7 +36,8 @@ Sin función de transferencia para el titular.
 ### `contracts/peaje` (admin = ayuntamiento)
 | Función | Firma | Qué hace |
 |---|---|---|
-| `__constructor(admin, etiqueta, token, treasury, arbiter)` | despliegue | Guarda direcciones |
+| `__constructor(admin, token, treasury, arbiter)` | despliegue | Guarda direcciones |
+| `set_etiqueta(etiqueta)` | admin | Dirección del contrato Etiqueta (scaffold.yml no admite `${contract.…}` en args) |
 | `set_zone(zone_id, min_category, fee, appeal_secs)` | admin | Reglas de la zona |
 | `add_camera(camera)` | admin | Autoriza una cámara |
 | `deposit(owner, amount)` / `withdraw(owner, amount)` | owner | Recargar / retirar saldo LIBRE |
@@ -45,6 +46,13 @@ Sin función de transferencia para el titular.
 | `resolve(charge_id, uphold)` | arbiter | Confirma o anula un cargo en disputa |
 | `settle(charge_id)` | cualquiera | Plazo vencido sin alegación → tesorería |
 | `get_charges(owner)` / `balance(owner)` | lectura | Panel del conductor (libre y bloqueado) |
+| `list_charges(from, limit)`, `charge_count`, `collected`, `get_zone`, `get_config`, `is_camera` | lectura | Panel del ayuntamiento |
+
+`Category` es un enum numérico ordenado (SinEtiqueta=0, B=1, C=2, Eco=3, Cero=4): entra gratis si `category >= min_category`.
+Peaje define su propia copia de `Category`/`Label` en `contracts/peaje/src/dgt.rs`; debe coincidir con `contracts/etiqueta`.
+
+Demo local: `scripts/zbe-setup.sh` (token USDC, set_etiqueta, zona, cámara, etiquetas, fondos) y `scripts/zbe-flow.sh` (flujo completo por CLI).
+Cuentas: `me` (DGT y ayuntamiento), `tesoreria`, `arbitro`, `camara`, `lucia` (B con bono), `pablo` (B sin bono), `ana` (Eco).
 
 Estados: `Pending` → `Settled`, o `Pending` → `Disputed` → `Settled` / `Cancelled`.
 Eventos: `charge_created`, `appealed`, `settled`, `cancelled`, `no_bono`.
