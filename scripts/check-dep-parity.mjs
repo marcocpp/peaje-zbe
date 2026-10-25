@@ -11,7 +11,7 @@
 //
 // Edit MUST_MATCH to curate which shared deps are enforced.
 
-import { readFileSync, readdirSync } from "node:fs"
+import { existsSync, readFileSync, readdirSync } from "node:fs"
 import { dirname, join, resolve } from "node:path"
 import { fileURLToPath } from "node:url"
 
@@ -27,6 +27,13 @@ const MUST_MATCH = [
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..")
 const templatesDir = join(repoRoot, "templates")
+
+// Un proyecto generado con Scaffold (como este) tiene una sola app y no la
+// carpeta templates/ del monorepo: no hay nada que comparar
+if (!existsSync(templatesDir)) {
+	console.log("No templates/ directory (generated project): nothing to check.")
+	process.exit(0)
+}
 
 const templates = readdirSync(templatesDir, { withFileTypes: true })
 	.filter((d) => d.isDirectory())
