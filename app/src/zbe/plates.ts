@@ -18,21 +18,28 @@ export const normalizePlate = (plate: string) =>
  * plate_hash = HMAC-SHA256(clave, matrícula). En la cadena nunca va la
  * matrícula en claro. En un sistema real la clave la custodian las cámaras.
  */
-export const plateHash = async (plate: string): Promise<Buffer> => {
-	const enc = new TextEncoder()
-	const key = await crypto.subtle.importKey(
-		"raw",
-		enc.encode(HMAC_KEY),
-		{ name: "HMAC", hash: "SHA-256" },
-		false,
-		["sign"],
-	)
-	const sig = await crypto.subtle.sign(
-		"HMAC",
-		key,
-		enc.encode(normalizePlate(plate)),
-	)
-	return Buffer.from(sig)
+const enc = new TextEncoder()
+let hmacKey: Promise<CryptoKey> | undefined
+const hashes = new Map<string, Promise<Buffer>>()
+
+export const plateHash = (plate: string): Promise<Buffer> => {
+	// El panel recalcula los hashes cada 3 s: se guardan por matrícula
+	const p = normalizePlate(plate)
+	let hash = hashes.get(p)
+	if (!hash) {
+		hmacKey ??= crypto.subtle.importKey(
+			"raw",
+			enc.encode(HMAC_KEY),
+			{ name: "HMAC", hash: "SHA-256" },
+			false,
+			["sign"],
+		)
+		hash = hmacKey
+			.then((key) => crypto.subtle.sign("HMAC", key, enc.encode(p)))
+			.then((sig) => Buffer.from(sig))
+		hashes.set(p, hash)
+	}
+	return hash
 }
 
 /** Matrículas que emitió la DGT desde este navegador, además de las de demo */

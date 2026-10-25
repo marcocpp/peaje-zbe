@@ -58,6 +58,7 @@ const Dgt = () => {
 		)
 
 	const revoke = (p: string) =>
+		window.confirm(`Revoke the label of ${p}? This cannot be undone.`) &&
 		run(
 			`revoke-${p}`,
 			async () => {

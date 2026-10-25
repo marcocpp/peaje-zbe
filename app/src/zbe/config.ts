@@ -24,9 +24,18 @@ export const formatUsdc = (amount: bigint) => {
 	return `${whole}${cents ? `.${cents.toString().padStart(2, "0")}` : ""} USDC`
 }
 
+/** Importe positivo con hasta 7 decimales; lanza un error legible si no */
 export const parseUsdc = (text: string): bigint => {
-	const [whole = "0", frac = ""] = text.replace(",", ".").split(".")
-	return BigInt(whole || "0") * UNIT + BigInt(frac.padEnd(7, "0").slice(0, 7))
+	const match = /^\s*(\d*)(?:[.,](\d{0,7}))?\s*$/.exec(text)
+	const whole = match?.[1] ?? ""
+	const frac = match?.[2] ?? ""
+	const amount = match
+		? BigInt(whole || "0") * UNIT + BigInt(frac.padEnd(7, "0"))
+		: 0n
+	if (amount <= 0n) {
+		throw new Error("Enter a positive amount (up to 7 decimals)")
+	}
+	return amount
 }
 
 /** Firma de transacciones: la wallet conectada o una cuenta de demo */

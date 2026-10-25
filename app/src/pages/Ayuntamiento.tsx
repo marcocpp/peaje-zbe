@@ -23,6 +23,13 @@ import {
 	Who,
 } from "../zbe/ui"
 
+const parseSecs = (text: string) => {
+	if (!/^\s*\d+\s*$/.test(text)) {
+		throw new Error("The appeal window must be a whole number of seconds")
+	}
+	return BigInt(text.trim())
+}
+
 const Ayuntamiento = () => {
 	const admin = demoSigner("me")
 	const now = useNow()
@@ -55,7 +62,7 @@ const Ayuntamiento = () => {
 							zone_id: ZONE,
 							min_category: minCategory,
 							fee: parseUsdc(fee),
-							appeal_secs: BigInt(appealSecs),
+							appeal_secs: parseSecs(appealSecs),
 						},
 						as(admin),
 					),
@@ -151,9 +158,20 @@ const Ayuntamiento = () => {
 					<button
 						className="zbe-btn-primary"
 						onClick={() =>
-							run("settle-all", async () => {
-								for (const c of ready) await settle(c.id)
-							})
+							run(
+								"settle-all",
+								async () => {
+									if (!admin) return
+									// Una a una: todas las firma la misma cuenta (secuencia)
+									for (const c of ready) {
+										await send(
+											await peaje.settle({ charge_id: c.id }, as(admin)),
+											admin,
+										)
+									}
+								},
+								`${ready.length} charges collected and sent to the treasury`,
+							)
 						}
 						disabled={!admin || !!pending || ready.length === 0}
 					>

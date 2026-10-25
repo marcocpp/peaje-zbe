@@ -7,12 +7,15 @@ import { normalizePlate, plateHash } from "../zbe/plates"
 import { MissingKeys, PageHead, Plate } from "../zbe/ui"
 
 type Outcome = {
+	id: number
 	at: Date
 	plate: string
 	kind: "ok" | "charge" | "nobono"
 	title: string
 	detail: string
 }
+
+let nextId = 0
 
 const ICONS: Record<Outcome["kind"], string> = {
 	ok: "✅",
@@ -33,7 +36,7 @@ const Camara = () => {
 		label: Awaited<ReturnType<typeof etiqueta.get>>["result"],
 		id: bigint | undefined,
 	): Outcome => {
-		const base = { at: new Date(), plate: p }
+		const base = { id: nextId++, at: new Date(), plate: p }
 		if (id !== undefined) {
 			return {
 				...base,
@@ -133,7 +136,7 @@ const Camara = () => {
 
 			{log.map((o) => (
 				<div
-					key={o.at.getTime()}
+					key={o.id}
 					className={`card zbe-result zbe-result--${o.kind}`}
 				>
 					<span className="zbe-result-icon">{ICONS[o.kind]}</span>

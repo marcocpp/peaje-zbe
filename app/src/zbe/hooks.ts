@@ -37,13 +37,18 @@ export const useCharges = (owner?: string) =>
 		...POLL,
 	})
 
+/** Máximo de cargos que lee el panel: una simulación con todos no escala */
+const RECENT_CHARGES = 100n
+
+/** Los cargos más recientes, del más nuevo al más antiguo */
 export const useAllCharges = () =>
 	useQuery({
 		queryKey: ["zbe", "all-charges"],
 		queryFn: async () => {
 			const count = (await peaje.charge_count()).result
+			const from = count > RECENT_CHARGES ? count - RECENT_CHARGES : 0n
 			const charges = (
-				await peaje.list_charges({ from: 0n, limit: Number(count) })
+				await peaje.list_charges({ from, limit: Number(RECENT_CHARGES) })
 			).result
 			return charges.slice().reverse()
 		},

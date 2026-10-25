@@ -19,8 +19,15 @@ import { type Signer } from "./config"
 const server = new rpc.Server(rpcUrl, { allowHttp })
 
 let tokenId: Promise<string> | undefined
+/** Dirección del token, leída una vez. Si falla, se reintenta en la siguiente */
 export const usdcContractId = () =>
-	(tokenId ??= peaje.get_config().then((r) => r.result.token))
+	(tokenId ??= peaje
+		.get_config()
+		.then((r) => r.result.token)
+		.catch((e: unknown) => {
+			tokenId = undefined
+			throw e
+		}))
 
 /** Simula una llamada de solo lectura al token */
 const read = async (
