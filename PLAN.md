@@ -22,8 +22,8 @@ están en `CLAUDE.md` y `app/PRODUCT.md`; el avance, en `PROGRESS.md`.
    degradados ni emojis; móvil con tablas en fichas.
 3. Verificación: tests de contratos, typecheck, lint, e2e, build, capturas en
    escritorio y móvil, flujo completo en la web.
-4. Revisión final de diseño (Impeccable) y DESIGN.md.
-5. Subir a `main`.
+4. Revisión final de diseño (Impeccable) y DESIGN.md. Hecho.
+5. Subir a `main`. Hecho.
 
 ## Pendiente / decisiones abiertas
 

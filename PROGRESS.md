@@ -39,7 +39,9 @@
   alegar → el árbitro anula → saldo devuelto. Emitir etiqueta nueva desde DGT →
   cargo pendiente con cuenta atrás.
 
+- Revisión de diseño independiente (Impeccable): 7 correcciones aplicadas,
+  veredicto final "ship". Sistema documentado en `app/DESIGN.md`.
+
 ### Pendiente
 
-- Revisión final de diseño y DESIGN.md.
 - Testnet sigue en v1.0.1 (ver PLAN.md).
