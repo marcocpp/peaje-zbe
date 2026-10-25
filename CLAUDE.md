@@ -51,7 +51,7 @@ Sin función de transferencia para el titular.
 `Category` es un enum numérico ordenado (SinEtiqueta=0, B=1, C=2, Eco=3, Cero=4): entra gratis si `category >= min_category`.
 Peaje define su propia copia de `Category`/`Label` en `contracts/peaje/src/dgt.rs`; debe coincidir con `contracts/etiqueta`.
 
-Demo local: `scripts/zbe-setup.sh` (token USDC, set_etiqueta, zona, cámara, etiquetas, fondos) y `scripts/zbe-flow.sh` (flujo completo por CLI).
+Demo local: `scripts/zbe-setup.sh` (token USDC, set_etiqueta, zona, cámara, etiquetas, fondos, claves del frontend) y `scripts/zbe-flow.sh` (flujo completo por CLI).
 Cuentas: `me` (DGT y ayuntamiento), `tesoreria`, `arbitro`, `camara`, `lucia` (B con bono), `pablo` (B sin bono), `ana` (Eco).
 
 Estados: `Pending` → `Settled`, o `Pending` → `Disputed` → `Settled` / `Cancelled`.
@@ -81,6 +81,14 @@ Tres vistas (más una de DGT o un script para emitir etiquetas):
 - Conductor: etiqueta de su coche, bono (libre/bloqueado), cargos con cuenta atrás, botón alegar.
 - Cámara simulada: elegir matrícula de una lista → "Coche entra".
 - Ayuntamiento: configurar zona, ver cargos, `settle`, recaudación. (Árbitro: resolver disputas.)
+
+Implementado en `app/src/pages/` (Conductor, Camara, Ayuntamiento, Arbitro, Dgt, Home) sobre `app/src/zbe/`:
+- `config.ts`: zona, categorías, formato USDC y firmantes de demo (`demoSigner`) con claves de `app/.env.local`
+  (generado por `scripts/zbe-env.sh`, lo llama `zbe-setup.sh`; SOLO demo, gitignored).
+- `contracts.ts`: `send(tx, signer)` (falla con mensaje en español si la simulación da error de contrato), tipos.
+- `token.ts`: el USDC es un SAC sin cliente generado; lectura/mint/trustline a mano con la SDK.
+- `plates.ts`: HMAC en el navegador (misma clave que los scripts); `hooks.ts`: lecturas react-query con refresco de 3 s.
+- Conductor firma con Freighter ("Mi wallet") o como Lucía/Pablo/Ana; cámara, ayuntamiento, árbitro y DGT firman con claves de demo.
 
 ## Plan
 

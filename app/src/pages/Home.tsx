@@ -1,104 +1,97 @@
-import { labPrefix } from "@stellar-scaffold/app-lib"
 import React from "react"
 import { Link } from "react-router-dom"
-import { GuessTheNumber } from "../components/GuessTheNumber"
+import { categoryName, formatUsdc, ZONE } from "../zbe/config"
+import { useZone } from "../zbe/hooks"
+import "../zbe/zbe.css"
 import styles from "./Home.module.css"
 
-const Home: React.FC = () => (
-	<div className={styles.Home}>
-		<div>
-			<h1>Yay! You&apos;re on Stellar!</h1>
-			<p>
-				A local development template designed to help you build dApps on the
-				Stellar network. This environment lets you easily test wallet
-				connections, smart contract interactions, transaction verifications,
-				etc.{" "}
-				<Link to="https://scaffoldstellar.org/docs/intro" target="_blank">
-					View docs
-				</Link>
-			</p>
-		</div>
+const VIEWS = [
+	{
+		to: "/conductor",
+		title: "Conductor",
+		text: "Tu etiqueta, el bono ZBE (libre y bloqueado) y tus cargos con botón para alegar.",
+	},
+	{
+		to: "/camara",
+		title: "Cámara",
+		text: "Elige una matrícula y pulsa «Coche entra» para simular la lectura.",
+	},
+	{
+		to: "/ayuntamiento",
+		title: "Ayuntamiento",
+		text: "Reglas de la zona, cargos, cobro tras el plazo y recaudación.",
+	},
+	{
+		to: "/arbitro",
+		title: "Árbitro",
+		text: "Resuelve las alegaciones: confirma el cargo o lo anula.",
+	},
+	{
+		to: "/dgt",
+		title: "DGT",
+		text: "Emite y retira etiquetas ambientales. Da USDC de prueba a tu wallet.",
+	},
+]
 
-		<div className="card">
-			<h2>Sample Contracts</h2>
-			<p>
-				<strong>Guess The Number:</strong> Interact with the sample contract
-				from the{" "}
-				<Link
-					to="https://scaffoldstellar.org/docs/tutorial/overview"
-					target="_blank"
-				>
-					Scaffold Tutorial
-				</Link>{" "}
-				using an automatically generated contract client.
-			</p>
-			<GuessTheNumber />
-			<p>Or take a look at other sample contracts to get you started:</p>
-			<nav className={styles.contractNav}>
-				<a
-					href="https://github.com/OpenZeppelin/stellar-contracts/tree/main/examples"
-					target="_blank"
-					rel="noreferrer"
-				>
-					OpenZeppelin sample contracts
-				</a>
-				<a
-					href="https://github.com/stellar/soroban-examples"
-					target="_blank"
-					rel="noreferrer"
-				>
-					Soroban sample contracts
-				</a>
-			</nav>
-		</div>
-
-		<div className="card">
-			<h2>Start Building</h2>
-			<ol>
-				<li>
-					Add your contract under <code>/src/contracts</code>
-				</li>
-				<li>
-					Contracts are built by Scaffold when you run <code>npm start</code>
-				</li>
-				<li>
-					Changes are rebuilt automatically by <code>Vite</code>
-				</li>
-				<li>
-					Interact with your contract immediately in the Contract Explorer
-				</li>
-			</ol>
-			<p>
-				Watch the full process in our{" "}
-				<Link to="https://www.youtube.com/watch?v=86hWe8Ragtg&list=PLmr3tp_7-7Gjj6gn5-bBn-QTMyaWzwOU5&index=1">
-					Youtube tutorial
-				</Link>
-				<br />
-				Get inspired by our showcase of{" "}
-				<Link to="https://scaffoldstellar.org/showcase">Example frontends</Link>
-				<br />
-				Ready to deploy?{" "}
-				<Link to="https://developers.stellar.org/docs/tools/cli/install-cli">
-					Read the mainnet deployment guide
-				</Link>
-			</p>
-		</div>
-
-		<section className={styles.cards}>
-			<div className="card">
+const Home: React.FC = () => {
+	const { data: zone } = useZone()
+	return (
+		<div className={styles.Home}>
+			<div>
+				<h1>Peaje ZBE en Stellar</h1>
 				<p>
-					Invoke your smart contract using the{" "}
-					<Link to="/debug">Contract Explorer</Link>
+					Peaje automático y <strong>voluntario</strong> para Zonas de Bajas
+					Emisiones. Si tu etiqueta no te permite entrar y tienes bono, se
+					bloquea la tarifa, puedes alegar y solo se cobra si nadie alega. No es
+					una multa automática.
 				</p>
 			</div>
+
+			<section className={`zbe-grid zbe-nav-cards`}>
+				{VIEWS.map((v) => (
+					<Link key={v.to} to={v.to}>
+						<div className="card">
+							<h2>{v.title}</h2>
+							<p className="zbe-muted">{v.text}</p>
+						</div>
+					</Link>
+				))}
+			</section>
+
 			<div className="card">
-				<p>
-					Browse your local transactions with the{" "}
-					<Link to={labPrefix()}>Transaction Explorer</Link>
-				</p>
+				<h2>Cómo funciona una entrada</h2>
+				<ol className="zbe-steps">
+					<li>
+						La cámara reporta la matrícula (solo su HMAC) en la zona{" "}
+						<strong>{ZONE}</strong>
+						{zone && (
+							<>
+								, que admite gratis {categoryName(zone.min_category)} y
+								superiores
+							</>
+						)}
+						.
+					</li>
+					<li>Etiqueta permitida → no pasa nada.</li>
+					<li>
+						No permitida y sin bono o sin saldo → evento <code>no_bono</code>:
+						procedimiento ordinario fuera de la cadena.
+					</li>
+					<li>
+						No permitida y con bono → se bloquean{" "}
+						{zone ? formatUsdc(zone.fee) : "la tarifa"} y empieza el plazo de
+						alegación
+						{zone && <> ({zone.appeal_secs.toString()} s en la demo)</>}.
+					</li>
+					<li>
+						Sin alegación → cualquiera puede cobrarlo (<code>settle</code>) y va
+						a la tesorería. Con alegación → solo el árbitro decide.
+					</li>
+					<li>Un solo cargo por vehículo, zona y día.</li>
+				</ol>
 			</div>
-		</section>
-	</div>
-)
+		</div>
+	)
+}
 
 export default Home

@@ -1,0 +1,237 @@
+.zbe-title {
+	margin-bottom: 1.5rem;
+}
+
+.zbe-title h1 {
+	font-weight: 500;
+	margin-bottom: 0.25rem;
+}
+
+.zbe-muted {
+	color: var(--color-text-muted);
+	font-size: 0.9em;
+}
+
+.zbe-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+	gap: 1.5rem;
+	margin-bottom: 1.5rem;
+}
+
+.zbe-stats {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+	gap: 1rem;
+	margin-bottom: 1.5rem;
+}
+
+.zbe-stat-value {
+	font-size: 1.5rem;
+	font-weight: 600;
+	margin-top: 0.25rem;
+}
+
+.zbe-section {
+	margin-bottom: 1.5rem;
+}
+
+.zbe-section h2 {
+	font-size: 1.15rem;
+	font-weight: 600;
+	margin: 0 0 1rem;
+}
+
+.zbe-row {
+	display: flex;
+	gap: 0.75rem;
+	align-items: center;
+	flex-wrap: wrap;
+}
+
+.zbe-form {
+	display: flex;
+	gap: 0.75rem;
+	align-items: end;
+	flex-wrap: wrap;
+}
+
+.zbe-form label {
+	display: flex;
+	flex-direction: column;
+	gap: 0.25rem;
+	font-size: 0.85rem;
+	color: var(--color-text-muted);
+}
+
+.zbe-form input,
+.zbe-form select,
+.zbe-select {
+	min-width: 8rem;
+}
+
+select {
+	padding: 0.5rem 0.75rem;
+	border: 1px solid var(--color-border);
+	border-radius: var(--radius);
+	background: var(--color-bg);
+	color: var(--color-text);
+	font: inherit;
+}
+
+.zbe-category {
+	display: inline-block;
+	min-width: 2.5rem;
+	padding: 0.15rem 0.6rem;
+	border-radius: 999px;
+	color: #fff;
+	font-weight: 600;
+	font-size: 0.85rem;
+	text-align: center;
+}
+
+.zbe-status {
+	display: inline-block;
+	padding: 0.15rem 0.6rem;
+	border-radius: 999px;
+	font-size: 0.8rem;
+	font-weight: 600;
+}
+
+.zbe-status--pending {
+	background: #fff3cd;
+	color: #7a5a00;
+}
+
+.zbe-status--disputed {
+	background: #e7defc;
+	color: #4b2aa8;
+}
+
+.zbe-status--settled {
+	background: #d1e7dd;
+	color: #0f5132;
+}
+
+.zbe-status--cancelled {
+	background: #e9ecef;
+	color: #495057;
+}
+
+.zbe-countdown {
+	font-variant-numeric: tabular-nums;
+	color: #7a5a00;
+	font-weight: 500;
+}
+
+.zbe-amount {
+	font-variant-numeric: tabular-nums;
+	white-space: nowrap;
+}
+
+.zbe-table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 0.92rem;
+}
+
+.zbe-table th,
+.zbe-table td {
+	text-align: left;
+	padding: 0.6rem 0.5rem;
+	border-bottom: 1px solid var(--color-border);
+	vertical-align: middle;
+}
+
+.zbe-table th {
+	color: var(--color-text-muted);
+	font-weight: 500;
+	font-size: 0.8rem;
+	text-transform: uppercase;
+	letter-spacing: 0.03em;
+}
+
+.zbe-table-wrap {
+	overflow-x: auto;
+}
+
+.zbe-empty {
+	color: var(--color-text-muted);
+	padding: 1rem 0;
+}
+
+.zbe-warning {
+	border-left: 4px solid var(--color-warning);
+	margin-bottom: 1.5rem;
+}
+
+.zbe-result {
+	border-left: 6px solid var(--color-border);
+	margin-bottom: 1rem;
+}
+
+.zbe-result h3 {
+	margin: 0 0 0.25rem;
+	font-size: 1.1rem;
+}
+
+.zbe-result--ok {
+	border-left-color: var(--color-success);
+}
+
+.zbe-result--charge {
+	border-left-color: var(--color-warning);
+}
+
+.zbe-result--nobono {
+	border-left-color: var(--color-error);
+}
+
+.zbe-big-button {
+	font-size: 1.1rem;
+	padding: 0.8rem 1.6rem;
+	background: var(--color-accent);
+	color: #fff;
+	border: none;
+}
+
+.zbe-big-button:hover:not(:disabled) {
+	opacity: 0.9;
+}
+
+.zbe-danger {
+	color: var(--color-error);
+}
+
+.zbe-plate {
+	font-family: ui-monospace, monospace;
+	font-weight: 600;
+	letter-spacing: 0.05em;
+	padding: 0.1rem 0.4rem;
+	border: 2px solid var(--color-text);
+	border-radius: 4px;
+	background: #fff;
+	color: #1a1a2e;
+}
+
+.zbe-steps {
+	padding-left: 1.2rem;
+	line-height: 1.7;
+}
+
+.zbe-nav-cards a {
+	text-decoration: none;
+	color: inherit;
+}
+
+.zbe-nav-cards .card:hover {
+	border-color: var(--color-accent);
+}
+
+.zbe-row > h2 {
+	margin: 0;
+}
+
+.zbe-section > .zbe-row:first-child {
+	margin-bottom: 1rem;
+}

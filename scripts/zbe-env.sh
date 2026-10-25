@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Escribe app/.env.local con las claves secretas de las cuentas de demo para
+# que el frontend firme como DGT/ayuntamiento, cámara, árbitro y conductores.
+# SOLO PARA LA DEMO: en un sistema real cada actor firma con su propia wallet o
+# su backend, y ninguna clave secreta llega al navegador. app/.env.local está
+# en .gitignore.
+source "$(dirname "$0")/zbe-common.sh"
+
+OUT="$ROOT/app/.env.local"
+{
+  echo "# Generado por scripts/zbe-env.sh: claves de demo, no subir a git"
+  echo "PUBLIC_ZBE_HMAC_KEY=$ZBE_HMAC_KEY"
+  for who in me camara arbitro tesoreria lucia pablo ana; do
+    upper=$(tr '[:lower:]' '[:upper:]' <<<"$who")
+    echo "PUBLIC_ZBE_SECRET_$upper=$(stellar keys show "$who")"
+  done
+} >"$OUT"
+echo "✅ $OUT escrito (Vite lo recarga solo)"

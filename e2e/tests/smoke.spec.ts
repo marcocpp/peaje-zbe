@@ -16,10 +16,18 @@ test("contract explorer link is present", async ({ page }) => {
 	await expect(page.locator('a[href="/debug"]').first()).toBeVisible()
 })
 
-test("guess-the-number sample contract form is present", async ({ page }) => {
+test("ZBE home and views are linked", async ({ page }) => {
 	await page.goto("/")
 	await expect(
-		page.getByPlaceholder("Guess a number from 1 to 10!"),
+		page.getByRole("heading", { name: "Peaje ZBE en Stellar" }),
 	).toBeVisible()
-	await expect(page.getByRole("button", { name: "Submit" })).toBeVisible()
+	for (const view of [
+		"Conductor",
+		"Cámara",
+		"Ayuntamiento",
+		"Árbitro",
+		"DGT",
+	]) {
+		await expect(page.getByRole("link", { name: view }).first()).toBeVisible()
+	}
 })

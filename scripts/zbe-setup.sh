@@ -60,3 +60,6 @@ if [ -n "${DRIVER:-}" ]; then
 fi
 
 echo "✅ Listo. Etiqueta=$ETIQUETA Peaje=$PEAJE USDC=$USDC"
+
+echo "→ Claves de demo para el frontend"
+"$(dirname "$0")/zbe-env.sh"
