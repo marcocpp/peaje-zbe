@@ -1,17 +1,11 @@
-import {
-	Car,
-	CheckCircle,
-	Info,
-	LockSimple,
-	MinusCircle,
-} from "@phosphor-icons/react"
+import { Car, Info } from "@phosphor-icons/react"
 import { etiqueta, peaje } from "@stellar-scaffold/app-lib/clients"
 import { useState } from "react"
 import { categoryName, demoSigner, formatUsdc, ZONE } from "../zbe/config"
 import { as, send } from "../zbe/contracts"
 import { useAction, useLabels, useZone } from "../zbe/hooks"
 import { normalizePlate, plateHash } from "../zbe/plates"
-import { MissingKeys, PageHead, Plate } from "../zbe/ui"
+import { MissingKeys, OutcomeSign, PageHead, Plate } from "../zbe/ui"
 
 type Outcome = {
 	id: number
@@ -23,12 +17,6 @@ type Outcome = {
 }
 
 let nextId = 0
-
-const ICONS: Record<Outcome["kind"], typeof Car> = {
-	ok: CheckCircle,
-	charge: LockSimple,
-	nobono: MinusCircle,
-}
 
 const Camara = () => {
 	const camera = demoSigner("camara")
@@ -147,17 +135,19 @@ const Camara = () => {
 			</div>
 
 			{log.length > 0 && (
-				<section className="zbe-log" aria-live="polite" aria-label="Readings">
+				<section
+					className="card zbe-log"
+					aria-live="polite"
+					aria-labelledby="readings-title"
+				>
+					<h2 id="readings-title">Readings</h2>
 					{log.map((o) => {
-						const Icon = ICONS[o.kind]
 						return (
 							<article
 								key={o.id}
-								className={`card zbe-result zbe-result--${o.kind}`}
+								className={`zbe-result zbe-result--${o.kind}`}
 							>
-								<span className="zbe-result-icon">
-									<Icon weight="bold" aria-hidden />
-								</span>
+								<OutcomeSign kind={o.kind} />
 								<div>
 									<h3>
 										<Plate plate={o.plate} /> {o.title}

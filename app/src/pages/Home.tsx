@@ -4,10 +4,7 @@ import {
 	Camera,
 	Car,
 	CaretRight,
-	EyeSlash,
-	Handshake,
 	IdentificationCard,
-	LockSimple,
 	Scales,
 } from "@phosphor-icons/react"
 import { Link } from "react-router-dom"
@@ -38,22 +35,18 @@ const STEPS = [
 
 const PRINCIPLES = [
 	{
-		Icon: Handshake,
 		title: "Consent first",
 		text: "Only drivers who top up a ZBE pass can be charged. No pass, no charge: the ordinary procedure applies.",
 	},
 	{
-		Icon: LockSimple,
 		title: "Locked, not taken",
 		text: "The fee stays in the contract during the appeal window. Nobody can touch it early, not even the city.",
 	},
 	{
-		Icon: Scales,
 		title: "Always appealable",
 		text: "An independent arbiter decides appeals. The city is never judge and party.",
 	},
 	{
-		Icon: EyeSlash,
 		title: "Private by design",
 		text: "Only an HMAC of the plate goes on-chain, never the plate itself.",
 	},
@@ -61,16 +54,16 @@ const PRINCIPLES = [
 
 const ROLES = [
 	{
-		to: "/camara",
-		Icon: Camera,
-		title: "Camera",
-		text: "Reports a plate entering the zone.",
-	},
-	{
 		to: "/conductor",
 		Icon: Car,
 		title: "Driver",
 		text: "Tops up the pass, follows charges and appeals.",
+	},
+	{
+		to: "/camara",
+		Icon: Camera,
+		title: "Camera",
+		text: "Reports a plate entering the zone.",
 	},
 	{
 		to: "/ayuntamiento",
@@ -119,16 +112,16 @@ const Home = () => {
 							Start the demo
 							<ArrowRight weight="bold" aria-hidden />
 						</Link>
-						<Link to="/camara" className="zbe-link-button">
-							Open the camera
-						</Link>
+						<a href="#steps-title" className="zbe-link-button">
+							How it works
+						</a>
 					</div>
 				</div>
 
 				<div className="zbe-road-sign" aria-label={`Rules of zone ${ZONE}`}>
 					<div className="zbe-road-sign-inner">
 						<div className="zbe-road-sign-head">
-							<ZbeSign size={56} />
+							<ZbeSign size={92} />
 							<div>
 								<strong>Low Emission Zone</strong>
 								<span>Zone “{ZONE}” – rules read from the contract</span>
@@ -189,9 +182,8 @@ const Home = () => {
 					every charge can be contested before the money moves.
 				</p>
 				<dl className="zbe-principles">
-					{PRINCIPLES.map(({ Icon, title, text }) => (
+					{PRINCIPLES.map(({ title, text }) => (
 						<div key={title}>
-							<Icon aria-hidden />
 							<dt>{title}</dt>
 							<dd>{text}</dd>
 						</div>

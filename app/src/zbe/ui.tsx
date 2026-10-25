@@ -33,7 +33,10 @@ export const CategoryBadge = ({
 		>
 			{STICKER[value] ?? "?"}
 		</span>
-		{withName && <span>{categoryName(value)}</span>}
+		{/* El nombre solo si la pegatina no lo dice ya (B, C, ECO) */}
+		{withName && categoryName(value).toUpperCase() !== STICKER[value] && (
+			<span>{categoryName(value)}</span>
+		)}
 	</span>
 )
 
@@ -77,15 +80,26 @@ export const Countdown = ({ charge, now }: { charge: Charge; now: number }) => {
 	)
 }
 
-/** Matrícula con formato europeo */
-export const Plate = ({ plate }: { plate: string }) => (
-	<span className="zbe-plate">
-		<span className="zbe-plate-eu" aria-hidden>
-			E
+/**
+ * Matrícula con formato europeo. Si este navegador no la conoce llega el hash
+ * abreviado ("8f6ed30…"), y se muestra como tal, no como una matrícula
+ */
+export const Plate = ({ plate }: { plate: string }) =>
+	plate.endsWith("…") ? (
+		<code
+			className="zbe-hash"
+			title="Plate unknown in this browser: only its HMAC is on-chain"
+		>
+			{plate}
+		</code>
+	) : (
+		<span className="zbe-plate">
+			<span className="zbe-plate-eu" aria-hidden>
+				E
+			</span>
+			<span className="zbe-plate-text">{plate}</span>
 		</span>
-		<span className="zbe-plate-text">{plate}</span>
-	</span>
-)
+	)
 
 export const Who = ({ address }: { address: string }) => {
 	const name = accountName(address)
@@ -189,5 +203,71 @@ export const ZbeSign = ({ size = 40 }: { size?: number }) => (
 		>
 			ZBE
 		</text>
+	</svg>
+)
+
+/**
+ * Señal de resultado de una lectura de cámara: disco azul con check (entra
+ * gratis), anillo rojo con candado (cargo bloqueado) o anillo gris (sin bono,
+ * no se cobra nada)
+ */
+export const OutcomeSign = ({ kind }: { kind: "ok" | "charge" | "nobono" }) => (
+	<svg
+		className="zbe-outcome-sign"
+		width="44"
+		height="44"
+		viewBox="0 0 44 44"
+		aria-hidden
+	>
+		{kind === "ok" && (
+			<>
+				<circle cx="22" cy="22" r="20" fill="#0B4EA2" />
+				<path
+					d="M13 22.5l6 6 12-13"
+					fill="none"
+					stroke="#fff"
+					strokeWidth="4"
+					strokeLinecap="round"
+					strokeLinejoin="round"
+				/>
+			</>
+		)}
+		{kind === "charge" && (
+			<>
+				<circle
+					cx="22"
+					cy="22"
+					r="18"
+					fill="#fff"
+					stroke="#C8102E"
+					strokeWidth="5"
+				/>
+				<rect x="15" y="20" width="14" height="10" rx="2" fill="#10151C" />
+				<path
+					d="M17.5 20v-3a4.5 4.5 0 0 1 9 0v3"
+					fill="none"
+					stroke="#10151C"
+					strokeWidth="2.5"
+				/>
+			</>
+		)}
+		{kind === "nobono" && (
+			<>
+				<circle
+					cx="22"
+					cy="22"
+					r="18"
+					fill="#fff"
+					stroke="#8994A3"
+					strokeWidth="5"
+				/>
+				<path
+					d="M15 22h14"
+					stroke="#4A5563"
+					strokeWidth="3.5"
+					strokeLinecap="round"
+				/>
+			</>
+		)}
 	</svg>
 )

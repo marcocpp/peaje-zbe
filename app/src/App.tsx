@@ -36,8 +36,8 @@ function App() {
 }
 
 const NAV = [
-	{ to: "/camara", label: "Camera", Icon: Camera },
 	{ to: "/conductor", label: "Driver", Icon: Car },
+	{ to: "/camara", label: "Camera", Icon: Camera },
 	{ to: "/ayuntamiento", label: "City Hall", Icon: Bank },
 	{ to: "/arbitro", label: "Arbiter", Icon: Scales },
 	{ to: "/dgt", label: "DGT", Icon: IdentificationCard },

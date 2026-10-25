@@ -20,8 +20,6 @@
 	--ok-soft: #e3f2e7;
 	--lock: #7a4f00;
 	--lock-soft: #fff0c7;
-	--appeal: #5034b0;
-	--appeal-soft: #ece7fb;
 	--danger: #b3261e;
 	--danger-soft: #fdecea;
 
@@ -149,6 +147,18 @@ button svg {
 	background: var(--sign-dark);
 	border-color: var(--sign-dark);
 	color: #fff;
+}
+
+/* Alegar es un derecho, no una acción destructiva: azul, no rojo */
+.zbe-btn-secondary {
+	color: var(--sign);
+	border-color: var(--sign);
+}
+
+.zbe-btn-secondary:hover:not(:disabled) {
+	background: var(--sign-soft);
+	border-color: var(--sign-dark);
+	color: var(--sign-dark);
 }
 
 .zbe-btn-danger {
@@ -509,9 +519,11 @@ select:focus {
 	color: var(--lock);
 }
 
+/* En alegación: contorno azul de señal, sin colores ajenos */
 .zbe-status--disputed {
-	background: var(--appeal-soft);
-	color: var(--appeal);
+	background: var(--panel);
+	color: var(--sign);
+	box-shadow: inset 0 0 0 1.5px var(--sign);
 }
 
 .zbe-status--settled {
@@ -552,7 +564,7 @@ select:focus {
 }
 
 .zbe-allowed--no {
-	color: var(--danger);
+	color: var(--lock);
 }
 
 /* Matrícula europea */
@@ -702,42 +714,26 @@ select:focus {
 
 /* ---------- Resultados de la cámara ---------- */
 
-.zbe-log {
-	display: grid;
-	gap: 0.75rem;
+.zbe-log h2 {
+	margin-bottom: 0.25rem;
 }
 
+/* Cada lectura es una fila del panel, con su señal de resultado */
 .zbe-result {
 	display: grid;
 	grid-template-columns: auto 1fr;
 	gap: 1rem;
 	align-items: start;
-	padding: 1.1rem 1.25rem;
+	padding: 1rem 0;
 	animation: zbe-in 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.zbe-result-icon {
-	display: grid;
-	place-items: center;
-	width: 2.75rem;
-	height: 2.75rem;
-	border-radius: var(--radius);
-	font-size: 1.5rem;
+.zbe-result + .zbe-result {
+	border-top: 1px solid var(--rule-soft);
 }
 
-.zbe-result--ok .zbe-result-icon {
-	background: var(--ok-soft);
-	color: var(--ok);
-}
-
-.zbe-result--charge .zbe-result-icon {
-	background: var(--lock-soft);
-	color: var(--lock);
-}
-
-.zbe-result--nobono .zbe-result-icon {
-	background: var(--ground);
-	color: var(--ink-2);
+.zbe-result:last-child {
+	padding-bottom: 0;
 }
 
 .zbe-result h3 {
@@ -857,13 +853,13 @@ select:focus {
 .zbe-road-sign-head {
 	display: flex;
 	align-items: center;
-	gap: 1rem;
+	gap: 1.25rem;
 	margin-bottom: 1.25rem;
 }
 
 .zbe-road-sign-head strong {
 	display: block;
-	font-size: 1.35rem;
+	font-size: 1.6rem;
 	line-height: 1.15;
 	font-weight: 800;
 }
@@ -992,34 +988,31 @@ select:focus {
 	text-decoration: underline;
 }
 
-/* Principios: lista de definiciones a dos columnas */
+/* Principios: lista reglada, término a la izquierda y frase a la derecha */
 .zbe-principles {
-	display: grid;
-	grid-template-columns: repeat(2, 1fr);
-	gap: 2rem 3rem;
 	margin: 0;
+	border-top: 1px solid var(--rule);
 }
 
 .zbe-principles > div {
 	display: grid;
-	grid-template-columns: auto 1fr;
-	gap: 0.25rem 1rem;
-}
-
-.zbe-principles svg {
-	grid-row: span 2;
-	font-size: 1.75rem;
-	color: var(--sign);
+	grid-template-columns: 16rem 1fr;
+	gap: 0.25rem 2rem;
+	align-items: baseline;
+	padding: 1.1rem 0;
+	border-bottom: 1px solid var(--rule);
 }
 
 .zbe-principles dt {
 	font-weight: 800;
-	font-size: 1.1rem;
+	font-size: 1.15rem;
 }
 
 .zbe-principles dd {
 	margin: 0;
 	color: var(--ink-2);
+	font-size: 1.05rem;
+	max-width: 62ch;
 }
 
 /* Roles: filas con enlace */
@@ -1098,7 +1091,7 @@ select:focus {
 		height: auto;
 	}
 
-	.zbe-principles {
+	.zbe-principles > div {
 		grid-template-columns: 1fr;
 	}
 

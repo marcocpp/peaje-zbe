@@ -175,8 +175,8 @@ const DriverPanel = ({
 										) : (
 											<span className="zbe-allowed zbe-allowed--no">
 												<Prohibit weight="bold" aria-hidden />
-												Pays {formatUsdc(zone.fee)} a day in zone {ZONE} if it
-												has a pass
+												Not free in zone {ZONE}: with a ZBE pass,{" "}
+												{formatUsdc(zone.fee)} a day is locked
 											</span>
 										))}
 								</div>
@@ -297,7 +297,7 @@ const DriverPanel = ({
 										<td data-label="Actions" className="zbe-actions">
 											{c.status.tag === "Pending" && isOpen(c, now) && (
 												<button
-													className="zbe-btn-danger zbe-btn-small"
+													className="zbe-btn-secondary zbe-btn-small"
 													onClick={() => appeal(c.id)}
 													disabled={!!pending}
 												>
