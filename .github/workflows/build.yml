@@ -12,7 +12,9 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    # Fijado a 24.04: ubuntu-latest pasa a Ubuntu 26 y
+    # `playwright install --with-deps` aún no lo soporta
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
 
@@ -185,6 +187,9 @@ jobs:
           fi
           echo "Generated $ACTUAL client(s)."
       - run: npm run build --workspaces --if-present
+      # Tests de los contratos (soroban-sdk testutils, token SAC de prueba)
+      - name: Run contract tests
+        run: cargo test --locked
       - name: Install Playwright browser
         run: npx playwright install --with-deps chromium
         working-directory: e2e
