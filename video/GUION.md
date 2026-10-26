@@ -1,7 +1,7 @@
 # Guion del vídeo de demo (HackMeridian 2026 · Genesis)
 
-Vídeo de 2:00, 1920x1080, 30 fps, sin voz (subtítulos con tiempos fijos). Los
-textos están en `src/contenido.ts`; los tiempos de cada bloque, en
+Vídeo de 2:00, 1920x1080, 30 fps, con locución sintética que lee los subtítulos.
+Los textos están en `src/contenido.ts`; los tiempos de cada bloque, en
 `src/contenido.ts` → `BLOQUES`.
 
 Todo lo que se enseña sale de la app real en Stellar testnet (capturas en
@@ -36,7 +36,7 @@ alegación y después el cobro: así cada captura coincide con el estado real.
 ## Notas
 
 - Etiqueta discreta "Prototype · Stellar testnet" en todo el vídeo.
-- Sin voz: pista reservada `public/audio/voz.wav` (silencio). Sustitúyela por la
-  grabación y vuelve a renderizar.
+- Voz: `public/audio/voz.mp3`, generada con `scripts/generar-voz.mjs` (edge-tts,
+  `en-US-AndrewNeural`). Sustitúyela por una grabación propia si se prefiere.
 - No hay base de datos: el estado (etiquetas, bonos, cargos) está en el
   almacenamiento persistente de los contratos Soroban.

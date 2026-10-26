@@ -3,8 +3,9 @@
 **An opt-in, appealable toll for Low Emission Zones, built on Stellar.**
 HackMeridian 2026 · Genesis track · Team **IMPEDANCIA UNO**
 
-🎬 **Demo video:** [`docs/demo.mp4`](docs/demo.mp4) (2.5 min, recorded on
-testnet)
+🎬 **Demo video:** [`video/out/demo.mp4`](video/out/demo.mp4) (2 min, narrated,
+real captures from testnet) · raw screen recording:
+[`docs/demo.mp4`](docs/demo.mp4) (2.5 min)
 
 ---
 
@@ -189,7 +190,7 @@ flowchart LR
 ├── app-lib/                 # shared lib; app-lib/clients is GENERATED, do not edit
 ├── scripts/                 # demo setup and helpers (see Scripts)
 ├── docs/
-│   ├── demo.mp4             # backup video of the demo
+│   ├── demo.mp4             # raw screen recording of the demo
 │   └── pitch.md             # pitch script and Q&A (Spanish)
 ├── e2e/                     # Playwright smoke tests
 ├── scaffold.yml             # networks, accounts and contracts for Stellar Scaffold

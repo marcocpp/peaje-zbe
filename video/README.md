@@ -19,8 +19,16 @@ npm run typecheck
   stellar.expert (`20-explorer-cobro.png`, `21-explorer-cargo.png`).
 - `public/clips/entrada-camara.mp4`: grabación real de la cámara registrando
   5555BCD.
-- `public/audio/voz.mp3`: pista de voz reservada (2 min de silencio).
-  Sustitúyela por tu grabación con el mismo nombre y vuelve a renderizar.
+- `public/audio/voz.mp3`: locución en inglés sintetizada con edge-tts a partir
+  de los subtítulos (cada frase empieza con su subtítulo). Para regenerarla tras
+  cambiar textos, o para usar tu propia grabación con el mismo nombre:
+
+  ```bash
+  python3 -m venv video/.voz-venv && video/.voz-venv/bin/pip install edge-tts
+  node --experimental-strip-types video/scripts/generar-voz.mjs   # VOZ=en-GB-RyanNeural para otra voz
+  ```
+
+El render final `out/demo.mp4` está versionado en git (el resto de `out/` no).
 
 ## Volver a capturar
 

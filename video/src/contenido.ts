@@ -27,7 +27,7 @@ export const general = {
 	repo: "github.com/marcocpp/peaje-zbe",
 	hackaton: "HackMeridian 2026",
 	categoria: "Genesis track",
-	// Pista de voz reservada: sustituye public/audio/voz.mp3 por tu grabación
+	// Locución: scripts/generar-voz.mjs (o sustituye el mp3 por tu grabación)
 	voz: "audio/voz.mp3",
 	volumenVoz: 1,
 }

@@ -45,8 +45,8 @@ export const Demo = () => (
 			</Sequence>
 		))}
 		<MarcaPrototipo />
-		{/* Pista de voz reservada (ahora es silencio): sustituye el archivo */}
-		<Sequence name="Voz (reservada)">
+		{/* Locución (scripts/generar-voz.mjs) */}
+		<Sequence name="Voz">
 			<Audio src={staticFile(general.voz)} volume={general.volumenVoz} />
 		</Sequence>
 	</AbsoluteFill>

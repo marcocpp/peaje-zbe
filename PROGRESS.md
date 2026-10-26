@@ -49,7 +49,8 @@
 ## 2026-10-26 — Vídeo de demo (Remotion)
 
 - Proyecto Remotion en `video/` (guion en `video/GUION.md`, textos en
-  `video/src/contenido.ts`). Render en `video/out/demo.mp4` (ignorado en git).
+  `video/src/contenido.ts`). Render en `video/out/demo.mp4` (versionado), con
+  locución sintética de los subtítulos (`video/scripts/generar-voz.mjs`).
 - Capturas reales en testnet con `video/scripts/capturar.mjs`. Los contratos de
   testnet v1.0.1 los administra otra cuenta `me` del equipo (admin `GBT7…`), así
   que para grabar se desplegó una copia propia con las claves de esta máquina,

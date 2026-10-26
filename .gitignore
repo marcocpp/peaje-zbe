@@ -51,5 +51,7 @@ app/.impeccable/*
 !app/.impeccable/surfaces/
 !app/.impeccable/design.json
 
-# Vídeo de demo (Remotion): renders pesados y caché
-video/out/
+# Vídeo de demo (Remotion): renders y caché fuera; el vídeo final sí va al repo
+video/out/*
+!video/out/demo.mp4
+video/.voz-venv/
