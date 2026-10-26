@@ -6,6 +6,7 @@
     "dev": "remotion studio",
     "render": "remotion render Demo out/demo.mp4",
     "still": "remotion still Demo out/still.png",
+    "miniatura": "remotion still Miniatura out/miniatura.png",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

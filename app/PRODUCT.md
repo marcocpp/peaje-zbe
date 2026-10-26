@@ -65,7 +65,8 @@ never judge and party, and only an HMAC of the plate goes on-chain.
 
 ## Evidence on Hand
 
-- Demo video: `docs/demo.mp4`; pitch script: `docs/pitch.md`.
+- Demo video: https://www.youtube.com/watch?v=ys-ihhcaj7s; pitch script:
+  `docs/pitch.md`.
 - No real customers, cities, testimonials or metrics exist: do not fabricate
   them.
 

@@ -10,6 +10,8 @@ in, no wallet needed
 min, narrated, real captures from testnet) · file:
 [`video/out/demo.mp4`](video/out/demo.mp4)
 
+📊 **Pitch deck:** [`docs/pitch-deck.pdf`](docs/pitch-deck.pdf) (12 slides)
+
 ---
 
 ## Quick start
@@ -193,6 +195,7 @@ flowchart LR
 ├── app-lib/                 # shared lib; app-lib/clients is GENERATED, do not edit
 ├── scripts/                 # demo setup and helpers (see Scripts)
 ├── docs/
+│   ├── pitch-deck.pdf       # pitch deck (12 slides)
 │   └── pitch.md             # pitch script and Q&A (Spanish)
 ├── e2e/                     # Playwright smoke tests
 ├── scaffold.yml             # networks, accounts and contracts for Stellar Scaffold

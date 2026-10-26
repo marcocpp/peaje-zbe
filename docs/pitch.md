@@ -54,7 +54,8 @@ Si sobra tiempo o lo pregunta el jurado: otra entrada → **Appeal** en **Driver
 ## Checklist del día
 
 - [ ] Elegir red: **local** (más rápida) o **testnet** (más creíble). Plan B: la
-      otra, y si todo falla, `docs/demo.mp4` (en inglés).
+      otra, y si todo falla, el vídeo
+      (https://www.youtube.com/watch?v=ys-ihhcaj7s, en inglés).
 - [ ] **Local:** `npm run dev`, esperar a que despliegue, luego
       `scripts/zbe-setup.sh`. Si ya hubo cargos ese día, reiniciar antes con
       `stellar scaffold clean`.
