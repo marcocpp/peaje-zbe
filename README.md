@@ -3,9 +3,12 @@
 **An opt-in, appealable toll for Low Emission Zones, built on Stellar.**
 HackMeridian 2026 · Genesis track · Team **IMPEDANCIA UNO**
 
-🎬 **Demo video:** [`video/out/demo.mp4`](video/out/demo.mp4) (2 min, narrated,
-real captures from testnet) · raw screen recording:
-[`docs/demo.mp4`](docs/demo.mp4) (2.5 min)
+🌐 **Live demo (testnet):** <https://zbe-toll.vercel.app> · demo accounts built
+in, no wallet needed
+
+🎬 **Demo video:** [YouTube](https://www.youtube.com/watch?v=ys-ihhcaj7s) (2
+min, narrated, real captures from testnet) · file:
+[`video/out/demo.mp4`](video/out/demo.mp4)
 
 ---
 
@@ -190,7 +193,6 @@ flowchart LR
 ├── app-lib/                 # shared lib; app-lib/clients is GENERATED, do not edit
 ├── scripts/                 # demo setup and helpers (see Scripts)
 ├── docs/
-│   ├── demo.mp4             # raw screen recording of the demo
 │   └── pitch.md             # pitch script and Q&A (Spanish)
 ├── e2e/                     # Playwright smoke tests
 ├── scaffold.yml             # networks, accounts and contracts for Stellar Scaffold
@@ -319,8 +321,10 @@ the demo with your own account.
 
 > **Judges and anyone cloning the repo: use the local network (Option A).** It
 > runs entirely on your machine with your own keys. The testnet deployment
-> (Option B) is signed with the team's keys, so outside the team it is
-> view-only; the [demo video](docs/demo.mp4) shows it in action.
+> (Option B) is signed with the team's keys; to try it without installing
+> anything, use the [live demo](https://zbe-toll.vercel.app), which ships those
+> testnet demo keys, or watch the
+> [demo video](https://www.youtube.com/watch?v=ys-ihhcaj7s).
 
 ### Option A · Local network (recommended)
 
