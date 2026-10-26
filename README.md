@@ -328,7 +328,7 @@ Things to expect:
   **DGT** → **Get 50 USDC**, which has no limit.
 - **The demo keys are public by design** (they ship in the page). Anyone can
   sign as the camera, City Hall, arbiter or DGT, so the data may look odd if
-  someone experimented. The team can restore the demo data, see
+  someone experimented. The team can reset it, see
   [Keeping the live demo running](#keeping-the-live-demo-running).
 - For a private, clean copy, run it on your machine with the
   [local network](#option-a--local-network-recommended).
@@ -498,6 +498,8 @@ All scripts take `STELLAR_NETWORK` (default `local`). Contract IDs come from
 | `scripts/zbe-flow.sh`          | Full demo flow from the CLI                                                                                                                                                                                                                                                      |
 | `scripts/zbe-env.sh`           | Writes `app/.env.local` with the demo signing keys and the HMAC key                                                                                                                                                                                                              |
 | `scripts/zbe-build-testnet.sh` | Builds `app/dist` against testnet and restores the local clients afterwards                                                                                                                                                                                                      |
+| `scripts/zbe-deploy-vercel.sh` | Builds the testnet web app and publishes it to <https://zbe-toll.vercel.app> with the Vercel CLI                                                                                                                                                                                 |
+| `scripts/zbe-reset-testnet.sh` | Full reset of the testnet demo: new Etiqueta and Peaje instances, Registry names and IDs updated, demo data reloaded (see [Keeping the live demo running](#keeping-the-live-demo-running))                                                                                       |
 | `scripts/zbe-common.sh`        | Shared helpers (sourced by the others)                                                                                                                                                                                                                                           |
 
 > 🔐 **Demo-only keys.** So a single person can run the whole demo, the camera,
@@ -514,8 +516,8 @@ Published with **Stellar Registry** (version 1.0.1):
 
 | Contract              | Registry name                            | Contract ID                                                |
 | --------------------- | ---------------------------------------- | ---------------------------------------------------------- |
-| Etiqueta              | `unverified/zbe-etiqueta-impedancia-uno` | `CB2C4XY6HLRDE7BOZ7QH5DFST34SGDY5LVI6WA7T4X3EGXK65SO3AYSD` |
-| Peaje                 | `unverified/zbe-peaje-impedancia-uno`    | `CCM6PGBSXY33ISEAWJPH2RQV2PUOLVNWKAJ37EOGJRKTIE6JF7GP3LVI` |
+| Etiqueta              | `unverified/zbe-etiqueta-impedancia-uno` | `CCC7DQXGQIQJ735OJT6UXL2OTB3UF23A6YGMPOYXEIAETM5OYPWGVYPQ` |
+| Peaje                 | `unverified/zbe-peaje-impedancia-uno`    | `CD3R2MSNY6JQ5UB2AKRMYVUX2TTP6UWZX2S5JXZNOLH2MQ3KSJAAFPVQ` |
 | USDC test asset (SAC) | —                                        | `CDB4ZZLUZQGVU6QIPVOFAUNXQFHRTMQ4NKZSIHAPT6Z3PTMM2UXB6XI2` |
 
 Look them up by name:
@@ -557,12 +559,28 @@ Then point the `testnet` entries in `scaffold.yml` to your IDs.
 
 ### Keeping the live demo running
 
-For the team (needs the `me` key). The [live demo](#live-demo-no-install) uses
-the testnet contracts above, so it has no reset button: charges, appeals and
-deposits already made stay on-chain.
+For the team (needs the `me` key). The [live demo](#live-demo-no-install) reads
+and writes the testnet contracts above, so charges, appeals and deposits stay
+on-chain. Two ways to get it back in shape:
 
-- **Restore the demo data** (zone `centro`, camera, the three labels, and up to
-  20 USDC in the wallets of Lucía, Pablo and Ana). Safe to repeat:
+- **Full reset** (empty state: no charges or passes, `2222BCD` usable again):
+
+  ```bash
+  scripts/zbe-reset-testnet.sh   # new contract instances + demo data
+  scripts/zbe-deploy-vercel.sh   # rebuild the web app and publish it
+  git commit -am "Testnet reset: new contract IDs" && git push
+  ```
+
+  `zbe-reset-testnet.sh` deploys new instances of Etiqueta and Peaje from the
+  Wasm already published in Registry (no new publish, which is the expensive
+  part), points the `unverified/zbe-*-impedancia-uno` names to them, replaces
+  the contract IDs in `scaffold.yml`, `README.md` and `CLAUDE.md`, and runs
+  `zbe-setup.sh`. The old instances stay on the network, unused. The web app
+  embeds the contract IDs, so it must be published again afterwards.
+
+- **Light restore** of the demo data, keeping the existing charges (zone
+  `centro`, camera, the three labels, and up to 20 USDC in the wallets of Lucía,
+  Pablo and Ana). Safe to repeat:
 
   ```bash
   STELLAR_NETWORK=testnet scripts/zbe-setup.sh
@@ -575,9 +593,11 @@ deposits already made stay on-chain.
 - **Storage TTL.** Labels, passes and charges are extended to 7 days each time
   they are used. Data nobody touches for longer is archived by the network and
   has to be restored before it can be used again.
-- **Redeploying the web app.** `scripts/zbe-build-testnet.sh` builds `app/dist`
-  with the testnet IDs and the demo keys from `app/.env.local`; deploy that
-  folder to Vercel. A new version of the contracts needs a new build.
+- **Publishing the web app.** Vercel does not build this repo (the clients need
+  the Stellar CLI and the demo keys are not committed):
+  `scripts/zbe-deploy-vercel.sh` runs `zbe-build-testnet.sh` and uploads the
+  built `app/dist` with the Vercel CLI to the `zbe-toll` project. Log in once
+  with `npx vercel@65.2.0 login`.
 
 ---
 

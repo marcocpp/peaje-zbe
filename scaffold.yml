@@ -63,7 +63,7 @@ contracts:
       # Registry: unverified/zbe-etiqueta-impedancia-uno
       testnet:
         type: contract
-        source: CB2C4XY6HLRDE7BOZ7QH5DFST34SGDY5LVI6WA7T4X3EGXK65SO3AYSD
+        source: CCC7DQXGQIQJ735OJT6UXL2OTB3UF23A6YGMPOYXEIAETM5OYPWGVYPQ
 
   # La dirección de Etiqueta se fija con `set_etiqueta` en scripts/zbe-setup.sh
   peaje:
@@ -80,4 +80,4 @@ contracts:
       # Registry: unverified/zbe-peaje-impedancia-uno (token USDC:me en testnet)
       testnet:
         type: contract
-        source: CCM6PGBSXY33ISEAWJPH2RQV2PUOLVNWKAJ37EOGJRKTIE6JF7GP3LVI
+        source: CD3R2MSNY6JQ5UB2AKRMYVUX2TTP6UWZX2S5JXZNOLH2MQ3KSJAAFPVQ

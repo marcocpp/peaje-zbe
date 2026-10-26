@@ -109,8 +109,8 @@ Estados: `Pending` → `Settled`, o `Pending` → `Disputed` → `Settled` /
 
 | Pieza         | Nombre en Registry                       | ID (v1.0.1)                                                |
 | ------------- | ---------------------------------------- | ---------------------------------------------------------- |
-| Etiqueta      | `unverified/zbe-etiqueta-impedancia-uno` | `CB2C4XY6HLRDE7BOZ7QH5DFST34SGDY5LVI6WA7T4X3EGXK65SO3AYSD` |
-| Peaje         | `unverified/zbe-peaje-impedancia-uno`    | `CCM6PGBSXY33ISEAWJPH2RQV2PUOLVNWKAJ37EOGJRKTIE6JF7GP3LVI` |
+| Etiqueta      | `unverified/zbe-etiqueta-impedancia-uno` | `CCC7DQXGQIQJ735OJT6UXL2OTB3UF23A6YGMPOYXEIAETM5OYPWGVYPQ` |
+| Peaje         | `unverified/zbe-peaje-impedancia-uno`    | `CD3R2MSNY6JQ5UB2AKRMYVUX2TTP6UWZX2S5JXZNOLH2MQ3KSJAAFPVQ` |
 | USDC:me (SAC) | —                                        | `CDB4ZZLUZQGVU6QIPVOFAUNXQFHRTMQ4NKZSIHAPT6Z3PTMM2UXB6XI2` |
 
 - `stellar registry deploy` falla con `TxMalformed` (registry CLI 0.2.0).
@@ -126,6 +126,11 @@ Estados: `Pending` → `Settled`, o `Pending` → `Disputed` → `Settled` /
 - Scripts con `STELLAR_NETWORK=testnet` (buscan los IDs por nombre en Registry).
   Web: `scripts/zbe-build-testnet.sh` → `app/dist` (incluye las claves de demo:
   no publicarlo como sistema real).
+- Demo en vivo: https://zbe-toll.vercel.app (proyecto Vercel `zbe-toll`, NO
+  conectado a GitHub). Publicar: `scripts/zbe-deploy-vercel.sh` (compila y sube
+  `app/dist` con la CLI de Vercel). Reinicio completo del estado:
+  `scripts/zbe-reset-testnet.sh` (instancias nuevas desde los Wasm de Registry,
+  cambia los IDs en `scaffold.yml`/README/CLAUDE.md) y luego publicar la web.
 
 ## Frontend
 
